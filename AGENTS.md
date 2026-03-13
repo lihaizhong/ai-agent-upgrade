@@ -48,16 +48,26 @@ ai-agent-upgrade/
 
 ### 快速开始
 
-在 iFlow CLI 中直接使用预配置的 agents 和 skills：
+使用 iFlow CLI 通过命令行或交互式会话触发 agents 和 skills：
 
+**命令行方式**：
 ```bash
-# 使用 Agent
-claude -p "写一篇关于 AI 的博客文章"  # 触发 content-marketer
-claude -p "翻译这段文字到英文"      # 触发 translate
+iflow -p "写一篇关于 AI 的博客文章" --stream           # 触发 content-marketer
+iflow -p "翻译这段文字到英文" --stream                # 触发 translate
+iflow -p "帮我学习提示词工程" --stream                # 触发 prompt-learning
+iflow -p "分析这个提示词有什么问题" --stream           # 触发 prompt-learning
+```
 
-# 使用 Skill
-claude -p "帮我学习提示词工程"      # 触发 prompt-learning
-claude -p "分析这个提示词有什么问题" # 触发 prompt-learning
+**交互式会话方式**：
+```bash
+# 打开 iFlow
+iflow
+
+# 在会话中直接输入提示词
+写一篇关于 AI 的博客文章           # 触发 content-marketer
+翻译这段文字到英文                # 触发 translate
+帮我学习提示词工程                # 触发 prompt-learning
+分析这个提示词有什么问题           # 触发 prompt-learning
 ```
 
 ### 添加新配置
