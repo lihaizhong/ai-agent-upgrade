@@ -1,10 +1,15 @@
 # AI Agent 学习项目
 
-AI Agent 学习之路，主要包含提示词工程、上下文工程等技术探索。
+专注于提示词工程和上下文工程的实践项目，基于 iFlow CLI 进行探索和学习。
 
 ## 📚 学习资源
 
 - [提示工程指南](https://www.promptingguide.ai/zh) - 系统学习提示词工程
+
+## 🗺️ 学习路径
+
+- [技术思维导图总览](notebook/00-prompt-techniques-overview.md) - 所有提示词技术的思维导图，从基础到前沿
+- [学习计划](docs/learning-plan.md) - 详细的学习计划和建议
 
 ## 🚀 快速开始
 
@@ -34,7 +39,11 @@ iflow
 
 ## 📖 笔记分类
 
-### 基础技术（入门）
+### 📊 技术总览
+
+- [00 - 技术思维导图总览](notebook/00-prompt-techniques-overview.md) - 所有技术的思维导图、演进路径、学习路径建议
+
+### 🟢 基础技术（入门）
 
 - [01 - 零样本提示](notebook/01-zero-shot-prompting.md) - 入门 | 提示技术 | 2022 | Wei et al.
 - [02 - 少样本提示](notebook/02-few-shot-prompting.md) - 入门 | 提示技术 | 2020 | Brown et al.
