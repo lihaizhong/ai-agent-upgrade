@@ -12,19 +12,12 @@
 
 ```
 ai-agent-upgrade/
-├── .iflow/
-│   ├── agents/               # 智能体定义
-│   │   ├── content-marketer.md    # 内容营销
-│   │   ├── novel-creator.md       # 小说创作
-│   │   ├── perception-agent.md    # 内容感知分析
-│   │   └── translate.md           # 多语言翻译
-│   └── skills/               # 技能定义
-│       ├── doc-coauthoring/       # 文档协作
-│       ├── internal-comms/        # 内部沟通
-│       └── prompt-learning/       # 提示词工程学习
-├── AGENTS.md               # 本文件
-├── README.md               # 项目说明
-└── LICENSE                 # Apache 2.0
+├── .iflow/               # iFlow 配置目录
+├── AGENTS.md             # 本文件
+├── README.md             # 项目说明
+├── docs/                 # 文档
+├── exam-result/          # 考试记录
+└── notebook/             # 学习笔记
 ```
 
 ## Agents
