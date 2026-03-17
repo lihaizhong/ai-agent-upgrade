@@ -1,10 +1,3 @@
----
-title: 常见问题 FAQ
-version: 1.0.0
-skill_version: 2.0.0
-last_updated: 2026-03-14
----
-
 # 常见问题 FAQ
 
 本文档收集了关于提示词工程学习和实践中的常见问题及其解答。

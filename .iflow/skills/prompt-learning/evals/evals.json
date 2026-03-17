@@ -1,0 +1,58 @@
+{
+  "skill_name": "prompt-learning",
+  "version": "2.6.0",
+  "evals": [
+    {
+      "id": 1,
+      "name": "初级练习题生成",
+      "prompt": "做一道初级练习题",
+      "expected_output": "生成一个初级难度的练习题，包含难度、类别、目标、任务、要求字段",
+      "assertions": [
+        {"type": "contains", "value": "初级"},
+        {"type": "contains", "value": "难度"},
+        {"type": "contains", "value": "任务"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "中级练习题生成",
+      "prompt": "出一道中级练习题",
+      "expected_output": "生成一个中级难度的练习题，涉及2-3个提示词模式组合",
+      "assertions": [
+        {"type": "contains", "value": "中级"},
+        {"type": "contains", "value": "难度"},
+        {"type": "contains", "value": "任务"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "高级练习题生成",
+      "prompt": "我要高级练习题",
+      "expected_output": "生成一个高级难度的练习题，涉及多模式组合和复杂场景",
+      "assertions": [
+        {"type": "contains", "value": "高级"},
+        {"type": "contains", "value": "难度"},
+        {"type": "contains", "value": "任务"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "难度确认机制",
+      "prompt": "做一道练习题",
+      "expected_output": "询问用户选择难度级别（初级/中级/高级/随机）",
+      "assertions": [
+        {"type": "contains_any", "value": ["初级", "中级", "高级", "随机"]},
+        {"type": "contains_any", "value": ["选择", "难度", "级别"]}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "提示词分析",
+      "prompt": "分析这个提示词：帮我写个函数",
+      "expected_output": "分析提示词问题，给出改进建议",
+      "assertions": [
+        {"type": "contains_any", "value": ["问题", "改进", "建议", "优化"]}
+      ]
+    }
+  ]
+}
