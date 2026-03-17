@@ -1,28 +1,47 @@
 {
-    "mcpServers": {
-        "context7": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "@iflow-mcp/context7-mcp@1.0.0"
-            ],
-            "values": {}
-        },
-        "sequential-thinking": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "@iflow-mcp/server-sequential-thinking@0.6.2"
-            ],
-            "values": {}
-        },
-        "chrome-devtools": {
-            "description": "Chrome浏览器自动化工具，支持页面操作、性能分析、网络监控等功能",
-            "command": "npx",
-            "args": [
-                "-y",
-                "@iflow-mcp/chrome-devtools-mcp"
-            ]
-        }
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@iflow-mcp/context7-mcp@1.0.0"
+      ],
+      "values": {}
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@iflow-mcp/server-sequential-thinking@0.6.2"
+      ],
+      "values": {}
+    },
+    "chrome-devtools": {
+      "description": "Chrome浏览器自动化工具，支持页面操作、性能分析、网络监控等功能",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@iflow-mcp/chrome-devtools-mcp"
+      ]
+    },
+    "civil-code-of-china-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@iflow-mcp/civil-code-of-china-mcp"
+      ],
+      "values": {}
+    },
+    "Finance MCP": {
+      "command": "npx",
+      "args": [
+        "--from",
+        "@iflow-mcp/finance-mcp",
+        "finance-mcp",
+        "--transport",
+        "stdio"
+      ],
+      "values": {}
     }
+  }
 }
