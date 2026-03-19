@@ -17,7 +17,8 @@ ai-agent-upgrade/
 ├── README.md             # 项目说明
 ├── docs/                 # 文档
 ├── exam-result/          # 考试记录
-└── notebook/             # 学习笔记
+├── notebook/             # 学习笔记
+└── practice/             # 实践项目
 ```
 
 ## Agents
@@ -35,7 +36,8 @@ ai-agent-upgrade/
 |------|------|----------|
 | **doc-coauthoring** | 结构化文档协作 | 提案、技术规范、决策文档 |
 | **internal-comms** | 内部沟通内容 | 3P 更新、公司通讯、FAQ、状态报告 |
-| **prompt-learning** | 提示词工程学习 | 学习基础知识、分析改进提示词、获取练习题、评估提示词质量 |
+| **poetry** | 中国古诗词检索展示 | 按作者、标题、关键词检索唐诗宋词等 |
+| **prompt-learning** | 提示词工程学习 | 学习模式（17门课程）、考试模式（四级难度）、分析改进提示词 |
 
 ## 使用方式
 
@@ -47,8 +49,9 @@ ai-agent-upgrade/
 ```bash
 iflow -p "写一篇关于 AI 的博客文章" --stream           # 触发 content-marketer
 iflow -p "翻译这段文字到英文" --stream                # 触发 translate
+iflow -p "展示李白的静夜思" --stream                  # 触发 poetry
 iflow -p "帮我学习提示词工程" --stream                # 触发 prompt-learning
-iflow -p "分析这个提示词有什么问题" --stream           # 触发 prompt-learning
+iflow -p "我要参加提示词考试" --stream                # 触发 prompt-learning 考试模式
 ```
 
 **交互式会话方式**：
@@ -59,8 +62,9 @@ iflow
 # 在会话中直接输入提示词
 写一篇关于 AI 的博客文章           # 触发 content-marketer
 翻译这段文字到英文                # 触发 translate
+展示李白的静夜思                  # 触发 poetry
 帮我学习提示词工程                # 触发 prompt-learning
-分析这个提示词有什么问题           # 触发 prompt-learning
+我要参加提示词考试                # 触发 prompt-learning 考试模式
 ```
 
 ### 添加新配置
