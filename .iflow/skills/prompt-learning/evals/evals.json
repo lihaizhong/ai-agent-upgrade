@@ -1,57 +1,117 @@
 {
   "skill_name": "prompt-learning",
-  "version": "2.6.0",
+  "version": "3.0.0",
   "evals": [
     {
       "id": 1,
-      "name": "初级练习题生成",
-      "prompt": "做一道初级练习题",
-      "expected_output": "生成一个初级难度的练习题，包含难度、类别、目标、任务、要求字段",
+      "name": "模式选择机制",
+      "prompt": "我想学习提示词工程",
+      "expected_output": "询问用户选择学习模式或考试模式",
       "assertions": [
-        {"type": "contains", "value": "初级"},
-        {"type": "contains", "value": "难度"},
-        {"type": "contains", "value": "任务"}
+        {"type": "contains_any", "value": ["学习模式", "考试模式", "学习", "考试"]}
       ]
     },
     {
       "id": 2,
-      "name": "中级练习题生成",
-      "prompt": "出一道中级练习题",
-      "expected_output": "生成一个中级难度的练习题，涉及2-3个提示词模式组合",
+      "name": "学习模式-课程选择",
+      "prompt": "学习",
+      "expected_output": "展示课程列表供用户选择",
       "assertions": [
-        {"type": "contains", "value": "中级"},
-        {"type": "contains", "value": "难度"},
-        {"type": "contains", "value": "任务"}
+        {"type": "contains", "value": "课程"},
+        {"type": "contains_any", "value": ["零样本", "少样本", "思维链"]}
       ]
     },
     {
       "id": 3,
-      "name": "高级练习题生成",
-      "prompt": "我要高级练习题",
-      "expected_output": "生成一个高级难度的练习题，涉及多模式组合和复杂场景",
+      "name": "学习模式-课程内容展示",
+      "prompt": "我想学习零样本提示",
+      "expected_output": "展示零样本提示的课程内容",
       "assertions": [
-        {"type": "contains", "value": "高级"},
-        {"type": "contains", "value": "难度"},
-        {"type": "contains", "value": "任务"}
+        {"type": "contains", "value": "零样本"},
+        {"type": "contains_any", "value": ["核心概念", "示例", "适用场景"]}
       ]
     },
     {
       "id": 4,
-      "name": "难度确认机制",
-      "prompt": "做一道练习题",
-      "expected_output": "询问用户选择难度级别（初级/中级/高级/随机）",
+      "name": "考试模式-难度选择",
+      "prompt": "考试",
+      "expected_output": "询问选择考试难度",
       "assertions": [
-        {"type": "contains_any", "value": ["初级", "中级", "高级", "随机"]},
-        {"type": "contains_any", "value": ["选择", "难度", "级别"]}
+        {"type": "contains", "value": "难度"},
+        {"type": "contains_any", "value": ["初级", "中级", "高级", "专家"]}
       ]
     },
     {
       "id": 5,
+      "name": "考试模式-初级题目生成",
+      "prompt": "我要初级考试",
+      "expected_output": "生成初级难度的考试题目",
+      "assertions": [
+        {"type": "contains", "value": "初级"},
+        {"type": "contains_any", "value": ["题目", "任务", "作答"]}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "考试模式-中级题目生成",
+      "prompt": "开始中级考试",
+      "expected_output": "生成中级难度的考试题目，涉及技术组合",
+      "assertions": [
+        {"type": "contains", "value": "中级"}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "考试模式-高级题目生成",
+      "prompt": "我要参加高级考试",
+      "expected_output": "生成高级难度的考试题目，多技术组合",
+      "assertions": [
+        {"type": "contains", "value": "高级"}
+      ]
+    },
+    {
+      "id": 8,
+      "name": "考试模式-专家题目生成",
+      "prompt": "挑战专家级考试",
+      "expected_output": "生成专家级难度的考试题目，前沿技术",
+      "assertions": [
+        {"type": "contains", "value": "专家"}
+      ]
+    },
+    {
+      "id": 9,
+      "name": "考试模式-随机模式",
+      "prompt": "随机难度考试",
+      "expected_output": "从中级/高级/专家中随机选择难度",
+      "assertions": [
+        {"type": "contains_any", "value": ["中级", "高级", "专家"]}
+      ]
+    },
+    {
+      "id": 10,
+      "name": "互动问答-概念解释",
+      "prompt": "零样本提示和少样本提示有什么区别？",
+      "expected_output": "用通俗语言解释两者区别",
+      "assertions": [
+        {"type": "contains_any", "value": ["示例", "例子", "区别"]}
+      ]
+    },
+    {
+      "id": 11,
       "name": "提示词分析",
       "prompt": "分析这个提示词：帮我写个函数",
-      "expected_output": "分析提示词问题，给出改进建议",
+      "expected_output": "分析提示词问题并给出改进建议",
       "assertions": [
         {"type": "contains_any", "value": ["问题", "改进", "建议", "优化"]}
+      ]
+    },
+    {
+      "id": 12,
+      "name": "考试评分-即时反馈",
+      "prompt": "初级考试第一题我的答案是：这是一个零样本提示，直接让AI写一个排序函数。\n\n题目是：设计一个提示词让AI对一个数字列表排序",
+      "expected_output": "对答案进行评分并提供讲解",
+      "assertions": [
+        {"type": "contains_any", "value": ["评分", "分", "讲解", "建议"]}
       ]
     }
   ]
