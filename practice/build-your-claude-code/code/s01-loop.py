@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 The Agent Loop
 
@@ -20,6 +19,12 @@ The entire secret of an AI coding agent in one pattern:
     This is the core loop: feed tool results back to the model
     until the model decides to stop. Production agents layer policy,
     hooks, and lifecycle controls on top.
+
+example:
+    1. Create a file called hello.py in test_workspace that prints "Hello, World!"
+    2. List all Python files in this directory
+    3. What is the current git branch?
+    4. Create a directory called test_output and write 3 files in it
 """
 
 import os
@@ -34,7 +39,7 @@ load_dotenv(override=True)
 
 client = Anthropic(
     base_url=os.getenv("ANTHROPIC_BASE_URL"),
-    api_key=os.getenv("ANTHROPIC_AUTH_TOKEN", "dummy-key")
+    api_key=os.getenv("ANTHROPIC_AUTH_TOKEN", "dummy-key"),
 )
 MODEL = os.environ["MODEL_ID"]
 
