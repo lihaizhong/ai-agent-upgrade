@@ -29,7 +29,7 @@ example:
 
 import os
 import subprocess
-from typing import cast
+from typing import List, cast
 
 from anthropic import Anthropic
 from anthropic.types import ToolParam, ToolUseBlock
@@ -46,7 +46,7 @@ MODEL = os.environ["MODEL_ID"]
 SYSTEM = f"You are a coding agent at {os.getcwd()}. Use bash to solve tasks. Act, don't explain."
 
 TOOLS = cast(
-    list[ToolParam],
+    List[ToolParam],
     [
         {
             "name": "bash",

@@ -26,7 +26,7 @@ example:
 import os
 import subprocess
 from pathlib import Path
-from typing import cast
+from typing import List, cast
 
 from anthropic import Anthropic
 from anthropic.types import ToolParam, ToolUseBlock
@@ -91,7 +91,7 @@ def run_write(path: str, content: str) -> str:
         return f"Error: {e}"
 
 
-def run_edit(path: str, old_text: str, new_text: str) -> str:
+def run_edit(path: str, old_text: str, new_text: str) -> str | None:
     try:
         fp = safe_path(path)
         content = fp.read_text()
@@ -111,7 +111,7 @@ TOOL_HANDLERS = {
 }
 
 TOOLS = cast(
-    list[ToolParam],
+    List[ToolParam],
     [
         {
             "name": "bash",
