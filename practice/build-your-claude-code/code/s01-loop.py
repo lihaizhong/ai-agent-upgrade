@@ -99,7 +99,10 @@ def agent_loop(messages: list):
         messages.append({"role": "user", "content": results})
 
 
-if __name__ == "__main__":
+def main():
+    """Main entry point for the s01-loop agent"""
+    print("\033[33mAgent Loop - s01: Basic Loop\033[0m")
+    print("Type 'q', 'exit', or press Enter to quit\n")
     history = []
     while True:
         try:
@@ -116,3 +119,7 @@ if __name__ == "__main__":
                 if hasattr(block, "text"):
                     print(block.text)
         print()
+
+
+if __name__ == "__main__":
+    main()
