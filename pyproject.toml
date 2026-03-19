@@ -5,7 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "anthropic>=0.85.0",
     "deepagents>=0.4.11",
     "langchain-daytona>=0.0.4",
+    "python-dotenv>=1.2.2",
     "slack-sdk>=3.41.0",
 ]

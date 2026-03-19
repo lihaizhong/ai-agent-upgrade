@@ -13,12 +13,20 @@
 ```
 ai-agent-upgrade/
 ├── .iflow/               # iFlow 配置目录
+├── .venv/                # Python 虚拟环境（使用 uv 管理）
 ├── AGENTS.md             # 本文件
 ├── README.md             # 项目说明
 ├── docs/                 # 文档
 ├── exam-result/          # 考试记录
 ├── notebook/             # 学习笔记
 └── practice/             # 实践项目
+    ├── build-custom-rag-agent/
+    ├── build-data-analysis-agent/
+    ├── build-rag-agent/
+    ├── build-semantic-search-engine/
+    ├── build-sql-agent/
+    ├── build-voice-agent/
+    └── build-your-claude-code/
 ```
 
 ## Agents
@@ -39,7 +47,68 @@ ai-agent-upgrade/
 | **poetry** | 中国古诗词检索展示 | 按作者、标题、关键词检索唐诗宋词等 |
 | **prompt-learning** | 提示词工程学习 | 学习模式（17门课程）、考试模式（四级难度）、分析改进提示词 |
 
+## 实践项目
+
+| 项目名称 | 说明 | 技术栈 |
+|---------|------|--------|
+| **build-your-claude-code** | 构建 Claude 风格的 AI 编码助手 | Python, Anthropic API |
+| **build-rag-agent** | 构建 RAG（检索增强生成）Agent | Python, 向量数据库 |
+| **build-custom-rag-agent** | 构建自定义 RAG Agent | Python, LangChain |
+| **build-data-analysis-agent** | 构建数据分析 Agent | Python, Pandas |
+| **build-semantic-search-engine** | 构建语义搜索引擎 | Python, 向量检索 |
+| **build-sql-agent** | 构建 SQL 查询 Agent | Python, 数据库 |
+| **build-voice-agent** | 构建语音交互 Agent | Python, 语音识别/合成 |
+
+### 环境配置
+
+项目使用 `uv` 管理 Python 依赖和虚拟环境：
+
+```bash
+# 安装依赖
+uv sync
+
+# 添加新依赖
+uv add <package-name>
+
+# 运行脚本
+.venv/bin/python <script.py>
+```
+
+### 实践项目示例
+
+**build-your-claude-code** 项目展示了 AI Agent 的核心循环模式：
+
+```python
+while stop_reason == "tool_use":
+    response = LLM(messages, tools)
+    execute tools
+    append results
+```
+
+运行方式：
+
+```bash
+cd practice/build-your-claude-code
+.venv/bin/python main.py
+```
+
 ## 使用方式
+
+### 环境准备
+
+```bash
+# 克隆项目
+git clone <repo-url>
+cd ai-agent-upgrade
+
+# 安装依赖（使用 uv）
+uv sync
+
+# 激活虚拟环境（可选，直接使用 .venv/bin/python 即可）
+source .venv/bin/activate  # Linux/macOS
+# 或
+.venv\Scripts\activate  # Windows
+```
 
 ### 快速开始
 
@@ -85,3 +154,5 @@ iflow
 2. 遵循 Apache 2.0 许可证
 3. 更新配置时同步更新本文档
 4. 使用 `.editorconfig` 定义的代码风格
+5. 添加新依赖时使用 `uv add` 而非 `pip install`
+6. 运行实践项目时确保使用虚拟环境中的 Python 解释器
