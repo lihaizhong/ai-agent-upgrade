@@ -24,7 +24,32 @@
 
 ## 难度选择
 
-用户选择考试模式后，展示难度选项：
+用户选择考试模式后，让用户选择难度。
+
+### 交互方式
+
+#### 方式 A：Question 工具（优先）
+
+```json
+{
+  "questions": [
+    {
+      "header": "选择考试难度",
+      "question": "欢迎进入考试模式！请选择考试难度：",
+      "options": [
+        {"label": "初级", "description": "单一技术，场景简单"},
+        {"label": "中级", "description": "技术组合，需要推理"},
+        {"label": "高级", "description": "多技术组合，场景复杂"},
+        {"label": "专家", "description": "前沿技术，系统思维"},
+        {"label": "随机", "description": "中级及以上随机选择"}
+      ],
+      "multiple": false
+    }
+  ]
+}
+```
+
+#### 方式 B：文本交互（降级方案）
 
 ```
 欢迎进入考试模式！
