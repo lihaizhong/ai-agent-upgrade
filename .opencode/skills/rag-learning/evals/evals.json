@@ -1,0 +1,35 @@
+{
+  "skill_name": "rag-learning",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我想学习 RAG 搭建，从基础开始",
+      "expected_output": "应该展示学习模式课程列表，引导用户选择课程",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我要搭建一个客服机器人 RAG 系统",
+      "expected_output": "应该进入实战模式，引导用户选择技术栈并搭建系统",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "如何选择 Embedding 模型？",
+      "expected_output": "应该展示 Embedding 模型选择指南和推荐",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "我想了解向量数据库有哪些选择",
+      "expected_output": "应该介绍主流向量数据库及选型建议",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "RAG 和微调有什么区别？什么时候用哪个？",
+      "expected_output": "应该解释 RAG vs 微调的区别和适用场景",
+      "files": []
+    }
+  ]
+}
