@@ -1,0 +1,21 @@
+{
+  "task": "用户说「我要学习提示词」",
+  "skill": "prompt-learning",
+  "execution_sequence": [
+    {
+      "step": 1,
+      "type": "tool_call",
+      "tool": "question",
+      "input": {
+        "message": "欢迎使用提示词工程学习系统！\n\n请选择您想要的模式：\n\n📚 学习模式 - 系统学习提示词技术，互动问答，循序渐进\n📝 考试模式 - 挑战自我，即时反馈，获取能力评估\n\n请输入「学习」或「考试」选择模式："
+      },
+      "description": "询问用户选择学习模式或考试模式"
+    }
+  ],
+  "first_action": "question tool call (no text output before)",
+  "notes": [
+    "在调用 question 工具之前，agent 没有输出任何文字",
+    "第一个动作是直接调用 question 工具询问用户选择模式",
+    "根据 skill 指令，这是强制要求：'当用户触发本技能时，必须首先询问用户选择模式'"
+  ]
+}

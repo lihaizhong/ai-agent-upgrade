@@ -1,0 +1,12 @@
+{
+  "eval_id": 0,
+  "eval_name": "question-tool-trigger",
+  "prompt": "我要学习提示词",
+  "assertions": [
+    {
+      "name": "first_action_is_question",
+      "description": "第一个动作必须是调用 question 工具",
+      "check": "first_tool_call_is_question"
+    }
+  ]
+}

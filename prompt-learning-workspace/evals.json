@@ -1,0 +1,11 @@
+{
+  "skill_name": "prompt-learning",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我要学习提示词",
+      "expected_output": "第一个动作应该是调用 question 工具，而不是先输出文字",
+      "files": []
+    }
+  ]
+}
