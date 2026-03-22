@@ -17,44 +17,74 @@ while stop_reason == "tool_use":
 
 ## 学习路径
 
-本项目对应 [Learn Claude Code](https://learn.shareai.run/zh/timeline/) 的 12 个渐进式课程：
+Learn Claude Code 将 Agent 分解为 5 个正交关注点（[架构层详解](https://learn.shareai.run/zh/layers/)）：
+
+### L1 工具与执行
+
+Agent 能做什么。基础层：工具赋予模型与外部世界交互的能力。
 
 | 课程 | 主题 | 行数 | 说明 |
 |------|------|------|------|
-| **S01** | [The Agent Loop](https://learn.shareai.run/zh/s01/) | 84 | 最小 Agent 内核：while loop + 一个工具 |
-| **S02** | [Tools](https://learn.shareai.run/zh/s02/) | 120 | 循环不变，新工具注册到调度映射 |
+| **S01** | [Agent 循环](https://learn.shareai.run/zh/s01/) | 84 | 最小 Agent 内核：while loop + 一个工具 |
+| **S02** | [工具](https://learn.shareai.run/zh/s02/) | 120 | 循环不变，新工具注册到调度映射 |
+
+### L2 规划与协调
+
+如何组织工作。从简单的待办列表到跨 Agent 共享的依赖感知任务板。
+
+| 课程 | 主题 | 行数 | 说明 |
+|------|------|------|------|
 | **S03** | [TodoWrite](https://learn.shareai.run/zh/s03/) | 176 | 无计划则漂移，先列步骤再执行 |
-| **S04** | [Subagents](https://learn.shareai.run/zh/s04/) | 151 | 子代理使用独立 messages[] |
-| **S05** | [Skills](https://learn.shareai.run/zh/s05/) | 187 | 按需注入知识，而非预置于 system prompt |
-| **S06** | [Compact](https://learn.shareai.run/zh/s06/) | 205 | 三层压缩策略，支持无限会话 |
-| **S07** | [Tasks](https://learn.shareai.run/zh/s07/) | 207 | 基于文件的任务图，编排多 Agent 工作 |
-| **S08** | [Background Tasks](https://learn.shareai.run/zh/s08/) | 198 | 后台任务，Agent 提前思考 |
-| **S09** | [Agent Teams](https://learn.shareai.run/zh/s09/) | 348 | 一个 Agent 无法完成时，通过异步邮箱委托 |
-| **S10** | [Team Protocols](https://learn.shareai.run/zh/s10/) | 419 | 请求-响应模式驱动所有团队协商 |
-| **S11** | [Autonomous Agents](https://learn.shareai.run/zh/s11/) | 499 | Agent 自主扫描任务板并认领，无需分配 |
-| **S12** | [Worktree + Task Isolation](https://learn.shareai.run/zh/s12/) | 694 | 每个工作树独立目录，任务管理目标 |
+| **S04** | [子 Agent](https://learn.shareai.run/zh/s04/) | 151 | 子代理使用独立 messages[] |
+| **S05** | [技能](https://learn.shareai.run/zh/s05/) | 187 | 按需注入知识，而非预置于 system prompt |
+| **S07** | [任务系统](https://learn.shareai.run/zh/s07/) | 207 | 基于文件的任务图，编排多 Agent 工作 |
 
-## 架构层次
+### L3 内存管理
 
-Learn Claude Code 将 Agent 分解为 5 个正交关注点：
+在上下文限制内保持记忆。压缩策略让 Agent 可以无限工作而不失去连贯性。
 
-| 层次 | 课程 | 说明 |
-|------|------|------|
-| **Tools & Execution** | S01, S02 | 工具注册与执行 |
-| **Planning & Coordination** | S03, S04, S05, S07 | 任务规划、子代理、技能 |
-| **Memory Management** | S06 | 上下文压缩 |
-| **Concurrency** | S08 | 后台任务 |
-| **Collaboration** | S09, S10, S11, S12 | 多 Agent 协作 |
+| 课程 | 主题 | 行数 | 说明 |
+|------|------|------|------|
+| **S06** | [上下文压缩](https://learn.shareai.run/zh/s06/) | 205 | 三层压缩策略，支持无限会话 |
+
+### L4 并发
+
+非阻塞执行。后台线程和通知总线实现并行工作。
+
+| 课程 | 主题 | 行数 | 说明 |
+|------|------|------|------|
+| **S08** | [后台任务](https://learn.shareai.run/zh/s08/) | 198 | 后台任务，Agent 提前思考 |
+
+### L5 协作
+
+多 Agent 协作。团队、消息传递和能独立思考的自主队友。
+
+| 课程 | 主题 | 行数 | 说明 |
+|------|------|------|------|
+| **S09** | [Agent 团队](https://learn.shareai.run/zh/s09/) | 348 | 一个 Agent 无法完成时，通过异步邮箱委托 |
+| **S10** | [团队协议](https://learn.shareai.run/zh/s10/) | 419 | 请求-响应模式驱动所有团队协商 |
+| **S11** | [自主 Agent](https://learn.shareai.run/zh/s11/) | 499 | Agent 自主扫描任务板并认领，无需分配 |
+| **S12** | [Worktree + 任务隔离](https://learn.shareai.run/zh/s12/) | 694 | 每个工作树独立目录，任务管理目标 |
 
 ## 目录结构
 
 ```
 build-your-claude-code/
+├── README.md            # 项目说明文档
 ├── main.py              # 主入口，提供 Loop 选择菜单
 ├── code/
-│   ├── s01-loop.py      # S01: 基础 Loop - 只有 bash 工具
-│   ├── s02-loop.py      # S02: 扩展 Loop - 添加文件读写编辑工具
-│   └── s03-loop.py      # S03: TodoWrite - 添加任务规划能力
+│   ├── s01-loop.py      # S01: The Agent Loop - 最小 Agent 内核
+│   ├── s02-loop.py      # S02: Tools - 工具注册与调度
+│   ├── s03-loop.py      # S03: TodoWrite - 任务规划能力
+│   ├── s04-loop.py      # S04: Subagents - 子代理支持
+│   ├── s05-loop.py      # S05: Skills - 动态技能注入
+│   ├── s06-loop.py      # S06: Compact - 上下文压缩
+│   ├── s07-loop.py      # S07: Tasks - 任务图编排
+│   ├── s08-loop.py      # S08: Background Tasks - 后台任务
+│   ├── s09-loop.py      # S09: Agent Teams - 多 Agent 协作
+│   ├── s10-loop.py      # S10: Team Protocols - 团队协议
+│   ├── s11-loop.py      # S11: Autonomous Agents - 自主 Agent
+│   └── s12-loop.py      # S12: Worktree + Task Isolation - 工作树隔离
 ├── test_workspace/      # 测试工作目录
 └── test_output/         # 测试输出目录
 ```
@@ -91,8 +121,7 @@ MODEL_ID=claude-sonnet-4-20250514
 ### 运行主程序
 
 ```bash
-cd practice/build-your-claude-code
-.venv/bin/python main.py
+source .venv/bin/activate && cd practice/build-your-claude-code && python main.py && cd -
 ```
 
 程序会显示一个菜单让你选择要运行的 Loop 实现：
@@ -191,37 +220,85 @@ TOOL_HANDLERS = {
 
 **特点**：
 - Agent 没有计划就会漂移，先列步骤再执行
-- 添加 TodoWrite 工具来维护任务列表
-- 支持标记任务完成
+- 添加 `todo` 工具来维护任务列表
+- 支持标记任务完成（pending/in_progress/completed）
+- nag reminder：3 轮未更新任务时自动提醒
 
 **新工具**：
-- `todo_write` - 写入任务列表
-- `todo_read` - 读取当前任务列表
+- `todo` - 更新任务列表（items: id, text, status）
+
+**核心实现**：
+```python
+class TodoManager:
+    def update(self, items: list) -> str: ...
+    
+# 注入提醒机制
+if rounds_since_todo >= 3:
+    results.insert(1, {"type": "text", "text": "<reminder>Update your todos.</reminder>"})
+```
 
 **关键洞察**：规划与执行分离，Agent 先思考要做什么，再逐步执行。
 
 **示例任务**：
-1. 让 Agent 创建一个简单的计算器程序
-2. 观察 Agent 如何先创建任务列表
-3. 逐步执行每个子任务
+1. 重构 test_workspace/hello.py：添加类型提示、docstrings、main guard
+2. 创建 Python 包（__init__.py, utils.py, tests/test_utils.py）
 
-### S04+ Loop - Subagents（待实现）
+### S04 Loop - Subagents
+
+**文件**：`code/s04-loop.py`
 
 **对应课程**：[S04: Subagents](https://learn.shareai.run/zh/s04/)
 
-**计划特性**：
-- 子代理使用独立的 messages[]
-- 保持主对话干净
-- 支持并行执行子任务
+**特点**：
+- 子代理使用独立的 messages[]，上下文隔离
+- 通过 `task` 工具委托子任务
+- 只返回摘要给主 Agent，主对话保持干净
 
-### S05+ Loop - Skills（待实现）
+**新工具**：
+- `task` - 启动子代理（prompt, description）
+
+**核心实现**：
+```python
+def run_subagent(prompt):
+    sub_messages = [{"role": "user", "content": prompt}]  # fresh context
+    for _ in range(30):
+        response = client.messages.create(model=MODEL, messages=sub_messages, ...)
+        # ... execute tools
+    return text_parts  # Only summary returns to parent
+```
+
+**关键洞察**：进程隔离天然带来上下文隔离。
+
+**示例任务**：
+1. 委托子代理探索 test_workspace 使用的测试框架
+2. 并行读取多个文件并汇总结果
+
+### S05 Loop - Skills
+
+**文件**：`code/s05-loop.py`
 
 **对应课程**：[S05: Skills](https://learn.shareai.run/zh/s05/)
 
-**计划特性**：
-- 按需注入知识，而非预置于 system prompt
-- 通过 tool_result 动态加载技能
-- 减少上下文膨胀
+**特点**：
+- 两层技能注入：Layer 1 元数据 + Layer 2 按需加载
+- SkillLoader 扫描 skills/ 目录下的 SKILL.md
+- 解析 YAML frontmatter 获取元数据
+
+**新工具**：
+- `load_skill` - 按名称加载技能内容
+
+**核心实现**：
+```python
+class SkillLoader:
+    def get_descriptions(self) -> str:  # Layer 1: for system prompt
+    def get_content(self, name: str) -> str:  # Layer 2: full body in tool_result
+```
+
+**关键洞察**：不要把所有知识都塞进 system prompt，按需加载。
+
+**示例任务**：
+1. 查看有哪些可用技能
+2. 加载 agent-builder 或 mcp-builder 技能并使用
 
 ### S06+ Loop - Compact（待实现）
 
@@ -231,6 +308,22 @@ TOOL_HANDLERS = {
 - 三层压缩策略
 - 支持无限会话
 - 智能摘要和历史压缩
+
+### S07+ Loop - Tasks（待实现）
+
+**对应课程**：[S07: Tasks](https://learn.shareai.run/zh/s07/)
+
+**计划特性**：
+- 基于文件的任务图
+- 编排多 Agent 工作流
+
+### S08+ Loop - Background Tasks（待实现）
+
+**对应课程**：[S08: Background Tasks](https://learn.shareai.run/zh/s08/)
+
+**计划特性**：
+- 后台任务执行
+- Agent 提前思考
 
 ## 核心原理
 
