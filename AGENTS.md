@@ -1,6 +1,6 @@
 # AI Agent 学习项目
 
-专注于提示词工程和上下文工程的实践项目，基于 iFlow CLI 进行探索和学习。
+专注于提示词工程和上下文工程的实践项目。
 
 ## 核心方向
 
@@ -12,7 +12,6 @@
 
 ```
 ai-agent-upgrade/
-├── .iflow/               # iFlow 配置目录
 ├── .venv/                # Python 虚拟环境（使用 uv 管理）
 ├── AGENTS.md             # 本文件
 ├── README.md             # 项目说明
@@ -112,36 +111,24 @@ source .venv/bin/activate  # Linux/macOS
 
 ### 快速开始
 
-使用 iFlow CLI 通过命令行或交互式会话触发 agents 和 skills：
+本项目包含预配置的 Agents 和 Skills，可直接使用：
 
-**命令行方式**：
-```bash
-iflow -p "写一篇关于 AI 的博客文章" --stream           # 触发 content-marketer
-iflow -p "翻译这段文字到英文" --stream                # 触发 translate
-iflow -p "展示李白的静夜思" --stream                  # 触发 poetry
-iflow -p "帮我学习提示词工程" --stream                # 触发 prompt-learning
-iflow -p "我要参加提示词考试" --stream                # 触发 prompt-learning 考试模式
-```
+**Agents**：
+- `content-marketer` - 撰写营销内容
+- `novel-creator` - 创作爽文小说
+- `perception-agent` - 内容感知分析
+- `translate` - 多语言翻译
 
-**交互式会话方式**：
-```bash
-# 打开 iFlow
-iflow
-
-# 在会话中直接输入提示词
-写一篇关于 AI 的博客文章           # 触发 content-marketer
-翻译这段文字到英文                # 触发 translate
-展示李白的静夜思                  # 触发 poetry
-帮我学习提示词工程                # 触发 prompt-learning
-我要参加提示词考试                # 触发 prompt-learning 考试模式
-```
+**Skills**：
+- `doc-coauthoring` - 结构化文档协作
+- `internal-comms` - 内部沟通内容
+- `poetry` - 中国古诗词检索展示
+- `prompt-learning` - 提示词工程学习系统
 
 ### 添加新配置
 
-在 `.iflow/` 目录下：
-
-- **Agent**：在 `agents/` 创建 `.md` 文件，遵循 YAML 前置元数据格式
-- **Skill**：在 `skills/` 创建目录和 `SKILL.md` 文件，参考现有配置
+- **Agent**：在 `.opencode/agents/` 创建 `.md` 文件
+- **Skill**：在 `.opencode/skills/` 创建目录和 `SKILL.md` 文件
 
 ## 资源
 
