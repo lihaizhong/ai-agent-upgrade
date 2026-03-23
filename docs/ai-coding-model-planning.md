@@ -48,10 +48,7 @@ oh-my-opencode 的 Agent 是实际执行工作的角色，映射如下：
 {
   "disabled_hooks": ["no-hephaestus-non-gpt"],
   "agents": {
-    "sisyphus": { 
-      "model": "opencode-go/kimi-k2.5",
-      "ultrawork": { "model": "opencode-go/kimi-k2.5" }
-    },
+    "sisyphus": { "model": "opencode-go/kimi-k2.5" },
     "sisyphus-junior": { "model": "opencode-go/kimi-k2.5" },
     "metis": { "model": "opencode-go/glm-5" },
     "momus": { "model": "opencode-go/glm-5" },
@@ -144,10 +141,7 @@ Category 是 Sisyphus 调度子任务时的路由标签：
   "disabled_hooks": ["no-hephaestus-non-gpt"],
   
   "agents": {
-    "sisyphus": { 
-      "model": "opencode-go/kimi-k2.5",
-      "ultrawork": { "model": "opencode-go/kimi-k2.5" }
-    },
+    "sisyphus": { "model": "opencode-go/kimi-k2.5" },
     "sisyphus-junior": { "model": "opencode-go/kimi-k2.5" },
     "metis": { "model": "opencode-go/glm-5" },
     "momus": { "model": "opencode-go/glm-5" },

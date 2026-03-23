@@ -268,7 +268,7 @@ def run_analysis(agent, query: str, thread_id: Optional[str] = None):
 def main():
     """主函数。"""
     print("=" * 60)
-    print("🚀 LangChain DeepAgent 数据分析 Agent")
+    print("🚀 LangChain DeepAgent Data Analysis Agent")
     print("=" * 60)
 
     setup_environment()
