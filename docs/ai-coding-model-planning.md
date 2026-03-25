@@ -1,173 +1,140 @@
 # AI 编程模型方案规划
 
-> 基于 GLM-5、Kimi K2.5、MiniMax-M2.7、MiniMax-M2.5 四模型的 Agent 与 Category 映射方案。
-
-## 模型能力概览
-
-| 模型 | 核心优势 | 推荐用途 |
-|------|----------|----------|
-| **GLM-5** | 推理最强（AIME 92.7%）、长程一致性佳 | 复杂推理任务 |
-| **Kimi K2.5** | Agent Swarm 原生支持、256K 最长上下文 | 任务调度、多模态 |
-| **MiniMax-M2.7** | MiniMax-M2.5 增强版，更聪明 | 复杂编码任务 |
-| **MiniMax-M2.5** | 工具调用 BFCL 第一、速度快、成本低 | 常规编码、快速任务 |
-
-## OpenCode Go 额度（$10/月 ≈ ¥70）
-
-| 模型 | 每月额度 | 特点 |
-|------|----------|------|
-| GLM-5 | 5,750 次 | 推理最强 |
-| Kimi K2.5 | 9,250 次 | 调度最强 |
-| MiniMax-M2.7 | 70,000 次 | 复杂任务 |
-| MiniMax-M2.5 | 100,000 次 | 快速任务 |
+> 基于 OpenCode Go 套餐的模型选择与 oh-my-opencode 配置指南。
 
 ---
 
-## Agent 映射方案
+## 一、OpenCode Go 套餐
 
-oh-my-opencode 的 Agent 是实际执行工作的角色，映射如下：
+### 简介
 
-| Agent | 职责 | 推荐模型 | 原因 |
-|-------|------|----------|------|
-| **Sisyphus** | 主控编排 | Kimi K2.5 | Agent Swarm 原生支持，并行调度能力最强 |
-| **Sisyphus-Junior** | 专注执行器 | Kimi K2.5 | Atlas 下任务执行，精简版 Sisyphus |
-| **Metis** | 计划差距分析 | GLM-5 | Claude-like 推理，深度分析计划漏洞和盲点 |
-| **Momus** | 计划审查验证 | GLM-5 | GPT-Native，计划严格验证，只有通过才执行 |
-| **Hephaestus** | 深度编码执行 | MiniMax-M2.7 | 深度编码能力，适合复杂跨文件调试和架构推理 |
-| **Prometheus** | 战略规划（访谈）| GLM-5 | 深度推理，处理复杂访谈和计划制定 |
-| **Atlas** | Todo 编排执行 | Kimi K2.5 | Agent Swarm 并行任务分发 |
-| **Oracle** | 架构咨询 | GLM-5 | 架构决策需要强推理能力 |
-| **Explore** | 快速代码检索 | MiniMax-M2.5 | 检索任务成本低、速度快即可 |
-| **Librarian** | 文档/代码搜索 | MiniMax-M2.5 | 搜索任务，MiniMax-M2.5 工具调用 BFCL 第一 |
-| **Multimodal Looker** | 视觉/截图分析 | Kimi K2.5 | 256K 最长上下文，多模态能力强 |
+OpenCode Go 是 OpenCode 官方推出的低价订阅服务，**首月 $5，之后每月 $10**，让你能够稳定地访问精选的开源编程模型。
 
-### Agent 配置
+> 注意：OpenCode Go 目前处于 Beta 测试阶段。
 
-> Hephaestus 使用非 GPT 模型时需要禁用 hook，否则会被强制切换到 Sisyphus。
+### 支持的模型
 
-```jsonc
-{
-  "disabled_hooks": ["no-hephaestus-non-gpt"],
-  "agents": {
-    "sisyphus": { "model": "opencode-go/kimi-k2.5" },
-    "sisyphus-junior": { "model": "opencode-go/kimi-k2.5" },
-    "metis": { "model": "opencode-go/glm-5" },
-    "momus": { "model": "opencode-go/glm-5" },
-    "hephaestus": { "model": "opencode-go/minimax-m2.7" },
-    "prometheus": { "model": "opencode-go/glm-5" },
-    "atlas": { "model": "opencode-go/kimi-k2.5" },
-    "oracle": { "model": "opencode-go/glm-5" },
-    "explore": { "model": "opencode-go/minimax-m2.5" },
-    "librarian": { "model": "opencode-go/minimax-m2.5" },
-    "multimodal-looker": { "model": "opencode-go/kimi-k2.5" }
-  }
-}
-```
+| 模型 | 模型 ID | 特点 |
+|------|---------|------|
+| **GLM-5** | `opencode-go/glm-5` | 推理最强，AIME 92.7% |
+| **Kimi K2.5** | `opencode-go/kimi-k2.5` | Agent 原生支持，256K 上下文 |
+| **MiniMax M2.7** | `opencode-go/minimax-m2.7` | M2.5 增强版，更聪明 |
+| **MiniMax M2.5** | `opencode-go/minimax-m2.5` | 速度最快，成本最低 |
 
----
+### Token 价格（每 1M）
 
-## Category 映射方案
+| 模型 | 输入 | 输出 | 缓存读取 |
+|------|------|------|----------|
+| GLM-5 | $1.00 | $3.20 | $0.20 |
+| Kimi K2.5 | $0.60 | $3.00 | $0.10 |
+| MiniMax M2.7 | - | - | - |
+| MiniMax M2.5 | $0.30 | $1.20 | $0.03 |
 
-Category 是 Sisyphus 调度子任务时的路由标签：
+### 使用限制
 
-| Category | 用途 | 推荐模型 | 原因 |
-|----------|------|----------|------|
-| **ultrabrain** | 复杂推理、架构设计 | GLM-5 | AIME 92.7% 推理最强 |
-| **deep** | 深度编码、多文件重构 | MiniMax-M2.7 | 更聪明，适合复杂任务 |
-| **quick** | 快速修改、简单任务 | MiniMax-M2.5 | 速度快、成本低 |
-| **visual-engineering** | 前端/UI/视觉任务 | Kimi K2.5 | 多模态能力强 |
-| **artistry** | 创意、探索性任务 | Kimi K2.5 | 灵活思维 |
-| **writing** | 文本、文档、注释 | GLM-5 | 文本生成能力强 |
-| **unspecified-high** | 通用高难度任务 | MiniMax-M2.7 | 综合能力强 |
+限制以美元价值计算：
 
-### Category 配置
+| 限制 | 额度 |
+|------|------|
+| 每 5 小时 | $12 |
+| 每周 | $30 |
+| 每月 | $60 |
 
-```jsonc
-{
-  "categories": {
-    "ultrabrain": { "model": "opencode-go/glm-5" },
-    "deep": { "model": "opencode-go/minimax-m2.7" },
-    "quick": { "model": "opencode-go/minimax-m2.5" },
-    "visual-engineering": { "model": "opencode-go/kimi-k2.5" },
-    "artistry": { "model": "opencode-go/kimi-k2.5" },
-    "writing": { "model": "opencode-go/glm-5" },
-    "unspecified-high": { "model": "opencode-go/minimax-m2.7" }
-  }
-}
-```
+### 预估请求数
+
+以下是基于典型使用模式的估算（每次请求：300-870 输入 token，55,000 缓存 token，125-200 输出 token）：
+
+| 模型 | 每 5 小时 | 每周 | 每月 |
+|------|-----------|------|------|
+| GLM-5 | 1,150 | 2,880 | 5,750 |
+| Kimi K2.5 | 1,850 | 4,630 | 9,250 |
+| MiniMax M2.7 | 14,000 | 35,000 | 70,000 |
+| MiniMax M2.5 | 20,000 | 50,000 | 100,000 |
+
+> 提示：MiniMax M2.5 成本最低，同样的额度可以用最多请求。
+
+### 接入方式
+
+1. 登录 [OpenCode Zen](https://opencode.ai/auth)，订阅 Go，复制 API 密钥
+2. 在 OpenCode TUI 中运行 `/connect`，选择 `OpenCode Go`
+3. 运行 `/models` 查看可用模型
 
 ---
 
-## 完整工作流程
+## 二、oh-my-opencode 带来的能力
 
-```
-用户请求
-    ↓
-[Intent Gate] — 分类用户意图
-    ↓
-[Sisyphus] — Kimi K2.5 编排调度
-    ↓
-    ├─→ [Prometheus] — GLM-5 战略规划
-    ├─→ [Metis] — GLM-5 差距分析
-    ├─→ [Momus] — GLM-5 计划审查
-    ├─→ [Atlas] — Kimi K2.5 执行编排
-    ├─→ [Oracle] — GLM-5 架构咨询
-    ├─→ [Explore] — MiniMax-M2.5 快速检索
-    ├─→ [Librarian] — MiniMax-M2.5 文档搜索
-    └─→ [Category 路由]
-              ├─→ ultrabrain → GLM-5
-              ├─→ deep → MiniMax-M2.7
-              ├─→ quick → MiniMax-M2.5
-              └─→ visual-engineering → Kimi K2.5
-```
+### 是什么
+
+oh-my-opencode 是一个**多模型 Agent 编排框架**，将单个 AI Agent 变成一个协调开发团队。它通过专业化的 Agent 协作完成开发任务。
+
+**核心特点：**
+- 不绑定特定模型（Claude、OpenAI、任意模型均可）
+- Agent 自动编排，按任务类型分配工作
+- 支持并行执行多个 Agent
+
+### Agent 系统
+
+oh-my-opencode 内置 11 个专业化 Agent：
+
+| Agent | 职责 | 推荐模型 |
+|-------|------|----------|
+| **Sisyphus** | 主控编排，协调所有子 Agent | Claude Opus 4.6 / Kimi K2.5 |
+| **Hephaestus** | 深度编码执行，处理复杂跨文件调试 | GPT-5.3 Codex |
+| **Prometheus** | 战略规划，访谈式制定详细计划 | Claude Opus 4.6 |
+| **Atlas** | Todo 编排执行，执行 Prometheus 计划 | Claude Sonnet 4.6 |
+| **Oracle** | 架构咨询，只读顾问 | GPT-5.4 / Claude Opus |
+| **Metis** | 计划差距分析，识别盲点 | Claude Opus 4.6 |
+| **Momus** | 计划审查验证 | GPT-5.4 |
+| **Explore** | 快速代码检索 | MiniMax M2.5 |
+| **Librarian** | 文档/代码搜索 | MiniMax M2.5 |
+| **Multimodal Looker** | 视觉/截图分析 | Kimi K2.5 |
+| **Sisyphus-Junior** | 专注执行器，执行分配的任务 | 按 Category 决定 |
+
+### 工作模式
+
+| 模式 | Agent | 命令 | 说明 | 使用场景 |
+|------|-------|------|------|----------|
+| **Ultrawork** | Sisyphus | `ultrawork` 或 `ulw` | 全自动模式，Agent 自动规划、执行、验证 | 懒人模式，不想操心时直接用 |
+| **Prometheus** | Prometheus | `@plan "任务描述"` | 访谈式规划，制定详细工作计划 | 需要精确控制任务范围和步骤时 |
+| **Atlas** | Atlas | `/start-work` | 执行 Prometheus 制定的计划 | Prometheus 规划完成后执行 |
+| **Hephaestus** | Hephaestus | 切换 Agent | 深度执行 Agent，处理复杂任务 | 需要深入分析和技术实现时 |
+| **Sisyphus** | Sisyphus | - | 主控编排，协调所有子 Agent | 日常对话和简单任务 |
+
+### Category 路由系统
+
+当 Sisyphus 委托子任务时，它选择 **Category**（类别）而非具体模型。Category 自动映射到合适的模型：
+
+| Category | 用途 | 推荐模型 |
+|----------|------|----------|
+| **ultrabrain** | 复杂推理、架构设计 | GLM-5 |
+| **deep** | 深度编码、多文件重构 | MiniMax M2.7 |
+| **quick** | 快速修改、简单任务 | MiniMax M2.5 |
+| **visual-engineering** | 前端/UI/视觉任务 | Kimi K2.5 |
+| **artistry** | 创意、探索性任务 | Kimi K2.5 |
+| **writing** | 文本、文档、注释 | GLM-5 |
+| **unspecified-high** | 通用高难度任务 | MiniMax M2.7 |
+| **unspecified-low** | 通用低难度任务 | MiniMax M2.5 |
+
+### 核心能力
+
+#### 并行执行
+Claude Code 一次处理一件事。oh-my-opencode 可以并行启动多个 Agent——同时研究、写代码、验证。像一个真正的开发团队。
+
+#### 哈希锚定编辑
+Claude Code 的 edit 工具在模型无法精确重现行时失败。oh-my-opencode 使用 `LINE#ID` 内容哈希验证，每次编辑前验证内容，解决 stale-line 问题。
+
+#### Intent Gate（意图识别）
+在执行前，Sisyphus 先分类你的真实意图——研究、实现、调查、修复——然后路由到合适的处理方式。
+
+#### LSP + AST 工具
+工作区级重命名、跳转定义、查找引用、预构建诊断、AST 感知代码重写。原生 Claude Code 没有的 IDE 精度。
+
+#### Skills 系统
+每个 Skill 带来自己的 MCP 服务器，作用域限定在任务内。上下文窗口保持干净。
 
 ---
 
-## 核心原则
-
-| 模型 | 核心定位 |
-|------|----------|
-| **GLM-5** | 推理型任务（Prometheus、Metis、Momus、Oracle、ultrabrain）|
-| **Kimi K2.5** | 调度型任务（Sisyphus、Atlas、visual-engineering）|
-| **MiniMax-M2.7** | 复杂执行型任务（deep、unspecified-high）|
-| **MiniMax-M2.5** | 快速执行型任务（Explore、Librarian、quick）|
-
----
-
-## 完整配置示例
-
-```jsonc
-{
-  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
-  "disabled_hooks": ["no-hephaestus-non-gpt"],
-  
-  "agents": {
-    "sisyphus": { "model": "opencode-go/kimi-k2.5" },
-    "sisyphus-junior": { "model": "opencode-go/kimi-k2.5" },
-    "metis": { "model": "opencode-go/glm-5" },
-    "momus": { "model": "opencode-go/glm-5" },
-    "hephaestus": { "model": "opencode-go/minimax-m2.7" },
-    "prometheus": { "model": "opencode-go/glm-5" },
-    "atlas": { "model": "opencode-go/kimi-k2.5" },
-    "oracle": { "model": "opencode-go/glm-5" },
-    "explore": { "model": "opencode-go/minimax-m2.5" },
-    "librarian": { "model": "opencode-go/minimax-m2.5" },
-    "multimodal-looker": { "model": "opencode-go/kimi-k2.5" }
-  },
-  "categories": {
-    "ultrabrain": { "model": "opencode-go/glm-5" },
-    "deep": { "model": "opencode-go/minimax-m2.7" },
-    "quick": { "model": "opencode-go/minimax-m2.5" },
-    "visual-engineering": { "model": "opencode-go/kimi-k2.5" },
-    "artistry": { "model": "opencode-go/kimi-k2.5" },
-    "writing": { "model": "opencode-go/glm-5" },
-    "unspecified-high": { "model": "opencode-go/minimax-m2.7" }
-  }
-}
-```
-
----
-
-## 使用方式
+## 三、配置指南
 
 ### 安装
 
@@ -179,14 +146,57 @@ bunx oh-my-opencode install
 bunx oh-my-opencode install --no-tui --claude=no --openai=no --gemini=no --copilot=no --opencode-go=yes
 ```
 
-### 工作模式
+### OpenCode Go 用户的推荐配置
 
-| 模式 | 命令 | 说明 | 使用场景 |
-|------|------|------|----------|
-| **Ultrawork** | `ultrawork` 或 `ulw` | 全自动模式，Agent 自动规划、执行、验证 | 懒人模式，不想操心时直接用 |
-| **Prometheus** | 按 `Tab` 或 `@plan "任务"` | 访谈式规划，制定详细工作计划 | 需要精确控制任务范围和步骤时 |
-| **Atlas** | `/start-work` | 执行 Prometheus 制定的计划 | Prometheus 规划完成后执行 |
-| **Sisyphus** | 默认主 Agent | 主控编排，协调所有子 Agent | 日常对话和简单任务 |
+```jsonc
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-openagent.schema.json",
+  "disabled_hooks": ["no-hephaestus-non-gpt"],
+  
+  "agents": {
+    // 主控编排 - Kimi K2.5 调度能力强
+    "sisyphus": { "model": "opencode-go/kimi-k2.5" },
+    "sisyphus-junior": { "model": "opencode-go/kimi-k2.5" },
+    
+    // 推理型任务 - GLM-5 推理最强
+    "metis": { "model": "opencode-go/glm-5" },
+    "momus": { "model": "opencode-go/glm-5" },
+    "prometheus": { "model": "opencode-go/glm-5" },
+    "oracle": { "model": "opencode-go/glm-5" },
+    
+    // 深度编码 - MiniMax M2.7 更聪明
+    "hephaestus": { "model": "opencode-go/minimax-m2.7" },
+    
+    // 快速执行 - MiniMax M2.5 速度快成本低
+    "explore": { "model": "opencode-go/minimax-m2.5" },
+    "librarian": { "model": "opencode-go/minimax-m2.5" },
+    
+    // 多模态 - Kimi K2.5 上下文最长
+    "atlas": { "model": "opencode-go/kimi-k2.5" },
+    "multimodal-looker": { "model": "opencode-go/kimi-k2.5" }
+  },
+  
+  "categories": {
+    "ultrabrain": { "model": "opencode-go/glm-5" },
+    "deep": { "model": "opencode-go/minimax-m2.7" },
+    "quick": { "model": "opencode-go/minimax-m2.5" },
+    "visual-engineering": { "model": "opencode-go/kimi-k2.5" },
+    "artistry": { "model": "opencode-go/kimi-k2.5" },
+    "writing": { "model": "opencode-go/glm-5" },
+    "unspecified-high": { "model": "opencode-go/minimax-m2.7" },
+    "unspecified-low": { "model": "opencode-go/minimax-m2.5" }
+  }
+}
+```
+
+### 模型选择策略
+
+| 任务类型 | 推荐模型 | 原因 |
+|----------|----------|------|
+| 复杂推理、架构决策 | GLM-5 | AIME 92.7%，推理最强 |
+| 任务调度、多 Agent 协调 | Kimi K2.5 | 256K 最长上下文，Agent 原生支持 |
+| 复杂编码任务 | MiniMax M2.7 | M2.5 增强版，更聪明 |
+| 快速检索、简单修改 | MiniMax M2.5 | 速度快、成本低 |
 
 ### 常用命令
 
@@ -202,10 +212,6 @@ bunx oh-my-opencode install --no-tui --claude=no --openai=no --gemini=no --copil
 | `/cancel-ralph` | 取消 Ralph 循环 | 中断正在运行的循环 |
 | `/stop-continuation` | 停止所有继续机制 | 停止多步骤工作流 |
 | `/init-deep` | 初始化 AGENTS.md | 生成项目知识库 |
-| `/git-master commit` | 智能 Git 提交 | 自动检测提交风格，拆分原子提交 |
-| `/git-master rebase` | 智能变基 | 冲突解决、分支清理 |
-| `/playwright` | 浏览器自动化 | 网页测试、截图、爬取 |
-| `/frontend-ui-ux` | 设计开发 | 美观 UI/UX 实现 |
 | `@oracle "问题"` | 直接咨询架构问题 | 架构决策或复杂调试 |
 | `@librarian "搜索内容"` | 搜索文档和代码示例 | 查找库的使用方法或最佳实践 |
 | `@explore "关键词"` | 快速搜索代码库 | 查找现有代码位置 |
@@ -216,86 +222,55 @@ bunx oh-my-opencode install --no-tui --claude=no --openai=no --gemini=no --copil
 | 操作 | 作用 |
 |------|------|
 | 按 `Tab` | 切换到 Prometheus 规划模式 |
-| 按 `Ctrl+C` | 中断当前执行 |
+| 按 `Esc` (双击) | 中断当前执行 |
 | `@agent-name` | 直接调用指定 Agent |
 
-### 后台任务
+---
 
-| 命令 | 作用 | 使用场景 |
-|------|------|----------|
-| `task(..., run_in_background=true)` | 后台运行任务 | 并行执行多个任务时 |
-| `background_output(task_id)` | 获取后台任务结果 | 后台任务完成后查看输出 |
-| `background_cancel(task_id)` | 取消后台任务 | 任务不再需要时 |
+## 四、完整工作流程
 
-**示例**：
 ```
-task(subagent_type="explore", prompt="查找认证实现", run_in_background=true)
-# 继续其他工作...
-# 完成后用 background_output 获取结果
+用户请求
+    ↓
+[Intent Gate] — 分类用户意图
+    ↓
+[Sisyphus] — Kimi K2.5 编排调度
+    ↓
+    ├─→ [Prometheus] — GLM-5 战略规划
+    ├─→ [Metis] — GLM-5 差距分析
+    ├─→ [Momus] — GLM-5 计划审查
+    ├─→ [Atlas] — Kimi K2.5 执行编排
+    ├─→ [Oracle] — GLM-5 架构咨询
+    ├─→ [Explore] — MiniMax M2.5 快速检索
+    ├─→ [Librarian] — MiniMax M2.5 文档搜索
+    └─→ [Category 路由]
+              ├─→ ultrabrain → GLM-5
+              ├─→ deep → MiniMax M2.7
+              ├─→ quick → MiniMax M2.5
+              └─→ visual-engineering → Kimi K2.5
 ```
-
-### 内置 Skills
-
-| Skill | 触发场景 | 作用 |
-|-------|----------|------|
-| **git-master** | commit, rebase, squash | Git 专家，自动检测提交风格，拆分原子提交 |
-| **playwright** | 浏览器任务、测试 | Playwright 浏览器自动化 |
-| **agent-browser** | 浏览器任务 | Agent Browser CLI 自动化 |
-| **dev-browser** | 有状态浏览器脚本 | 持久化页面状态的浏览器自动化 |
-| **frontend-ui-ux** | UI/UX 任务、设计 | 设计驱动的美观 UI 实现 |
-
-### Category + Skill 组合策略
-
-| 组合 | Category | Skills | 效果 |
-|------|----------|--------|------|
-| **设计师** | `visual-engineering` | `frontend-ui-ux`, `playwright` | 实现美观 UI 并浏览器验证 |
-| **架构师** | `ultrabrain` | 无 | 深度架构分析和推理 |
-| **维护者** | `quick` | `git-master` | 快速修复 + 干净提交 |
-
-### 工具说明
-
-| 工具 | 作用 | 使用场景 |
-|------|------|----------|
-| **grep** | 正则搜索内容 | 查找代码中的特定模式 |
-| **glob** | 文件模式匹配 | 按名称查找文件 |
-| **edit** | 哈希锚定编辑 | 安全精确的代码修改，不会出现 stale-line 错误 |
-| **look_at** | 媒体分析 | 分析 PDF、图片、图表 |
-| **session_list** | 列出所有会话 | 管理多个会话 |
-| **session_search** | 会话全文搜索 | 跨会话查找信息 |
-| **interactive_bash** | tmux 终端 | 运行交互式 TUI 应用（vim、htop）|
 
 ---
 
-## Task 系统
+## 五、核心原则
 
-启用 `experimental.task_system: true` 后支持：
-
-| 命令 | 作用 |
-|------|------|
-| `task_create` | 创建任务（支持依赖关系）|
-| `task_get` | 获取任务详情 |
-| `task_list` | 列出所有任务 |
-| `task_update` | 更新任务状态 |
-
-**与 TodoWrite 的区别**：
-
-| 特性 | TodoWrite | Task 系统 |
-|------|-----------|-----------|
-| 存储 | 会话内存 | 文件系统 |
-| 持久性 | 关闭后丢失 | 跨会话保留 |
-| 依赖 | 无 | 支持 `blockedBy` |
-| 并行 | 手动管理 | 自动优化 |
+| 模型 | 核心定位 |
+|------|----------|
+| **GLM-5** | 推理型任务（Prometheus、Metis、Momus、Oracle、ultrabrain）|
+| **Kimi K2.5** | 调度型任务（Sisyphus、Atlas、visual-engineering）|
+| **MiniMax M2.7** | 复杂执行型任务（deep、unspecified-high）|
+| **MiniMax M2.5** | 快速执行型任务（Explore、Librarian、quick）|
 
 ---
 
-## 配置参考
+## 六、配置参考
 
 ### 配置文件位置
 
 | 优先级 | 路径 |
 |--------|------|
-| 项目级 | `.opencode/oh-my-opencode.jsonc` |
-| 用户级 (macOS/Linux) | `~/.config/opencode/oh-my-opencode.jsonc` |
+| 项目级 | `.opencode/oh-my-openagent.jsonc` |
+| 用户级 (macOS/Linux) | `~/.config/opencode/oh-my-openagent.jsonc` |
 
 ### Agent 覆盖选项
 
@@ -355,4 +330,4 @@ Agent 请求 → 用户配置覆盖 → Fallback 链 → 系统默认
 
 ---
 
-> 最后更新：2026-03-22
+> 最后更新：2026-03-25
