@@ -1,6 +1,6 @@
-# AI 编程模型方案规划
+# OpenCode Go 指南
 
-> 基于 OpenCode Go 套餐的模型选择与 oh-my-opencode 配置指南。
+> OpenCode Go 多模型 Agent 配置与使用手册。
 
 ---
 
