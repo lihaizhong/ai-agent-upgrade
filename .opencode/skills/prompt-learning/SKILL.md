@@ -2,9 +2,9 @@
 name: prompt-learning
 description: 提示词工程学习系统，提供学习模式（17门课程+启发式提问）、考试模式（10-12题分层评估）、提示词生成（头脑风暴）三大功能。当用户想学习提示词技术、练习写提示词、分析提示词问题、参加考试或生成提示词时，务必使用此技能。
 metadata:
-  version: 5.0.0
+  version: 5.0.1
   author: iFlow CLI
-  last_updated: 2026-03-21
+  last_updated: 2026-03-27
 ---
 
 # 提示词工程学习系统

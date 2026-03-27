@@ -1,6 +1,6 @@
 {
   "skill_name": "prompt-learning",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "evals": [
     {
       "id": 1,
