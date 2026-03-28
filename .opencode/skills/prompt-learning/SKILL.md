@@ -1,10 +1,10 @@
 ---
 name: prompt-learning
-description: 提示词工程学习系统，提供学习模式（17门课程+启发式提问）、考试模式（10-12题分层评估）、提示词生成（头脑风暴）三大功能。当用户想学习提示词技术、练习写提示词、分析提示词问题、参加考试或生成提示词时，务必使用此技能。
+description: 提示词工程学习系统，提供学习模式（17门课程+启发式提问+代码实现）、考试模式（10-12题分层评估）、提示词生成（头脑风暴）三大功能。当用户想学习提示词技术、练习写提示词、分析提示词问题、参加考试或生成提示词时，务必使用此技能。
 metadata:
-  version: 5.0.2
+  version: 6.0.0
   author: iFlow CLI
-  last_updated: 2025-03-27
+  last_updated: 2026-03-28
 ---
 
 # 提示词工程学习系统
@@ -64,11 +64,37 @@ metadata:
 - 启发式教学：强调理解而非记忆，引导深度思考
 - 知识连贯：每个提问点都关联前置课程，构建知识体系
 - 灵活学习：练习题作为可选巩固手段，不强制要求
+- **代码实现**：每门课程都配有 Python 代码实现示例，帮助开发者动手实践
 
-课程体系：零样本提示、少样本提示、思维链、自我一致性、思维树、生成知识提示、RAG、ReAct、PAL、ART、APE、主动提示等。
+**📚 课程配套代码**：
+每门课程都提供完整的 Python 代码实现，位置在 `code/` 目录：
+- `code/01_zero_shot.py` - 零样本提示
+- `code/02_few_shot.py` - 少样本提示
+- `code/03_cot.py` - 思维链提示
+- `code/04_self_consistency.py` - 自我一致性
+- `code/05_tot.py` - 思维树
+- `code/06_generated_knowledge.py` - 生成知识提示
+- `code/07_rag.py` - 检索增强生成
+- `code/08_prompt_chaining.py` - 链式提示
+- `code/09_react.py` - ReAct框架
+- `code/10_pal.py` - 程序辅助语言模型
+- `code/11_art.py` - 自动推理和工具使用
+- `code/12_ape.py` - 自动提示工程师
+- `code/13_active_prompt.py` - 主动提示
+- `code/14_dsp.py` - 方向性刺激提示
+- `code/15_reflexion.py` - 自我反思
+- `code/16_multimodal_cot.py` - 多模态思维链
+- `code/17_graph_prompt.py` - 图形提示
+
+**💻 代码示例特色**：
+- 每个文件包含完整的可运行示例
+- 通用工具函数集中在 `code/utils.py`
+- 展示核心算法和实现逻辑
+- 适合开发者学习后直接实践
 
 详细说明：[reference/learning-mode.md](reference/learning-mode.md)
 课程内容：[courses/](courses/README.md)
+代码示例：[code/](code/README.md)
 
 ---
 
