@@ -5,6 +5,7 @@
 ## 📚 学习资源
 
 - [提示工程指南](https://www.promptingguide.ai/zh) - 系统学习提示词工程
+- [程序员的英语](https://a-programmers-guide-to-english.harryyu.me/) - 程序员英语学习指南
 
 ## 🗺️ 学习路径
 
