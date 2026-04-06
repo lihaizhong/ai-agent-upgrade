@@ -1,145 +1,154 @@
-# AI Agent 学习项目
+# Code of Conduct
 
-专注于提示词工程和上下文工程的实践项目。
+Behavioral guidelines for all contributors and AI agents working on this project.
 
-## 核心方向
+## Core Principles
 
-- **提示词工程**：设计和优化提示词以获得更好的 AI 输出
-- **上下文工程**：有效管理和利用上下文信息提升 Agent 性能
-- **Agent 实践**：通过配置和使用预定义的 agents 和 skills 进行实践
+- **Clarity over cleverness**: Write code that is easy to understand
+- **Security first**: Never commit secrets, keys, or sensitive data
+- **Consistency**: Follow existing patterns and conventions
+- **Documentation**: Keep docs in sync with code changes
+- **Testing**: Verify changes work before committing
 
-## 项目结构
+---
+
+## Code Standards
+
+### Python
+
+- Use **4-space indentation** (defined in `.editorconfig`)
+- Target **Python 3.11+**
+- Use `uv` for dependency management — never `pip install`
+- Run linting with **Ruff** before committing
+- Follow PEP 8 naming conventions
+- No comments unless they add meaningful context
+
+### General
+
+- 2-space indentation for non-Python files (Markdown, JSON, YAML, etc.)
+- UTF-8 encoding, LF line endings
+- Trailing whitespace trimming disabled (preserve intentional formatting)
+- Final newline not enforced
+
+---
+
+## Git Workflow
+
+### Commits
+
+- Write clear, concise commit messages
+- Use imperative mood: "Add feature" not "Added feature"
+- One logical change per commit
+- Never commit `.env`, `.venv/`, or files matching `.gitignore`
+
+### Branches
+
+- Keep branches focused on a single task
+- Delete branches after merging
+
+### Secrets
+
+- **NEVER** commit API keys, tokens, passwords, or credentials
+- Use `.env` for local secrets (already gitignored)
+- Use Vibeguard patterns to detect accidental secret exposure
+
+---
+
+## AI Agent Interaction
+
+### When Working with AI Agents
+
+- Be specific and explicit in requests
+- Provide context: file paths, expected behavior, constraints
+- Review all AI-generated code before accepting
+- Run tests and linters on AI-generated changes
+
+### Agent Behavior Expectations
+
+- Ask clarifying questions when instructions are ambiguous
+- Follow existing code patterns and project conventions
+- Never introduce external dependencies without checking they're already in use
+- Stop after completing the task — no unnecessary explanations or summaries
+- Keep responses concise (fewer than 4 lines unless detail is requested)
+- Never generate or guess URLs unless confident they help with programming
+
+### Security Rules for Agents
+
+- Never expose or log secrets and keys
+- Never commit credentials to the repository
+- Warn the user if asked to commit sensitive files
+
+---
+
+## Project Structure
+
+### Directory Conventions
 
 ```
 ai-agent-upgrade/
-├── .venv/                # Python 虚拟环境（使用 uv 管理）
-├── AGENTS.md             # 本文件
-├── README.md             # 项目说明
-├── docs/                 # 文档
-├── exam-result/          # 考试记录
-├── notebook/             # 学习笔记
-└── practice/             # 实践项目
-    ├── build-custom-rag-agent/
-    ├── build-data-analysis-agent/
-    ├── build-rag-agent/
-    ├── build-semantic-search-engine/
-    ├── build-sql-agent/
-    ├── build-voice-agent/
-    └── build-your-claude-code/
+├── .opencode/          # OpenCode config, agents, skills
+├── docs/               # Documentation (histories, architecture, plans)
+├── exam-result/        # Exam records
+├── notebook/           # Learning notes (organized by topic)
+├── practice/           # Hands-on projects
+└── AGENTS.md           # This file — code of conduct
 ```
 
-## Agents
+### File Naming
 
-| 名称 | 用途 | 特点 |
-|------|------|------|
-| **content-marketer** | 撰写营销内容 | SEO 优化、内容日历、行动号召 |
-| **novel-creator** | 创作爽文小说 | 快速节奏、高吸引力 |
-| **perception-agent** | 内容感知分析 | 读取理解、提取关键信息、综合分析 |
-| **translate** | 多语言翻译 | 保持意思、语气、风格，准确转换术语 |
+- Python: `snake_case.py`
+- Markdown: `kebab-case.md`
+- Directories: `kebab-case/`
 
-## Skills
+### Adding New Components
 
-| 名称 | 用途 | 适用场景 |
-|------|------|----------|
-| **doc-coauthoring** | 结构化文档协作 | 提案、技术规范、决策文档 |
-| **internal-comms** | 内部沟通内容 | 3P 更新、公司通讯、FAQ、状态报告 |
-| **poetry** | 中国古诗词检索展示 | 按作者、标题、关键词检索唐诗宋词等 |
-| **prompt-learning** | 提示词工程学习 | 学习模式（17门课程）、考试模式（四级难度）、分析改进提示词 |
+- **Skill**: Create directory under `.opencode/skills/` with `SKILL.md`
+- **Agent**: Create `.md` file under `.opencode/agents/`
+- **Practice project**: Create directory under `practice/`
+- Update this file and `README.md` when adding new components
 
-## 实践项目
+---
 
-| 项目名称 | 说明 | 技术栈 |
-|---------|------|--------|
-| **build-your-claude-code** | 构建 Claude 风格的 AI 编码助手 | Python, Anthropic API |
-| **build-rag-agent** | 构建 RAG（检索增强生成）Agent | Python, 向量数据库 |
-| **build-custom-rag-agent** | 构建自定义 RAG Agent | Python, LangChain |
-| **build-data-analysis-agent** | 构建数据分析 Agent | Python, Pandas |
-| **build-semantic-search-engine** | 构建语义搜索引擎 | Python, 向量检索 |
-| **build-sql-agent** | 构建 SQL 查询 Agent | Python, 数据库 |
-| **build-voice-agent** | 构建语音交互 Agent | Python, 语音识别/合成 |
+## Development Process
 
-### 环境配置
+### Before Committing
 
-项目使用 `uv` 管理 Python 依赖和虚拟环境：
+1. Run linting: `ruff check .`
+2. Verify the change works as expected
+3. Review diff for accidental secrets or debug code
+4. Ensure docs are updated if needed
+
+### Dependency Management
 
 ```bash
-# 安装依赖
-uv sync
-
-# 添加新依赖
+# Add a package
 uv add <package-name>
 
-# 运行脚本
+# Sync environment
+uv sync
+
+# Run a script
 .venv/bin/python <script.py>
 ```
 
-### 实践项目示例
+- Always use `uv add`, never `pip install`
+- Commit `pyproject.toml` and `uv.lock` changes together
+- Document new dependencies if they introduce a major capability
 
-**build-your-claude-code** 项目展示了 AI Agent 的核心循环模式：
+### Code Review
 
-```python
-while stop_reason == "tool_use":
-    response = LLM(messages, tools)
-    execute tools
-    append results
-```
+- Self-review your changes before committing
+- Check that code follows the patterns in neighboring files
+- Ensure imports are organized and necessary
 
-运行方式：
+---
 
-```bash
-cd practice/build-your-claude-code
-.venv/bin/python main.py
-```
+## Resources
 
-## 使用方式
+- [Prompt Engineering Guide](https://www.promptingguide.ai/zh)
+- [A Programmer's Guide to English](https://a-programmers-guide-to-english.harryyu.me/)
+- Project learning paths: see `prompt-learning` and `rag-learning` skills
 
-### 环境准备
+## License
 
-```bash
-# 克隆项目
-git clone <repo-url>
-cd ai-agent-upgrade
-
-# 安装依赖（使用 uv）
-uv sync
-
-# 激活虚拟环境（可选，直接使用 .venv/bin/python 即可）
-source .venv/bin/activate  # Linux/macOS
-# 或
-.venv\Scripts\activate  # Windows
-```
-
-### 快速开始
-
-本项目包含预配置的 Agents 和 Skills，可直接使用：
-
-**Agents**：
-- `content-marketer` - 撰写营销内容
-- `novel-creator` - 创作爽文小说
-- `perception-agent` - 内容感知分析
-- `translate` - 多语言翻译
-
-**Skills**：
-- `doc-coauthoring` - 结构化文档协作
-- `internal-comms` - 内部沟通内容
-- `poetry` - 中国古诗词检索展示
-- `prompt-learning` - 提示词工程学习系统
-
-### 添加新配置
-
-- **Agent**：在 `.opencode/agents/` 创建 `.md` 文件
-- **Skill**：在 `.opencode/skills/` 创建目录和 `SKILL.md` 文件
-
-## 资源
-
-- 提示工程指南：https://www.promptingguide.ai/zh
-- 学习路径：参考 `prompt-learning` skill 中的学习路径建议
-
-## 贡献
-
-1. 保持文档清晰准确
-2. 遵循 Apache 2.0 许可证
-3. 更新配置时同步更新本文档
-4. 使用 `.editorconfig` 定义的代码风格
-5. 添加新依赖时使用 `uv add` 而非 `pip install`
-6. 运行实践项目时确保使用虚拟环境中的 Python 解释器
+Apache License 2.0
