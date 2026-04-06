@@ -28,7 +28,7 @@
 
 安装依赖：
 ```bash
-pip install openai anthropic
+uv sync
 ```
 
 ## 使用方法
@@ -42,7 +42,7 @@ export ANTHROPIC_API_KEY="your-api-key"
 
 2. 直接运行示例文件：
 ```bash
-python 03_cot.py
+.venv/bin/python 03_cot.py
 ```
 
 ## 代码规范

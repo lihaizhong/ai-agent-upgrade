@@ -137,7 +137,7 @@
 - 练习组合使用多种模式
 
 **第 4 步：实践和优化**
-- 完成练习题（参考 `templates/exercises.md`）
+- 完成学习模式中的动态练习题（参考 `reference/learning-mode.md`）
 - 分析和改进自己的提示词
 - 建立个人提示词库
 
@@ -333,7 +333,7 @@
 1. **查阅其他参考文档**：
    - `reference/common-problems.md`：常见问题和解决方案
    - `reference/prompt-patterns.md`：提示词模式库
-   - `templates/exercises.md`：练习题库
+   - `reference/learning-mode.md`：动态练习题与学习流程说明
 
 2. **向 AI 寻求帮助**：
    - 描述你的具体问题
