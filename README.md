@@ -10,6 +10,7 @@
 ## 🗺️ 学习路径
 
 - [技术思维导图总览](notebook/00-prompt-techniques-overview.md) - 所有提示词技术的思维导图，从基础到前沿
+- [提示词工程发展史](docs/prompt-engineering-history.md) - 从 2020 年至今的提示词技术演进历程
 - [学习计划](docs/learning-plan.md) - 详细的学习计划和建议
 
 ## 🚀 快速开始
@@ -28,6 +29,11 @@
 ### 📊 技术总览
 
 - [00 - 技术思维导图总览](notebook/00-prompt-techniques-overview.md) - 所有技术的思维导图、演进路径、学习路径建议
+
+### 📚 文档
+
+- [提示词工程发展史](docs/prompt-engineering-history.md) - 从 2020 年至今的提示词技术演进历程
+- [AI Agent 架构分层](docs/ai-agent-architecture.md) - 基于 Anthropic、Google、OpenAI 的权威架构分析
 
 ### 🟢 基础技术（入门）
 
