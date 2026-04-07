@@ -147,7 +147,9 @@ class PromptLearningEngine:
         """返回课程摘要信息。"""
         return {
             "id": course["id"],
+            "value": str(course["id"]),
             "name": course["name"],
+            "label": course["name"],
             "summary": course["summary"],
             "prerequisites": course["prereqs"],
             "selection_hint": (
@@ -162,6 +164,12 @@ class PromptLearningEngine:
         result = {
             "learning_rule": "课程可以自由选择，不要求严格按顺序完成；前置课程仅用于辅助理解。",
             "categories": [],
+            "question": {
+                "header": "选择课程类别",
+                "question": "请选择你要学习的课程类别：",
+                "options": [],
+                "multiple": False,
+            },
         }
         category_map = self._category_map()
         for category_name in self.CATEGORY_ORDER:
@@ -176,7 +184,31 @@ class PromptLearningEngine:
                     "name": category_name,
                     "description": category["description"],
                     "course_ids": category["courses"],
+                    "range_label": f"{category['courses'][0]:02d}-{category['courses'][-1]:02d}",
                     "courses": courses,
+                    "question": {
+                        "header": "选择课程",
+                        "question": f"请选择 {category_name} 中要学习的课程：",
+                        "options": [
+                            {
+                                "label": item["name"],
+                                "description": f"{item['id']:02d} · {item['summary']}",
+                                "value": str(item["id"]),
+                            }
+                            for item in courses
+                        ],
+                        "multiple": False,
+                    },
+                }
+            )
+            result["question"]["options"].append(
+                {
+                    "label": category_name,
+                    "description": (
+                        f"{category['courses'][0]:02d}-{category['courses'][-1]:02d} · "
+                        f"{category['description']}"
+                    ),
+                    "value": category_name,
                 }
             )
         return result
@@ -214,6 +246,19 @@ class PromptLearningEngine:
             "description": category_meta["description"],
             "learning_rule": "可从本类别任意一课开始；如遇陌生概念，再回看前置课。",
             "courses": courses,
+            "question": {
+                "header": "选择课程",
+                "question": f"请选择 {category_name} 中要学习的课程：",
+                "options": [
+                    {
+                        "label": item["name"],
+                        "description": f"{item['id']:02d} · {item['summary']}",
+                        "value": str(item["id"]),
+                    }
+                    for item in courses
+                ],
+                "multiple": False,
+            },
         }
 
     def get_course_content(self, course_id: int) -> str:

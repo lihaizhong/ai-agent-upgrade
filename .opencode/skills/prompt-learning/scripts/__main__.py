@@ -222,7 +222,29 @@ def main():
                             "name": "提示词生成",
                             "desc": "头脑风暴生成提示词",
                         },
-                    ]
+                    ],
+                    "question": {
+                        "header": "选择模式",
+                        "question": "请选择你要进入的提示词模式：",
+                        "options": [
+                            {
+                                "label": "学习模式",
+                                "description": "系统学习提示词技术，互动问答",
+                                "value": "learn",
+                            },
+                            {
+                                "label": "考试模式",
+                                "description": "挑战自我，即时反馈评分",
+                                "value": "exam",
+                            },
+                            {
+                                "label": "提示词生成",
+                                "description": "头脑风暴生成提示词",
+                                "value": "generate",
+                            },
+                        ],
+                        "multiple": False,
+                    },
                 },
                 ensure_ascii=False,
                 indent=2,

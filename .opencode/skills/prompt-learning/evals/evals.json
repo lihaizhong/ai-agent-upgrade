@@ -6,8 +6,9 @@
       "id": 1,
       "name": "模式选择机制",
       "prompt": "我想学习提示词工程",
-      "expected_output": "询问用户选择学习模式、考试模式或提示词生成模式",
+      "expected_output": "优先使用 question 工具询问用户选择学习模式、考试模式或提示词生成模式",
       "assertions": [
+        {"type": "contains_any", "value": ["question", "Question", "选择模式"]},
         {"type": "contains_any", "value": ["学习模式", "考试模式", "生成", "学习", "考试"]}
       ]
     },
