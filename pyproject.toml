@@ -19,3 +19,8 @@ dependencies = [
     "langchain-openai>=1.1.11",
     "tavily-python>=0.7.23",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.9",
+]

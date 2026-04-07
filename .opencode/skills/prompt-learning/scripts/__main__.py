@@ -132,7 +132,7 @@ def main():
     subparsers = parser.add_subparsers(dest="command", help="可用命令")
 
     # 模式选择
-    parser_mode = subparsers.add_parser("mode", help="获取模式选择菜单")
+    subparsers.add_parser("mode", help="获取模式选择菜单")
 
     # 学习模式
     parser_learn = subparsers.add_parser("learn", help="学习模式")
@@ -234,6 +234,10 @@ def main():
 
         if args.list:
             courses = engine.get_course_list_by_category()
+            print(json.dumps(courses, ensure_ascii=False, indent=2, default=str))
+
+        elif args.category:
+            courses = engine.get_courses_by_category(args.category)
             print(json.dumps(courses, ensure_ascii=False, indent=2, default=str))
 
         elif args.content and args.course:

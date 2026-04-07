@@ -427,14 +427,14 @@ class ExamEngine:
                 report += f"| {q['num']} | {q['difficulty']} | {a.get('answer', 'N/A')} | {q['correct_answer']} | {s}/{q['score']} |\n"
 
         report += f"\n**选择题得分**：{mc_scores}/25分\n\n"
-        report += f"### 第二部分：填空题（3题，共30分）\n"
+        report += "### 第二部分：填空题（3题，共30分）\n"
 
         for i, (q, a, s) in enumerate(zip(questions, answers, scores)):
             if q["type"] == "fill":
                 report += f"| {q['num']} | {q['difficulty']} | {a.get('answer', 'N/A')} | {q['answer']} | {s}/{q['score']} |\n"
 
         report += f"\n**填空题得分**：{fill_scores}/30分\n\n"
-        report += f"### 第三部分：大题（3题，共45分）\n"
+        report += "### 第三部分：大题（3题，共45分）\n"
 
         for i, (q, a, s) in enumerate(zip(questions, answers, scores)):
             if q["type"] == "essay":

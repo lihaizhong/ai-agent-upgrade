@@ -1,6 +1,6 @@
 {
   "skill_name": "prompt-learning",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "evals": [
     {
       "id": 1,
@@ -175,6 +175,39 @@
       "assertions": [
         {"type": "contains", "value": "关联"},
         {"type": "contains_any", "value": ["思考", "对比", "区别"]}
+      ]
+    },
+    {
+      "id": 19,
+      "name": "学习模式-先教学后练习",
+      "prompt": "我要学习第3课，然后做练习",
+      "expected_output": "先展示思维链提示的课程内容，再提供可选练习，不能一开始直接出题",
+      "assertions": [
+        {"type": "contains", "value": "思维链"},
+        {"type": "contains_any", "value": ["核心概念", "工作原理", "示例"]},
+        {"type": "contains_any", "value": ["练习", "做题", "可选"]}
+      ]
+    },
+    {
+      "id": 20,
+      "name": "学习模式-六大类说明",
+      "prompt": "我想系统学习 prompt engineering，先介绍一下课程结构",
+      "expected_output": "先说明六大类课程及对应课程编号，再让用户选类别或课程",
+      "assertions": [
+        {"type": "contains_any", "value": ["六大类", "基础课程", "推理课程"]},
+        {"type": "contains_any", "value": ["知识课程", "工具课程", "优化课程", "前沿课程"]},
+        {"type": "contains_any", "value": ["01-02", "03-05", "06-08"]}
+      ]
+    },
+    {
+      "id": 21,
+      "name": "学习模式-支持指定课程直达",
+      "prompt": "不要按顺序，我就想学第7课 RAG",
+      "expected_output": "直接进入第7课，同时最多补充前置建议，不能要求先学完前面课程",
+      "assertions": [
+        {"type": "contains_any", "value": ["第7课", "RAG", "检索增强生成"]},
+        {"type": "contains_any", "value": ["核心概念", "适用场景", "工作原理"]},
+        {"type": "contains_any", "value": ["可直接学习", "可以直接开始", "建议先了解", "前置知识"]}
       ]
     }
   ]
