@@ -1,6 +1,6 @@
 {
   "skill_name": "prompt-learning",
-  "version": "5.0.1",
+  "version": "7.0.1",
   "evals": [
     {
       "id": 1,
@@ -35,38 +35,42 @@
       "id": 4,
       "name": "考试模式-完整流程",
       "prompt": "我要考试",
-      "expected_output": "直接进入考试模式，包含选择题(5道)、填空题(3-4道)、大题(2-3道)，共10-12题",
+      "expected_output": "直接进入考试模式，先展示考试结构（11题满分100分），然后开始答题",
       "assertions": [
         {"type": "contains", "value": "选择题"},
         {"type": "contains", "value": "填空题"},
-        {"type": "contains", "value": "大题"}
+        {"type": "contains", "value": "大题"},
+        {"type": "contains", "value": "100分"}
       ]
     },
     {
       "id": 5,
       "name": "考试模式-选择题结构",
       "prompt": "开始提示词工程考试",
-      "expected_output": "选择题共5道，涵盖初级、中级、高级、专家四个难度，使用Question工具交互",
+      "expected_output": "选择题共5题，每题5分共25分，使用Question工具交互，答案随机分布",
       "assertions": [
-        {"type": "contains", "value": "选择题"}
+        {"type": "contains", "value": "选择题"},
+        {"type": "contains", "value": "5"}
       ]
     },
     {
       "id": 6,
       "name": "考试模式-填空题结构",
       "prompt": "参加考试",
-      "expected_output": "填空题3-4道，全部中级及以上难度，考察技术运用和关键参数",
+      "expected_output": "填空题固定3题，每题10分共30分，全部中级及以上难度",
       "assertions": [
-        {"type": "contains", "value": "填空题"}
+        {"type": "contains", "value": "填空题"},
+        {"type": "contains", "value": "3"}
       ]
     },
     {
       "id": 7,
       "name": "考试模式-大题结构",
       "prompt": "我想参加提示词考试测试综合能力",
-      "expected_output": "大题2-3道，全部中级及以上难度，考察提示词设计和多技术融合",
+      "expected_output": "大题固定3题，每题15分共45分，全部中级及以上难度",
       "assertions": [
-        {"type": "contains", "value": "大题"}
+        {"type": "contains", "value": "大题"},
+        {"type": "contains", "value": "3"}
       ]
     },
     {

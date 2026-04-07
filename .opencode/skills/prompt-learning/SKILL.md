@@ -1,198 +1,141 @@
 ---
 name: prompt-learning
-description: 提示词工程学习系统，提供学习模式（17门课程+启发式提问+代码实现）、考试模式（10-12题分层评估）、提示词生成（头脑风暴）三大功能。当用户想学习提示词技术、练习写提示词、分析提示词问题、参加考试或生成提示词时，务必使用此技能。
-metadata:
-  version: 6.1.0
-  author: iFlow CLI
-  last_updated: 2026-03-30
+description: 提示词工程学习、练习、考试和提示词生成技能。用户想系统学习 prompt engineering、浏览 17 门课程、做练习或考试、分析提示词问题、优化已有提示词，或通过结构化头脑风暴生成提示词时使用。
 ---
 
 # 提示词工程学习系统
 
-当用户触发本技能时，**按优先级使用选择方式**：
+按 Script-First 执行：先让脚本固定流程、题位、字段和校验规则，再让 LLM 生成教学内容、题干、讲解或提示词草稿。不要把脚本输出当成题库；要把它当成结构约束。
 
-1. **优先使用 question 工具** - 交互式选择界面
-2. **降级为纯文本菜单** - 直接展示文字菜单
+在本技能目录执行命令：
 
-## 使用 question 工具
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts mode`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts learn --list`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts learn --content --course <N>`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts learn --practice-blueprint --course <N>`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts learn --code --course <N>`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts exam --structure`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts exam --blueprint`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts exam --validate-mc`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts exam --validate-fill`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts exam --validate-essay`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts exam --validate-paper`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts generate --workflow --topic "<主题>"`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts generate --review-checklist --topic "<主题>"`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts generate --validate-slots --topic "<主题>"`
+- `/Users/lihaizhong/Documents/Project/ai-agent-upgrade/.venv/bin/python -m scripts generate --validate-draft --topic "<主题>"`
 
-**⚠️ 重要提示**：每次展示 question 工具后，请等待 1-2 秒让用户看清选项，避免快速连续弹出问题导致误触。
+## 模式选择
 
-```
-请使用 question 工具展示功能选择：
+优先用脚本返回三大模式，再决定怎么和用户交互。
 
-标题：欢迎使用提示词工程学习系统！
-问题：请问您想做什么？
-选项：
-1. 学习模式 - 系统学习提示词技术，互动问答
-2. 考试模式 - 挑战自我，即时反馈评分
-3. 提示词生成 - 头脑风暴生成提示词
+如果当前环境明确提供 `question` 一类单选工具，可用它展示模式、课程或选项。
+如果当前环境没有这类工具，直接用纯文本编号菜单，不要假设交互式工具存在。
 
-注意：展示后等待用户选择，不要立即连续弹出下一个问题。
-```
+## 学习模式
 
-## 降级为纯文本
+执行顺序：
 
-```
-欢迎使用提示词工程学习系统！请选择：
+1. 用 `scripts learn --list` 获取按类别分组的课程列表。
+2. 用户选课后，用 `scripts learn --content --course <N>` 读取课程内容。
+3. 课程讲完后，同时给出三类下一步：
+   - 启发式提问
+   - 可选练习
+   - 学习导航
+4. 如果用户要做练习，先用 `scripts learn --practice-blueprint --course <N>` 拿到固定蓝图，再让 LLM 填充题干、参考答案和反馈。
+5. 如果练习里出现选择题，确保正确答案随机落在 `A/B/C/D` 中，不要固定位置。
+6. 用户完成练习后，主动提示查看配套代码；需要时用 `scripts learn --code --course <N>` 读取对应实现并解释关键逻辑。
 
-1. 学习模式 - 系统学习提示词技术，互动问答
-2. 考试模式 - 挑战自我，即时反馈评分
-3. 提示词生成 - 头脑风暴生成提示词
+只按需读取课程文件和代码文件，不要一次性加载整个课程库：
 
-请输入「学习」「考试」或「生成」：
-```
+- 课程正文在 `courses/`
+- 代码示例在 `code/`
 
----
+需要细化教学流程时，再读：
 
-## 三大模式
+- `reference/learning-mode.md`
 
-### 1. 学习模式
+## 考试模式
 
-用户选择「学习」后，进入**启发式学习**流程：
+考试结构固定，开始前先告知用户分值构成：
 
-**学习流程**：
-1. **课程选择** — 从17门课程中选择（按类别分组展示）
-2. **内容学习** — 展示启发式精简版课程内容（聚焦核心概念和应用）
-3. **综合学习面板** — 课程结束后同时展示三大模块：启发式提问 / 可选练习 / 学习导航
-4. **启发式提问**（如用户选择）— 从4个提问角度引导深度思考，不直接给答案
-5. **练习题**（如用户选择）— 动态生成1道与课程相关的练习题，即时反馈
-   - **⚠️ 如果练习题包含选择题，正确答案必须随机分布在A、B、C、D中**
-6. **代码实现引导**（做完练习题后）— **主动提示**用户查看本课配套的Python代码实现，鼓励动手实践
-   - 用户选择查看代码：读取并展示 `code/XX_xxx.py`，解析关键实现
-   - 用户选择跳过：直接进入下一步导航
-7. **下一步导航** — 学习下一课 / 返回课程列表 / 进入考试
+- 选择题 5 题，每题 5 分，共 25 分
+- 填空题 3 题，每题 10 分，共 30 分
+- 大题 3 题，每题 15 分，共 45 分
+- 总分固定 100 分
 
-**流程设计意图**：
-- 学完理论 → 综合面板展示所有选项 → 用户自主选择下一步
-- 做题后主动引导代码实践，形成"学→练→实践"的完整闭环
+执行顺序：
 
-**学习特色**：
-- 启发式教学：强调理解而非记忆，通过4个提问角度引导深度思考
-- 知识连贯：每个提问点都关联前置课程，构建知识体系
-- 灵活学习：综合面板同时展示所有选项，用户自主选择下一步
-- **代码实现**：每门课程都配有 Python 代码实现示例，帮助开发者动手实践
+1. 用 `scripts exam --structure` 告知考试结构。
+2. 用 `scripts exam --blueprint` 获取 11 个固定题位。
+3. 让 LLM 按题位生成题目内容，不改题型、分值、难度和字段。
+4. 展示前调用对应校验命令，必要时再用 `--validate-paper` 校验整卷。
+5. 即时反馈对错和简短说明；完整解析放到考试结束后。
+6. 需要落盘报告时，用 `scripts exam --report --username <name>`。
 
-**💡 关键交互优化 — 主动引导代码学习**：
+如果当前环境明确提供单选工具，优先用它承载选择题。
+如果当前环境没有单选工具，退化为纯文本选项输入，但仍保持同样的题位、分值和校验流程。
 
-在用户完成练习题并收到反馈后，**不要直接弹出学习导航菜单**。而是：
+需要完整出题和反馈规范时，再读：
 
-1. **首先主动提示**：
-   ```
-   💻 本课程配有 Python 代码实现，想要查看代码示例，动手实践一下吗？
+- `reference/exam-mode.md`
 
-   [查看代码实现] [跳过，继续下一课]
-   ```
+## 提示词生成模式
 
-2. **如果用户选择查看代码**：
-   - 读取并展示 `code/XX_xxx.py` 文件内容
-   - 解析代码结构和关键实现
-   - 然后提示：学习下一课 / 返回课程列表
+执行顺序：
 
-3. **如果用户选择跳过**：
-   - 直接提示：学习下一课 / 返回课程列表 / 进入考试
+1. 用 `scripts generate --workflow --topic "<主题>"` 获取固定工作流和必填槽位。
+2. 通过头脑风暴补齐 `task`、`input`、`output_format`、`constraints`、`quality_bar`。
+3. 用 `scripts generate --validate-slots` 校验槽位是否齐全。
+4. 让 LLM 生成提示词草稿。
+5. 用 `scripts generate --review-checklist --topic "<主题>"` 获取审查清单。
+6. 逐项审查，只修改不合格项。
+7. 用 `scripts generate --validate-draft --topic "<主题>"` 校验草稿和审查记录。
 
-**为什么这样设计？**
-- 避免用户从多个选项的菜单中自己找"查看代码"
-- 在做完练习题、知识最热的时候，主动引导实践
-- 形成"学→练→实践"的自然流程
+需要完整引导话术时，再读：
 
-**📚 课程配套代码**：
-每门课程都提供完整的 Python 代码实现，位置在 `code/` 目录：
-- `code/01_zero_shot.py` - 零样本提示
-- `code/02_few_shot.py` - 少样本提示
-- `code/03_cot.py` - 思维链提示
-- `code/04_self_consistency.py` - 自我一致性
-- `code/05_tot.py` - 思维树
-- `code/06_generated_knowledge.py` - 生成知识提示
-- `code/07_rag.py` - 检索增强生成
-- `code/08_prompt_chaining.py` - 链式提示
-- `code/09_react.py` - ReAct框架
-- `code/10_pal.py` - 程序辅助语言模型
-- `code/11_art.py` - 自动推理和工具使用
-- `code/12_ape.py` - 自动提示工程师
-- `code/13_active_prompt.py` - 主动提示
-- `code/14_dsp.py` - 方向性刺激提示
-- `code/15_reflexion.py` - 自我反思
-- `code/16_multimodal_cot.py` - 多模态思维链
-- `code/17_graph_prompt.py` - 图形提示
+- `reference/prompt-generation-mode.md`
 
-**💻 代码示例特色**：
-- 每个文件包含完整的可运行示例
-- 通用工具函数集中在 `code/utils.py`
-- 展示核心算法和实现逻辑
-- 适合开发者学习后直接实践
+## 提示词分析与学习辅导
 
-**📖 代码查看的时机和方式**：
+如果用户不是要正式进入三大模式，而是想：
 
-**最佳时机**：用户完成练习题后（知识正处于应用状态）
+- 分析某段提示词的问题
+- 诊断输出不稳定、格式错误、幻觉、冗长等现象
+- 让你推荐某种提示词模式
+- 追问某个提示技术的差异、边界和适用场景
 
-**展示方式**：
-1. 读取对应课程的代码文件（如 `code/06_generated_knowledge.py`）
-2. 分块解析展示：
-   - 核心函数实现
-   - 关键参数说明
-   - 运行示例
-3. 用简洁的语言解释代码逻辑，不要只是贴代码
+先判断是否能直接回答；需要更系统的辅助材料时，按需读取：
 
-**引导语示例**：
-```
-💻 代码实现：生成知识提示
+- `reference/common-problems.md`
+- `reference/prompt-patterns.md`
+- `reference/faq.md`
 
-这段代码展示了两阶段处理的核心逻辑：
+回答时优先给出：
 
-【阶段1 - 生成知识】
-让模型先列出与问题相关的背景知识...
+1. 问题定位
+2. 原因解释
+3. 可直接复用的改写建议
+4. 适合继续学习的课程编号
 
-【阶段2 - 基于知识回答】
-将生成的知识作为上下文，再提出问题...
+## 课程与代码映射
 
-【关键设计】
-- temperature=0.7 允许创造性生成知识
-- 明确分隔两个阶段，确保知识显式化
-```
+课程和代码一一对应，按编号读取即可：
 
-详细说明：[reference/learning-mode.md](reference/learning-mode.md)
-课程内容：[courses/](courses/README.md)
-代码示例：[code/](code/README.md)
-
----
-
-### 2. 考试模式
-
-用户选择「考试」后，直接进入分层递进式考试（无需选择难度），共10-12题：
-
-**考试结构**：
-- **第一部分：选择题（5题，25分）**
-  - 涵盖初级、中级、高级、专家所有难度
-  - 使用 Question 工具交互
-  - 考察概念理解、场景判断、技术选型
-  - **⚠️ 重要：每道题的正确答案必须随机分布在A、B、C、D中，不要固定位置**
-  
-- **第二部分：填空题（3-4题，30-40分）**
-  - 全部中级及以上难度
-  - 考察技术运用、原理掌握、关键参数
-  
-- **第三部分：大题（2-3题，30-45分）**
-  - 全部中级及以上难度
-  - 考察提示词设计、多技术融合、系统思维
-
-**考试特色**：
-- 即时反馈：每题答完立即告知对错
-- 严厉评价：考试结束提供严厉但建设性的评价
-- 深度解析：选择题/填空题150字内精要解析，大题300字内深度剖析
-- 结果保存：自动保存完整考试报告到 `exam-result/` 目录
-
-详细说明：[reference/exam-mode.md](reference/exam-mode.md)
-
----
-
-### 3. 提示词生成模式
-
-用户选择「提示词生成」后，通过头脑风暴帮助用户梳理需求，生成高质量提示词。
-
-详细说明：[reference/prompt-generation-mode.md](reference/prompt-generation-mode.md)
-
----
-
-常见问题：[reference/faq.md](reference/faq.md)
+- 01 `零样本提示` -> `code/01_zero_shot.py`
+- 02 `少样本提示` -> `code/02_few_shot.py`
+- 03 `思维链提示` -> `code/03_cot.py`
+- 04 `自我一致性` -> `code/04_self_consistency.py`
+- 05 `思维树` -> `code/05_tot.py`
+- 06 `生成知识提示` -> `code/06_generated_knowledge.py`
+- 07 `检索增强生成` -> `code/07_rag.py`
+- 08 `链式提示` -> `code/08_prompt_chaining.py`
+- 09 `ReAct框架` -> `code/09_react.py`
+- 10 `程序辅助语言模型` -> `code/10_pal.py`
+- 11 `自动推理和工具使用` -> `code/11_art.py`
+- 12 `自动提示工程师` -> `code/12_ape.py`
+- 13 `主动提示` -> `code/13_active_prompt.py`
+- 14 `方向性刺激提示` -> `code/14_dsp.py`
+- 15 `自我反思` -> `code/15_reflexion.py`
+- 16 `多模态思维链` -> `code/16_multimodal_cot.py`
+- 17 `图形提示` -> `code/17_graph_prompt.py`
