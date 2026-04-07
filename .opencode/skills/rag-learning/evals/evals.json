@@ -1,35 +1,90 @@
 {
   "skill_name": "rag-learning",
+  "version": "1.1.1",
   "evals": [
     {
       "id": 1,
+      "name": "学习课程-基础入门分流",
       "prompt": "我想学习 RAG 搭建，从基础开始",
-      "expected_output": "应该展示学习模式课程列表，引导用户选择课程",
-      "files": []
+      "expected_output": "应该路由到学习课程，先判断用户基础，再推荐少量起始课程，而不是一次展示全部内容",
+      "files": [],
+      "assertions": [
+        {"type": "contains_any", "value": ["基础", "入门", "起点", "零基础"]},
+        {"type": "contains_any", "value": ["课程", "01", "02", "03"]},
+        {"type": "contains_any", "value": ["推荐", "先学", "建议从", "学习路径"]}
+      ]
     },
     {
       "id": 2,
+      "name": "实战搭建-客服机器人分流",
       "prompt": "我要搭建一个客服机器人 RAG 系统",
-      "expected_output": "应该进入实战模式，引导用户选择技术栈并搭建系统",
-      "files": []
+      "expected_output": "应该路由到实战搭建，先确认关键约束，再只推进一个核心决策，不应一次性输出完整大而全方案",
+      "files": [],
+      "assertions": [
+        {"type": "contains_any", "value": ["客服机器人", "实战", "搭建"]},
+        {"type": "contains_any", "value": ["场景", "数据", "预算", "部署", "语言"]},
+        {"type": "contains_any", "value": ["当前决策", "推荐方案", "下一步", "先确认"]}
+      ]
     },
     {
       "id": 3,
+      "name": "专题问答-Embedding模型选择",
       "prompt": "如何选择 Embedding 模型？",
-      "expected_output": "应该展示 Embedding 模型选择指南和推荐",
-      "files": []
+      "expected_output": "应该直接进入专题问答，先给结论和选择标准，不应先要求用户在学习或实战模式中做选择",
+      "files": [],
+      "assertions": [
+        {"type": "contains", "value": "Embedding"},
+        {"type": "contains_any", "value": ["语言", "成本", "精度", "部署"]},
+        {"type": "contains_any", "value": ["结论", "推荐", "适合", "选择标准"]}
+      ]
     },
     {
       "id": 4,
+      "name": "专题问答-向量数据库选型",
       "prompt": "我想了解向量数据库有哪些选择",
-      "expected_output": "应该介绍主流向量数据库及选型建议",
-      "files": []
+      "expected_output": "应该直接介绍主流向量数据库与选型维度，并给出按场景的默认建议",
+      "files": [],
+      "assertions": [
+        {"type": "contains_any", "value": ["向量数据库", "Chroma", "Qdrant", "Milvus", "Pinecone"]},
+        {"type": "contains_any", "value": ["规模", "预算", "部署", "过滤"]},
+        {"type": "contains_any", "value": ["建议", "适合", "默认", "起步"]}
+      ]
     },
     {
       "id": 5,
+      "name": "专题问答-RAG与微调对比",
       "prompt": "RAG 和微调有什么区别？什么时候用哪个？",
-      "expected_output": "应该解释 RAG vs 微调的区别和适用场景",
-      "files": []
+      "expected_output": "应该直接解释区别、适用场景与推荐选择，不应强行切回课程模式",
+      "files": [],
+      "assertions": [
+        {"type": "contains", "value": "RAG"},
+        {"type": "contains_any", "value": ["微调", "Fine-tuning", "区别"]},
+        {"type": "contains_any", "value": ["适用场景", "什么时候", "选择建议", "推荐"]}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "意图不明确-菜单降级",
+      "prompt": "我想了解 RAG，但不知道该先学还是先做项目",
+      "expected_output": "应该先显示简短三选一菜单，并等待用户选择，而不是直接给学习建议或项目路线",
+      "files": [],
+      "assertions": [
+        {"type": "contains_any", "value": ["学习课程", "实战搭建", "专题问答"]},
+        {"type": "contains_any", "value": ["1.", "2.", "3.", "你现在更需要哪一种", "更需要哪一种"]},
+        {"type": "contains_any", "value": ["选一个", "告诉我你想走哪一条", "你选一个", "我再继续"]}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "实战搭建-中文PDF知识库原型",
+      "prompt": "我有中文 PDF 文档，预算一般，想先做一个内部知识库问答原型",
+      "expected_output": "应该进入实战搭建，结合中文、PDF、原型和预算约束，优先推荐合适的 Embedding、分块和向量库起点",
+      "files": [],
+      "assertions": [
+        {"type": "contains_any", "value": ["中文", "PDF", "知识库", "原型"]},
+        {"type": "contains_any", "value": ["Embedding", "分块", "向量数据库", "Chroma", "Qdrant", "bge", "text-embedding"]},
+        {"type": "contains_any", "value": ["预算", "起步", "推荐", "下一步"]}
+      ]
     }
   ]
 }
