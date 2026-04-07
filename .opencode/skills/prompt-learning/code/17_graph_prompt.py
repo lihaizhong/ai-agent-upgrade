@@ -1,7 +1,7 @@
 """
-17 - 图形提示 (Graph Prompting)
+17 - 图提示 (Graph Prompting)
 
-图形提示利用图结构数据进行学习和推理。
+图提示利用图结构数据进行学习和推理。
 核心：将图结构信息转换为模型可以理解的提示。
 
 适用场景：
@@ -78,7 +78,7 @@ class GraphPrompting:
     def solve_task(self, task: str) -> dict:
         """使用图提示解决任务"""
         print("=" * 60)
-        print("图形提示 (Graph Prompting)")
+        print("图提示 (Graph Prompting)")
         print("=" * 60)
 
         print(f"\n图结构：\n{self.to_textual_description()}")
@@ -147,7 +147,7 @@ def knowledge_graph_example():
 
 def main():
     print("=" * 60)
-    print("图形提示 (Graph Prompting) 示例")
+    print("图提示 (Graph Prompting) 示例")
     print("=" * 60)
 
     print("\n【示例1】社交网络分析")

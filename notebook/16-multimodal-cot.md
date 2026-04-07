@@ -4,7 +4,7 @@ difficulty: 专家
 type: 前沿技术
 year: 2023
 author: Zhang et al.
-paper_url: https://arxiv.org/abs/2305.08300
+paper_url: https://arxiv.org/abs/2302.00923
 applications: 科学问答, 图像问答, 数学问题, 医学诊断
 ---
 
@@ -17,8 +17,8 @@ applications: 科学问答, 图像问答, 数学问题, 医学诊断
 ### Multimodal CoT 的定义
 
 Multimodal CoT 是一个两阶段的多模态推理框架：
-- **第一阶段**：基于多模态信息（文本+视觉）生成理性推理
-- **第二阶段**：利用生成的理性信息推断答案
+- **第一阶段**：基于多模态信息（文本+视觉）生成推理依据
+- **第二阶段**：利用生成的推理依据推断答案
 - **多模态整合**：同时处理文本和视觉输入
 - **推理增强**：通过多模态信息增强推理能力
 
@@ -45,9 +45,9 @@ Multimodal CoT 的核心思想是：
 
 ### 两阶段框架
 
-#### 第一阶段：理性生成（Rationale Generation）
+#### 第一阶段：推理依据生成（Rationale Generation）
 
-**目的**：基于多模态信息生成理性推理
+**目的**：基于多模态信息生成推理依据
 
 **输入**：
 - 文本输入（问题、选项等）
@@ -57,23 +57,23 @@ Multimodal CoT 的核心思想是：
 1. 提取文本特征
 2. 提取视觉特征
 3. 融合多模态特征
-4. 生成理性推理
+4. 生成推理依据
 
 **输出**：
-- 理性推理文本
+- 推理依据文本
 
 #### 第二阶段：答案推断（Answer Inference）
 
-**目的**：利用生成的理性信息推断答案
+**目的**：利用生成的推理依据推断答案
 
 **输入**：
 - 原始文本输入
 - 原始视觉输入
-- 生成的理性推理
+- 生成的推理依据
 
 **过程**：
 1. 重新提取文本和视觉特征
-2. 与理性推理特征融合
+2. 与推理依据特征融合
 3. 推断最终答案
 
 **输出**：
@@ -86,18 +86,18 @@ Multimodal CoT 的核心思想是：
 ├── 文本输入（问题、选项）
 └── 视觉输入（图像、图表）
     ↓
-第一阶段：理性生成
+第一阶段：推理依据生成
 ├── 文本编码器
 ├── 视觉编码器
 ├── 特征融合
-└── 理性生成器
+└── 推理依据生成器
     ↓
-理性推理文本
+推理依据文本
     ↓
 第二阶段：答案推断
 ├── 文本编码器
 ├── 视觉编码器
-├── 理性编码器
+├── 推理依据编码器
 ├── 特征融合
 └── 答案推断器
     ↓
@@ -193,7 +193,7 @@ class MultimodalFusion(nn.Module):
         return fused_features
 
 class RationaleGenerator(nn.Module):
-    """理性生成器"""
+    """推理依据生成器"""
     
     def __init__(self, hidden_size: int, vocab_size: int):
         super().__init__()
@@ -208,7 +208,7 @@ class RationaleGenerator(nn.Module):
         fused_features: torch.Tensor,
         target_tokens: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
-        """生成理性推理"""
+        """生成推理依据"""
         # 将融合特征作为内存
         memory = fused_features.unsqueeze(0)
         
@@ -306,7 +306,7 @@ class MultimodalCoT(nn.Module):
         self.text_encoder = TextEncoder(text_model_name)
         self.vision_encoder = VisionEncoder(vision_model_name)
         
-        # 第一阶段：理性生成
+        # 第一阶段：推理依据生成
         self.rationale_fusion = MultimodalFusion(
             self.text_encoder.hidden_size,
             self.vision_encoder.hidden_size,
@@ -333,19 +333,19 @@ class MultimodalCoT(nn.Module):
         前向传播
         
         返回:
-            rationale_logits: 理性推理的 logits
+            rationale_logits: 推理依据的 logits
             answer_logits: 答案推断的 logits
         """
         # 编码文本和图像
         text_features = self.text_encoder(text)
         vision_features = self.vision_encoder(image)
         
-        # 第一阶段：生成理性推理
+        # 第一阶段：生成推理依据
         fused_features = self.rationale_fusion(text_features, vision_features)
         rationale_logits = self.rationale_generator(fused_features, target_rationale)
         
         # 第二阶段：推断答案
-        # 使用融合特征作为理性特征（简化）
+        # 使用融合特征作为推理依据特征（简化）
         answer_logits = self.answer_inference(
             text_features,
             vision_features,
@@ -361,7 +361,7 @@ class MultimodalCoT(nn.Module):
         max_length: int = 256,
         temperature: float = 0.7
     ) -> str:
-        """生成理性推理文本"""
+        """生成推理依据文本"""
         self.eval()
         
         with torch.no_grad():
@@ -372,7 +372,7 @@ class MultimodalCoT(nn.Module):
             # 融合
             fused_features = self.rationale_fusion(text_features, vision_features)
             
-            # 生成理性推理
+            # 生成推理依据
             rationale_tokens = self._generate(
                 self.rationale_generator,
                 fused_features,
@@ -396,7 +396,7 @@ class MultimodalCoT(nn.Module):
             text_features = self.text_encoder(text)
             vision_features = self.vision_encoder(image)
             
-            # 编码理性推理
+            # 编码推理依据
             rationale_features = self.text_encoder(rationale)
             
             # 融合
@@ -510,7 +510,7 @@ def validate(
             # 推断答案
             predictions = []
             for text, image in zip(texts, images):
-                # 生成理性推理
+                # 生成推理依据
                 rationale = model.generate_rationale(text, image)
                 
                 # 推断答案
@@ -542,7 +542,7 @@ def validate(
 ### 优势
 
 1. **多模态整合**：有效整合文本和视觉信息
-2. **推理增强**：通过理性推理增强答案推断
+2. **推理增强**：通过推理依据增强答案推断
 3. **性能提升**：显著优于单模态方法
 4. **模型效率**：小模型也能达到优异性能
 
@@ -594,7 +594,7 @@ def validate(
 
 ### 2. 推理能力增强
 
-- **显式推理**：生成显式的理性推理
+- **显式推理**：生成显式的推理依据
 - **推理引导**：推理引导答案推断
 - **可解释性**：推理过程可解释
 

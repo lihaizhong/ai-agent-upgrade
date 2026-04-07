@@ -2,9 +2,9 @@
 category: 工具使用
 difficulty: 专家
 type: 工具技术
-year: 2022
+year: 2023
 author: Paranjape et al.
-paper_url: https://arxiv.org/abs/2210.03629
+paper_url: https://arxiv.org/abs/2303.09014
 applications: 数据分析, 代码生成, 科学研究, 自动化工作流
 ---
 

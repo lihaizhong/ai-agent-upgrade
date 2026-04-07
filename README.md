@@ -48,18 +48,18 @@
 
 ### 知识技术（中级）
 
-- [06 - 生成知识提示](notebook/06-knowledge-prompting.md) - 中级 | 知识技术 | 2022 | Liu et al.
+- [06 - 生成知识提示](notebook/06-knowledge-prompting.md) - 中级 | 知识技术 | 2021 | Liu et al.
 - [07 - 检索增强生成（RAG）](notebook/07-retrieval-augmented-generation.md) - 高级 | 知识技术 | 2020 | Lewis et al.
 
 ### 任务分解（高级）
 
-- [08 - 链式提示](notebook/08-prompt-chaining.md) - 高级 | 任务分解 | 2023 | Multiple
+- [08 - 链式提示](notebook/08-prompt-chaining.md) - 高级 | 工程模式 | 实践资料整理
 
 ### 工具使用（高级）
 
 - [09 - ReAct 框架](notebook/09-react-reason-act.md) - 高级 | 工具技术 | 2022 | Yao et al.
 - [10 - 程序辅助语言模型（PAL）](notebook/10-program-aided-language-models.md) - 高级 | 工具技术 | 2022 | Gao et al.
-- [11 - 自动推理并使用工具（ART）](notebook/11-automatic-reasoning-and-tool-use.md) - 专家 | 工具技术 | 2022 | Paranjape et al.
+- [11 - 自动推理并使用工具（ART）](notebook/11-automatic-reasoning-and-tool-use.md) - 专家 | 工具技术 | 2023 | Paranjape et al.
 
 ### 提示优化（进阶）
 
@@ -71,7 +71,7 @@
 
 - [15 - 自我反思（Reflexion）](notebook/15-reflexion.md) - 专家 | 前沿技术 | 2023 | Shinn et al.
 - [16 - 多模态思维链](notebook/16-multimodal-cot.md) - 专家 | 前沿技术 | 2023 | Zhang et al.
-- [17 - 图形提示（GraphPrompts）](notebook/17-graph-prompts.md) - 专家 | 前沿技术 | 2023 | Liu et al.
+- [17 - 图提示（GraphPrompt）](notebook/17-graph-prompt.md) - 专家 | 前沿技术 | 2023 | Liu et al.
 
 ## 🛠️ 实践项目
 

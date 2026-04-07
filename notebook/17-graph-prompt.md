@@ -4,19 +4,19 @@ difficulty: 专家
 type: 前沿技术
 year: 2023
 author: Liu et al.
-paper_url: https://arxiv.org/abs/2306.06069
+paper_url: https://arxiv.org/abs/2302.08043
 applications: 图分类, 节点分类, 链路预测, 知识图谱
 ---
 
-# GraphPrompts（图形提示）
+# GraphPrompt（图提示）
 
 ## 核心概念
 
-GraphPrompt 是由 Liu 等人（2023）介绍的一种新的图形提示框架，旨在提高下游任务的性能。这是一个将提示工程与图神经网络（Graph Neural Networks, GNNs）相结合的创新方法。
+GraphPrompt 是由 Liu 等人（2023）提出的一种新的图提示框架，旨在统一图神经网络的预训练与下游任务适配。这是一个将提示学习与图神经网络（Graph Neural Networks, GNNs）相结合的方法。
 
 ### GraphPrompt 的定义
 
-GraphPrompt 是一个图形提示框架：
+GraphPrompt 是一个图提示框架：
 - **图结构输入**：处理图结构数据
 - **提示学习**：使用提示学习范式
 - **下游任务**：提高下游任务性能
@@ -168,6 +168,8 @@ GraphPrompt 的核心思想是：
 ## GraphPrompt 的实现
 
 ### 基础实现框架
+
+下面的代码是便于理解核心机制的示意实现，不等同于论文中的原始实现细节。
 
 ```python
 import torch
@@ -843,7 +845,7 @@ def evaluate(
 
 ## 参考资料
 
-- Liu et al. (2023): "GraphPrompt: Graph Prompt Learning via Pretrained Graph Neural Networks"
+- Liu et al. (2023): "GraphPrompt: Unifying Pre-Training and Downstream Tasks for Graph Neural Networks"
 - Prompt Engineering Guide: https://www.promptingguide.ai/zh/techniques/graph
 
 ## 练习

@@ -63,7 +63,7 @@ class PromptLearningEngine:
                 "prereqs": [3],
                 "code_file": "16_multimodal_cot.py",
             },
-            17: {"name": "图形提示", "prereqs": [5], "code_file": "17_graph_prompt.py"},
+            17: {"name": "图提示", "prereqs": [5], "code_file": "17_graph_prompt.py"},
         }
 
     def _load_courses(self) -> list[dict]:
