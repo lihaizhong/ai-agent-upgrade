@@ -5,10 +5,33 @@
 
 import argparse
 import json
+import os
+import subprocess
 import sys
 
 from .engine import PromptLearningEngine
 from .exam import ExamEngine
+
+
+def resolve_username(explicit_username: str | None) -> str:
+    """解析报告使用的用户名。"""
+    if explicit_username and explicit_username.strip():
+        return explicit_username.strip()
+
+    try:
+        result = subprocess.run(
+            ["git", "config", "user.name"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        git_username = result.stdout.strip()
+        if git_username:
+            return git_username
+    except (OSError, subprocess.CalledProcessError):
+        pass
+
+    return os.environ.get("USER", "unknown")
 
 
 def build_generate_workflow(topic: str | None) -> dict:
@@ -312,9 +335,11 @@ def main():
             questions = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else []
             print(json.dumps(exam.validate_exam_paper(questions), ensure_ascii=False, indent=2))
 
-        elif args.report and args.username:
+        elif args.report:
             questions = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else []
-            report_path = exam.generate_report(questions, [], [], args.username)
+            report_path = exam.generate_report(
+                questions, [], [], resolve_username(args.username)
+            )
             print(
                 json.dumps({"report_path": report_path}, ensure_ascii=False, indent=2)
             )
