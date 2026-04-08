@@ -77,6 +77,9 @@ class PracticeService:
 
     def get_entry_points(self) -> dict:
         return {
+            "interaction": {
+                "mode": "selector",
+            },
             "question": {
                 "id": "practice-entry-selection",
                 "header": "练习中心",
@@ -108,12 +111,20 @@ class PracticeService:
         current_course_name = current_state.get("current_course_name")
         if current_course_id:
             return {
+                "interaction": {
+                    "mode": "open_ended",
+                    "prompt_hint": "根据返回的路由信息，用自然语言引导用户继续当前练习。",
+                },
                 "entry_type": "current",
                 "course_id": current_course_id,
                 "course_name": current_course_name,
                 "reason": "当前已有课程上下文，优先继续围绕该课程练习。",
             }
         return {
+            "interaction": {
+                "mode": "open_ended",
+                "prompt_hint": "根据返回的路由信息，用自然语言引导用户选择练习方向。",
+            },
             "entry_type": "targeted",
             "course_id": None,
             "course_name": None,
@@ -152,6 +163,10 @@ class PracticeService:
             question_type = "diagnose"
             course_name = COURSE_METADATA[course_id]["name"] if course_id else None
             return {
+                "interaction": {
+                    "mode": "open_ended",
+                    "prompt_hint": "根据蓝图自然组织题目，不要把蓝图本身改写成选择器。",
+                },
                 "mode": "mistake",
                 "course_id": course_id,
                 "course_name": course_name,
@@ -233,6 +248,10 @@ class PracticeService:
         }
 
         return {
+            "interaction": {
+                "mode": "open_ended",
+                "prompt_hint": "根据蓝图自然组织题目，不要把蓝图本身改写成选择器。",
+            },
             "mode": mode,
             "course_id": course_id,
             "course_name": course["name"],
@@ -324,6 +343,9 @@ class PracticeService:
         )
 
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "recorded": True,
             "event": event,
             "written_mistakes": written_mistakes,
@@ -333,7 +355,13 @@ class PracticeService:
 
     def list_open_mistakes(self, *, course_id: int | None = None) -> dict:
         if not self.mistakes_file.exists():
-            return {"count": 0, "items": []}
+            return {
+                "interaction": {
+                    "mode": "inform",
+                },
+                "count": 0,
+                "items": [],
+            }
 
         items = []
         with open(self.mistakes_file, "r", encoding="utf-8") as f:
@@ -347,6 +375,9 @@ class PracticeService:
                     continue
                 items.append(item)
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "count": len(items),
             "items": items,
         }
@@ -372,6 +403,9 @@ class PracticeService:
             reason = "已有练习记录，可以继续沿当前课程巩固。"
 
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "recent_practice_count": recent_practice_count,
             "open_mistake_count": open_mistakes["count"],
             "latest_result": latest_result,

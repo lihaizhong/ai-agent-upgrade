@@ -21,7 +21,9 @@ def _read_json(path: Path, default: dict) -> dict:
 class HomeService:
     """学习平台首页服务。"""
 
-    def __init__(self, workspace_paths: dict[str, Path], state_store: LearningStateStore):
+    def __init__(
+        self, workspace_paths: dict[str, Path], state_store: LearningStateStore
+    ):
         self.workspace_paths = workspace_paths
         self.state_store = state_store
 
@@ -69,6 +71,10 @@ class HomeService:
         if current_course_id or in_progress_course:
             target_course_id = current_course_id or in_progress_course
             return {
+                "interaction": {
+                    "mode": "open_ended",
+                    "prompt_hint": "根据返回的推荐信息，用自然语言引导用户继续学习。",
+                },
                 "action": "continue_learning",
                 "label": "继续学习",
                 "target_module": "learning",
@@ -78,6 +84,10 @@ class HomeService:
             }
 
         return {
+            "interaction": {
+                "mode": "open_ended",
+                "prompt_hint": "根据返回的推荐信息，用自然语言引导用户选择课程。",
+            },
             "action": "open_catalog",
             "label": "开始学习",
             "target_module": "learning",
@@ -92,8 +102,14 @@ class HomeService:
         mastery = self.state_store.get_mastery()
         current_action = current_state.get("recommended_next_action")
 
+        _rec_interaction = {
+            "mode": "open_ended",
+            "prompt_hint": "根据返回的推荐信息，用自然语言向用户建议下一步。",
+        }
+
         if current_action == "start_practice":
             return {
+                "interaction": _rec_interaction,
                 "action": "start_practice",
                 "label": "开始练习",
                 "reason": "当前课程已讲完，先做一道动态练习更合适。",
@@ -101,6 +117,7 @@ class HomeService:
 
         if course_progress.get("in_progress_course"):
             return {
+                "interaction": _rec_interaction,
                 "action": "continue_learning",
                 "label": "继续学习",
                 "reason": "存在进行中的课程，优先保持当前学习连续性。",
@@ -112,6 +129,7 @@ class HomeService:
         )
         if has_developing_course:
             return {
+                "interaction": _rec_interaction,
                 "action": "start_practice",
                 "label": "开始练习",
                 "reason": "已有课程掌握度仍在 developing，优先巩固更合适。",
@@ -119,12 +137,14 @@ class HomeService:
 
         if len(course_progress.get("completed_courses", [])) >= 3:
             return {
+                "interaction": _rec_interaction,
                 "action": "take_exam",
                 "label": "参加考试",
                 "reason": "已积累多门课程，适合用一次诊断考试检查薄弱点。",
             }
 
         return {
+            "interaction": _rec_interaction,
             "action": "continue_learning",
             "label": "继续学习",
             "reason": "当前最合理的下一步是继续进入课程学习。",
@@ -143,6 +163,9 @@ class HomeService:
         resume = self.get_resume_target()
 
         return {
+            "interaction": {
+                "mode": "selector",
+            },
             "user": {
                 "workspace_user": learner.get("workspace_user"),
                 "source_git_username": learner.get("source_git_username"),

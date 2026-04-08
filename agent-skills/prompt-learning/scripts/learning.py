@@ -85,6 +85,9 @@ class LearningService:
 
     def get_catalog(self) -> dict:
         result = {
+            "interaction": {
+                "mode": "selector",
+            },
             "learning_rule": "课程可以自由选择，不要求严格按顺序完成；前置课程仅用于辅助理解。",
             "categories": [],
             "question": {
@@ -105,6 +108,9 @@ class LearningService:
             ]
             result["categories"].append(
                 {
+                    "interaction": {
+                        "mode": "selector",
+                    },
                     "name": category_name,
                     "description": category["description"],
                     "course_ids": category["courses"],
@@ -166,6 +172,9 @@ class LearningService:
             if course["id"] in category_meta["courses"]
         ]
         return {
+            "interaction": {
+                "mode": "selector",
+            },
             "name": category_name,
             "description": category_meta["description"],
             "learning_rule": "可从本类别任意一课开始；如遇陌生概念，再回看前置课。",
@@ -197,6 +206,9 @@ class LearningService:
         self.state_store.start_course(course_id, COURSE_METADATA[course_id]["name"])
 
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "course_id": course_id,
             "course_name": COURSE_METADATA[course_id]["name"],
             "file_path": course["path"],
@@ -213,6 +225,9 @@ class LearningService:
             raise FileNotFoundError(f"代码文件未找到: {course['code_file']}")
 
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "course_id": course_id,
             "course_name": course["name"],
             "file_path": str(code_path),
@@ -249,6 +264,9 @@ class LearningService:
             },
         ]
         return {
+            "interaction": {
+                "mode": "selector",
+            },
             "course_id": course_id,
             "course_name": course["name"],
             "question": {
@@ -277,6 +295,9 @@ class LearningService:
 
         course = COURSE_METADATA[course_id]
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "course_id": course_id,
             "course_name": course["name"],
             "code_file": course["code_file"],
@@ -315,10 +336,16 @@ class LearningService:
         current_state = self.state_store.get_current_state()
         progress = self.state_store.get_course_progress()
 
+        _rec_interaction = {
+            "mode": "open_ended",
+            "prompt_hint": "根据返回的推荐信息，用自然语言向用户建议课程。",
+        }
+
         current_course_id = current_state.get("current_course_id")
         if current_course_id:
             course = COURSE_METADATA[current_course_id]
             return {
+                "interaction": _rec_interaction,
                 "recommendation": "存在进行中的课程，建议优先继续当前课程。",
                 "course_id": current_course_id,
                 "course_name": course["name"],
@@ -329,6 +356,7 @@ class LearningService:
         if in_progress_course:
             course = COURSE_METADATA[in_progress_course]
             return {
+                "interaction": _rec_interaction,
                 "recommendation": "存在进行中的课程，建议优先继续当前课程。",
                 "course_id": in_progress_course,
                 "course_name": course["name"],
@@ -339,6 +367,7 @@ class LearningService:
         for course in COURSE_CATALOG:
             if course["id"] not in completed:
                 return {
+                    "interaction": _rec_interaction,
                     "recommendation": f"建议从第 {course['id']:02d} 课开始，也可以改学你当前最关心的主题。",
                     "course_id": course["id"],
                     "course_name": course["name"],
@@ -346,6 +375,7 @@ class LearningService:
                 }
 
         return {
+            "interaction": _rec_interaction,
             "recommendation": "17 门课程都已完成，可以转入综合练习、考试或 Prompt Lab。",
             "course_id": None,
             "course_name": None,
@@ -358,6 +388,9 @@ class LearningService:
         course_name = COURSE_METADATA[course_id]["name"]
         progress = self.state_store.complete_course(course_id, course_name)
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "status": "completed",
             "course": course_id,
             "course_name": course_name,

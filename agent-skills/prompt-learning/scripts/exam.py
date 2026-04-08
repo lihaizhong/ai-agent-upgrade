@@ -37,6 +37,9 @@ class ExamEngine:
     def get_entry_points(self) -> dict:
         """返回考试中心入口。"""
         return {
+            "interaction": {
+                "mode": "selector",
+            },
             "question": {
                 "id": "exam-entry-selection",
                 "header": "考试中心",
@@ -71,6 +74,9 @@ class ExamEngine:
         }
         meta = type_meta.get(exam_type, type_meta["diagnostic"])
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "exam_type": exam_type,
             "exam_label": meta["label"],
             "goal": meta["goal"],
@@ -177,6 +183,9 @@ class ExamEngine:
         }
         meta = type_meta.get(exam_type, type_meta["diagnostic"])
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "exam_type": exam_type,
             "exam_label": meta["label"],
             "goal": meta["goal"],
@@ -582,6 +591,9 @@ class ExamService:
             recommended_next_action="review_weak_topics",
         )
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "recorded": True,
             "entry": entry,
         }
@@ -589,6 +601,9 @@ class ExamService:
     def get_history_summary(self) -> dict:
         if not self.exam_history_file.exists():
             return {
+                "interaction": {
+                    "mode": "inform",
+                },
                 "count": 0,
                 "latest": None,
                 "latest_weak_topics": [],
@@ -599,6 +614,9 @@ class ExamService:
 
         latest = rows[-1] if rows else None
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "count": len(rows),
             "latest": latest,
             "latest_weak_topics": latest.get("weak_topics", []) if latest else [],

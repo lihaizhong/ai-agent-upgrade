@@ -42,6 +42,9 @@ class ProfileService:
 
     def get_progress(self) -> dict:
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "current_state": self.state_store.get_current_state(),
             "course_progress": self.state_store.get_course_progress(),
             "mastery": self.state_store.get_mastery(),
@@ -51,6 +54,9 @@ class ProfileService:
         rows = self._read_jsonl(self.workspace_paths["mistakes_file"])
         open_items = [row for row in rows if row.get("status") == "open"]
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "count": len(rows),
             "open_count": len(open_items),
             "items": rows,
@@ -59,6 +65,9 @@ class ProfileService:
     def get_exam_history(self) -> dict:
         rows = self._read_jsonl(self.workspace_paths["exam_history_file"])
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "count": len(rows),
             "items": rows,
         }
@@ -69,6 +78,9 @@ class ProfileService:
             {"templates": [], "updated_at": None},
         )
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "count": len(payload.get("templates", [])),
             "items": payload.get("templates", []),
             "updated_at": payload.get("updated_at"),
@@ -83,6 +95,9 @@ class ProfileService:
         templates = self.get_templates()
 
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "current": {
                 "module": current_state.get("current_module"),
                 "course_id": current_state.get("current_course_id"),

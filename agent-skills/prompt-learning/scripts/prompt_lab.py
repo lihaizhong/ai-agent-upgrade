@@ -19,6 +19,9 @@ def _timestamp() -> str:
 
 def build_workflow(topic: str | None = None) -> dict:
     return {
+        "interaction": {
+            "mode": "inform",
+        },
         "topic": topic,
         "workflow": [
             "先收集任务目标、输入、输出、限制",
@@ -46,6 +49,9 @@ def build_workflow(topic: str | None = None) -> dict:
 
 def build_review_checklist(topic: str | None = None) -> dict:
     return {
+        "interaction": {
+            "mode": "inform",
+        },
         "topic": topic,
         "checklist": [
             "任务目标是否单一明确",
@@ -60,36 +66,60 @@ def build_review_checklist(topic: str | None = None) -> dict:
 
 def build_interview_blueprint(topic: str | None = None) -> dict:
     return {
+        "interaction": {
+            "mode": "inform",
+            "note": "每个 slot 是开放式追问，由 LLM 逐个引导用户填写，不要把 slot 做成选择器。",
+        },
         "topic": topic,
         "goal": "先补齐稳定槽位，再生成提示词初稿",
         "slots": [
             {
                 "name": "task",
                 "required": True,
+                "interaction": {
+                    "mode": "open_ended",
+                    "prompt_hint": "用自然语言追问用户想让 AI 完成的具体任务目标。",
+                },
                 "question": "你希望 AI 最终完成什么任务？",
                 "examples": ["总结会议纪要", "把产品评论翻译成中文并保留情感"],
             },
             {
                 "name": "input",
                 "required": True,
+                "interaction": {
+                    "mode": "open_ended",
+                    "prompt_hint": "用自然语言追问输入材料、字段和上下文来源。",
+                },
                 "question": "AI 会拿到什么输入？输入里有哪些字段或材料？",
                 "examples": ["一段用户评论", "一份 Markdown 文档和一张表格"],
             },
             {
                 "name": "output_format",
                 "required": True,
+                "interaction": {
+                    "mode": "open_ended",
+                    "prompt_hint": "用自然语言追问输出形式、字段和格式约束。",
+                },
                 "question": "你希望输出长什么样？是段落、列表、JSON 还是表格？",
                 "examples": ["JSON", "三段式总结", "固定字段表格"],
             },
             {
                 "name": "constraints",
                 "required": True,
+                "interaction": {
+                    "mode": "open_ended",
+                    "prompt_hint": "用自然语言追问限制条件、禁区和必须遵守的规则。",
+                },
                 "question": "有哪些限制、禁区或必须遵守的规则？",
                 "examples": ["不要编造来源", "只返回中文", "不得超过 200 字"],
             },
             {
                 "name": "quality_bar",
                 "required": True,
+                "interaction": {
+                    "mode": "open_ended",
+                    "prompt_hint": "用自然语言追问用户如何定义合格结果和最看重的质量标准。",
+                },
                 "question": "什么样的结果才算合格？你最看重准确、完整、速度还是风格？",
                 "examples": ["格式稳定", "专业术语准确", "可直接复制给客户"],
             },
@@ -110,6 +140,9 @@ def validate_slots(payload: dict, required_slots: list[str]) -> dict:
             empty.append(slot)
 
     return {
+        "interaction": {
+            "mode": "inform",
+        },
         "valid": not missing and not empty,
         "missing_slots": missing,
         "empty_slots": empty,
@@ -146,6 +179,9 @@ def validate_draft(payload: dict, checklist: list[str]) -> dict:
         errors.append("存在未通过项时，必须提供 revisions")
 
     return {
+        "interaction": {
+            "mode": "inform",
+        },
         "valid": not errors,
         "failed_items": failed_items,
         "errors": errors,
@@ -197,7 +233,13 @@ class PromptLabService:
         if not isinstance(slots, dict) or not slots:
             errors.append("slots 必须是非空对象")
         if errors:
-            return {"saved": False, "errors": errors}
+            return {
+                "interaction": {
+                    "mode": "inform",
+                },
+                "saved": False,
+                "errors": errors,
+            }
 
         template_index = self._load_template_index()
         next_index = len(template_index.get("templates", [])) + 1
@@ -238,6 +280,9 @@ class PromptLabService:
         )
 
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "saved": True,
             "template_id": template_id,
             "path": str(template_path),
@@ -246,6 +291,9 @@ class PromptLabService:
     def list_templates(self) -> dict:
         template_index = self._load_template_index()
         return {
+            "interaction": {
+                "mode": "inform",
+            },
             "count": len(template_index.get("templates", [])),
             "templates": template_index.get("templates", []),
             "updated_at": template_index.get("updated_at"),
