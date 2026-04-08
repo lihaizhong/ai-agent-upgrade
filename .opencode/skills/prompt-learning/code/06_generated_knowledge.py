@@ -10,7 +10,10 @@
 适用场景：需要模型固有知识的问题、避免幻觉
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 def generated_knowledge_prompt(question: str) -> dict:

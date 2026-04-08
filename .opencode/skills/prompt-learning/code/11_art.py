@@ -12,7 +12,10 @@ ART (Automatic Reasoning and Tool-use) 让模型自动选择和使用工具。
 注意：这是一个简化框架，展示核心逻辑。
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 class Tool:

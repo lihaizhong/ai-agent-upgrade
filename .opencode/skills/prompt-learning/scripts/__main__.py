@@ -52,6 +52,13 @@ def build_generate_workflow(topic: str | None) -> dict:
             "constraints",
             "quality_bar",
         ],
+        "interview_order": [
+            "task",
+            "input",
+            "output_format",
+            "constraints",
+            "quality_bar",
+        ],
     }
 
 
@@ -66,6 +73,46 @@ def build_generate_checklist(topic: str | None) -> dict:
             "约束条件是否可执行",
             "是否明确了失败或边界处理方式",
             "是否避免了重复或冲突指令",
+        ],
+    }
+
+
+def build_generate_interview(topic: str | None) -> dict:
+    """返回提示词生成模式的固定澄清槽位。"""
+    return {
+        "topic": topic,
+        "goal": "先补齐稳定槽位，再生成提示词初稿",
+        "slots": [
+            {
+                "name": "task",
+                "required": True,
+                "question": "你希望 AI 最终完成什么任务？",
+                "examples": ["总结会议纪要", "把产品评论翻译成中文并保留情感"],
+            },
+            {
+                "name": "input",
+                "required": True,
+                "question": "AI 会拿到什么输入？输入里有哪些字段或材料？",
+                "examples": ["一段用户评论", "一份 Markdown 文档和一张表格"],
+            },
+            {
+                "name": "output_format",
+                "required": True,
+                "question": "你希望输出长什么样？是段落、列表、JSON 还是表格？",
+                "examples": ["JSON", "三段式总结", "固定字段表格"],
+            },
+            {
+                "name": "constraints",
+                "required": True,
+                "question": "有哪些限制、禁区或必须遵守的规则？",
+                "examples": ["不要编造来源", "只返回中文", "不得超过 200 字"],
+            },
+            {
+                "name": "quality_bar",
+                "required": True,
+                "question": "什么样的结果才算合格？你最看重准确、完整、速度还是风格？",
+                "examples": ["格式稳定", "专业术语准确", "可直接复制给客户"],
+            },
         ],
     }
 
@@ -141,6 +188,10 @@ def main():
     parser_learn.add_argument("--category", type=str, help="按类别列出课程")
     parser_learn.add_argument("--content", action="store_true", help="获取课程内容")
     parser_learn.add_argument("--code", action="store_true", help="获取代码实现")
+    parser_learn.add_argument("--panel", action="store_true", help="获取课程完成后的下一步面板")
+    parser_learn.add_argument(
+        "--code-outline", action="store_true", help="获取固定代码讲解结构"
+    )
     parser_learn.add_argument("--next", action="store_true", help="获取下一课推荐")
     parser_learn.add_argument("--complete", action="store_true", help="标记课程完成")
     parser_learn.add_argument(
@@ -188,6 +239,9 @@ def main():
     )
     parser_gen.add_argument(
         "--review-checklist", action="store_true", help="获取提示词审查清单"
+    )
+    parser_gen.add_argument(
+        "--interview-blueprint", action="store_true", help="获取固定澄清槽位"
     )
     parser_gen.add_argument(
         "--validate-slots", action="store_true", help="校验提示词生成必填槽位"
@@ -281,6 +335,14 @@ def main():
                     indent=2,
                 )
             )
+
+        elif args.panel and args.course:
+            panel = engine.build_learning_panel(args.course)
+            print(json.dumps(panel, ensure_ascii=False, indent=2))
+
+        elif args.code_outline and args.course:
+            outline = engine.build_code_explanation_outline(args.course)
+            print(json.dumps(outline, ensure_ascii=False, indent=2))
 
         elif args.next:
             rec = engine.get_next_course_recommendation()
@@ -390,6 +452,12 @@ def main():
             print(
                 json.dumps(
                     build_generate_checklist(args.topic), ensure_ascii=False, indent=2
+                )
+            )
+        elif args.interview_blueprint:
+            print(
+                json.dumps(
+                    build_generate_interview(args.topic), ensure_ascii=False, indent=2
                 )
             )
         elif args.validate_slots:

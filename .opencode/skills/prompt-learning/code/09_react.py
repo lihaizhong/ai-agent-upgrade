@@ -13,7 +13,10 @@ ReAct 结合推理和行动，让模型能够与环境交互。
 实际应用中需要与真实的工具 API 集成。
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 from enum import Enum
 
 

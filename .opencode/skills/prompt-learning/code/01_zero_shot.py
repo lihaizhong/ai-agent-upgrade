@@ -15,7 +15,10 @@
 - 快速原型开发
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 def basic_zero_shot():

@@ -15,7 +15,10 @@
 - Beam（集束搜索）：平衡效率和质量
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 from enum import Enum
 
 

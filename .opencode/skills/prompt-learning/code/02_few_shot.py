@@ -13,7 +13,10 @@
 - 示例应覆盖典型场景
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 def basic_few_shot():

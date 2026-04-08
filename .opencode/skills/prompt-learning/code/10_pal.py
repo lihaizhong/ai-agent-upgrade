@@ -12,7 +12,10 @@ PAL 让 LLM 生成代码来解决问题，而不是进行自然语言推理。
 注意：需要代码执行环境（如 Python REPL）。
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 def execute_python(code: str) -> dict:

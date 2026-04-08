@@ -9,16 +9,18 @@ from typing import Optional
 try:
     from openai import OpenAI
 except ImportError:
-    client = None
+    OpenAI = None
 
 try:
     from anthropic import Anthropic
 except ImportError:
-    anthropic = None
+    Anthropic = None
 
 
 def get_openai_client():
     """获取 OpenAI 客户端"""
+    if OpenAI is None:
+        raise ImportError("未安装 openai SDK，请先安装 openai 包")
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         raise ValueError("请设置 OPENAI_API_KEY 环境变量")
@@ -27,6 +29,8 @@ def get_openai_client():
 
 def get_anthropic_client():
     """获取 Anthropic 客户端"""
+    if Anthropic is None:
+        raise ImportError("未安装 anthropic SDK，请先安装 anthropic 包")
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
         raise ValueError("请设置 ANTHROPIC_API_KEY 环境变量")

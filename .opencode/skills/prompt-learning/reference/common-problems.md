@@ -1,6 +1,6 @@
 # 常见提示词问题和解决方案
 
-本文档列出了使用提示词时常见的问题及其解决方案，帮助你快速诊断和修复提示词。
+本文档只保留“症状 -> 原因 -> 修复”的诊断视角；模式定义和通用概念分别放在 `prompt-patterns.md` 与 `faq.md`。
 
 ---
 
@@ -400,5 +400,5 @@ def process_data(data):
 
 如果本文档没有解决你的问题，可以：
 1. 查阅 `reference/faq.md` 中的常见问题
-2. 参考 `reference/prompt-patterns.md` 中的提示词模式
+2. 参考 `reference/prompt-patterns.md` 中的可复用模板
 3. 向 AI 描述你的具体问题，寻求针对性建议

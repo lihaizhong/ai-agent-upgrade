@@ -15,7 +15,10 @@
 3. 每步可独立验证
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 class PromptChain:

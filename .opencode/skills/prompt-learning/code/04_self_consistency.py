@@ -13,7 +13,10 @@
 """
 
 import re
-from utils import call_llm, extract_answer, vote_most_common
+try:
+    from .utils import call_llm, extract_answer, vote_most_common
+except ImportError:
+    from utils import call_llm, extract_answer, vote_most_common
 
 
 def self_consistency(

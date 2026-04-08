@@ -13,7 +13,10 @@ DSP (Directional Stimulus Prompting) 使用强化学习优化提示词。
 真正的 DSP 需要强化学习环境和大量训练。
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 class DirectionalStimulusPrompting:

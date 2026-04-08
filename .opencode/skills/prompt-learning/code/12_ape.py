@@ -10,7 +10,10 @@ APE (Automatic Prompt Engineer) 自动生成和优化提示词。
 3. 选择：选出效果最好的提示
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 def generate_candidate_prompts(task: str, n_candidates: int = 5) -> list:

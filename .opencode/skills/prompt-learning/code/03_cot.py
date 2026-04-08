@@ -11,7 +11,10 @@
 适用场景：数学推理、逻辑分析、多步决策
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 def zero_shot_cot():

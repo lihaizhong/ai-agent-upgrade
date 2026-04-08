@@ -14,7 +14,10 @@
 适用场景：需要从错误中学习的复杂任务
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 class ReflexionAgent:

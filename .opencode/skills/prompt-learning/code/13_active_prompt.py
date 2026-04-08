@@ -10,7 +10,10 @@
 3. 选择一致性最低的问题优先获取示例
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 from collections import Counter
 
 

@@ -13,7 +13,10 @@
 注意：这是一个简化框架，实际需要视觉模型支持。
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 class MultimodalCoT:

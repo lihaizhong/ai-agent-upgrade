@@ -7,20 +7,12 @@ import random
 from pathlib import Path
 from typing import Optional
 
+from .course_catalog import CATEGORY_METADATA, CATEGORY_ORDER, COURSE_CATALOG, COURSE_METADATA
 from .state import UserState
 
 
 class PromptLearningEngine:
     """学习系统核心引擎"""
-
-    CATEGORY_ORDER = [
-        "基础课程",
-        "推理课程",
-        "知识课程",
-        "工具课程",
-        "优化课程",
-        "前沿课程",
-    ]
 
     def __init__(self, skill_dir: Optional[str] = None):
         if skill_dir is None:
@@ -31,117 +23,52 @@ class PromptLearningEngine:
 
     def _load_deps(self) -> dict:
         """加载课程依赖关系"""
-        return {
-            1: {"name": "零样本提示", "prereqs": [], "code_file": "01_zero_shot.py"},
-            2: {"name": "少样本提示", "prereqs": [1], "code_file": "02_few_shot.py"},
-            3: {"name": "思维链提示", "prereqs": [2], "code_file": "03_cot.py"},
-            4: {
-                "name": "自我一致性",
-                "prereqs": [3],
-                "code_file": "04_self_consistency.py",
-            },
-            5: {"name": "思维树", "prereqs": [3, 4], "code_file": "05_tot.py"},
-            6: {
-                "name": "生成知识提示",
-                "prereqs": [3],
-                "code_file": "06_generated_knowledge.py",
-            },
-            7: {"name": "检索增强生成", "prereqs": [6], "code_file": "07_rag.py"},
-            8: {
-                "name": "链式提示",
-                "prereqs": [3],
-                "code_file": "08_prompt_chaining.py",
-            },
-            9: {"name": "ReAct框架", "prereqs": [3, 8], "code_file": "09_react.py"},
-            10: {"name": "程序辅助语言模型", "prereqs": [3], "code_file": "10_pal.py"},
-            11: {
-                "name": "自动推理和工具使用",
-                "prereqs": [9],
-                "code_file": "11_art.py",
-            },
-            12: {"name": "自动提示工程师", "prereqs": [1], "code_file": "12_ape.py"},
-            13: {
-                "name": "主动提示",
-                "prereqs": [2],
-                "code_file": "13_active_prompt.py",
-            },
-            14: {"name": "方向性刺激提示", "prereqs": [3], "code_file": "14_dsp.py"},
-            15: {"name": "自我反思", "prereqs": [3, 9], "code_file": "15_reflexion.py"},
-            16: {
-                "name": "多模态思维链",
-                "prereqs": [3],
-                "code_file": "16_multimodal_cot.py",
-            },
-            17: {"name": "图提示", "prereqs": [5], "code_file": "17_graph_prompt.py"},
-        }
+        return COURSE_METADATA
 
     def _load_courses(self) -> list[dict]:
         """加载课程列表"""
         courses = []
-        courses_dir = self.skill_dir / "courses"
-        deps = self._load_deps()
-        course_summaries = {
-            1: "入门必学，学会直接给模型下清晰指令",
-            2: "通过示例约束输出格式和风格",
-            3: "让模型显式展开推理步骤",
-            4: "多次采样后投票，降低单次推理偏差",
-            5: "把复杂问题扩展成树状探索过程",
-            6: "先激活相关知识，再组织回答",
-            7: "结合外部知识库，降低知识过期和幻觉",
-            8: "把任务拆成多个串联步骤执行",
-            9: "让模型在推理和行动之间循环",
-            10: "把推理转成代码执行，提升计算可靠性",
-            11: "自动选择工具与推理步骤完成任务",
-            12: "自动生成和搜索更优提示词",
-            13: "动态挑选最有帮助的示例",
-            14: "通过刺激信号引导模型朝目标输出",
-            15: "基于失败反馈持续自我修正",
-            16: "把视觉信息纳入链式推理",
-            17: "用图结构组织提示与关系推理",
-        }
-        for i in range(1, 18):
-            matches = list(courses_dir.glob(f"{i:02d}-*.md"))
-            if matches:
+        missing_course_files = []
+        missing_code_files = []
+
+        for course in COURSE_CATALOG:
+            course_path = self.skill_dir / "courses" / course["course_file"]
+            code_path = self.skill_dir / "code" / course["code_file"]
+            if course_path.exists():
                 courses.append(
                     {
-                        "id": i,
-                        "name": deps[i]["name"],
-                        "file": matches[0].name,
-                        "path": str(matches[0]),
-                        "summary": course_summaries[i],
-                        "prereqs": deps[i]["prereqs"],
+                        "id": course["id"],
+                        "name": course["name"],
+                        "file": course["course_file"],
+                        "path": str(course_path),
+                        "summary": course["summary"],
+                        "prereqs": course["prereqs"],
+                        "code_file": course["code_file"],
                     }
                 )
+            else:
+                missing_course_files.append(course["course_file"])
+
+            if not code_path.exists():
+                missing_code_files.append(course["code_file"])
+
+        errors = []
+        if missing_course_files:
+            errors.append(
+                "缺少课程文件: " + ", ".join(sorted(missing_course_files))
+            )
+        if missing_code_files:
+            errors.append(
+                "缺少代码文件: " + ", ".join(sorted(missing_code_files))
+            )
+        if errors:
+            raise FileNotFoundError("; ".join(errors))
+
         return courses
 
     def _category_map(self) -> dict[str, dict]:
         """课程类别元数据。"""
-        return {
-            "基础课程": {
-                "description": "建立提示词最基本的指令表达和示例意识。",
-                "courses": [1, 2],
-            },
-            "推理课程": {
-                "description": "学习如何让模型分步推理、投票和探索多条解法。",
-                "courses": [3, 4, 5],
-            },
-            "知识课程": {
-                "description": "处理知识注入、外部检索和多步骤任务编排。",
-                "courses": [6, 7, 8],
-            },
-            "工具课程": {
-                "description": "让模型调用工具、执行代码并与环境交互。",
-                "courses": [9, 10, 11],
-            },
-            "优化课程": {
-                "description": "关注提示词自动优化、示例选择与引导策略。",
-                "courses": [12, 13, 14],
-            },
-            "前沿课程": {
-                "description": "覆盖反馈学习、多模态推理和图结构提示等进阶主题。",
-                "courses": [15, 16, 17],
-            },
-        }
+        return CATEGORY_METADATA
 
     def _course_to_summary(self, course: dict) -> dict:
         """返回课程摘要信息。"""
@@ -172,7 +99,7 @@ class PromptLearningEngine:
             },
         }
         category_map = self._category_map()
-        for category_name in self.CATEGORY_ORDER:
+        for category_name in CATEGORY_ORDER:
             category = category_map[category_name]
             courses = [
                 self._course_to_summary(course)
@@ -355,6 +282,87 @@ class PromptLearningEngine:
             ],
             "constraints": format_rules[question_type],
             "response_schema": response_schema,
+        }
+
+    def build_learning_panel(self, course_id: int, include_code: bool = False) -> dict:
+        """返回课程学习完成后的固定下一步面板。"""
+        deps = self._load_deps()
+        if course_id not in deps:
+            raise ValueError(f"课程 {course_id} 不存在")
+
+        course = deps[course_id]
+        options = [
+            {
+                "label": "启发式提问",
+                "description": "从概念、场景、边界和迁移四个角度追问",
+                "value": "ask",
+            },
+            {
+                "label": "可选练习",
+                "description": "基于脚本蓝图做一题巩固理解",
+                "value": "practice",
+            },
+            {
+                "label": "学习导航",
+                "description": "切换课程、返回分类或继续下一课",
+                "value": "navigate",
+            },
+        ]
+        if include_code:
+            options.append(
+                {
+                    "label": "查看代码实现",
+                    "description": "按分段讲解课程配套代码",
+                    "value": "code",
+                }
+            )
+
+        return {
+            "course_id": course_id,
+            "course_name": course["name"],
+            "question": {
+                "header": "课程学习完成",
+                "question": f"「{course['name']}」学习完成，下一步做什么？",
+                "options": options,
+                "multiple": False,
+            },
+            "heuristic_prompts": [
+                "这个技术的核心作用是什么？",
+                "它最适合解决哪类问题？",
+                "它和相邻技术的边界差异是什么？",
+                "如果迁移到你的任务里，最先该改哪一段？",
+            ],
+            "navigation_actions": [
+                "继续下一课",
+                "返回分类列表",
+                "切换到指定课程",
+            ],
+        }
+
+    def build_code_explanation_outline(self, course_id: int) -> dict:
+        """返回代码讲解的固定结构，避免整段贴代码。"""
+        deps = self._load_deps()
+        if course_id not in deps:
+            raise ValueError(f"课程 {course_id} 不存在")
+
+        course = deps[course_id]
+        return {
+            "course_id": course_id,
+            "course_name": course["name"],
+            "code_file": course["code_file"],
+            "workflow": [
+                "先用 1 到 2 句话说明示例代码解决什么问题",
+                "将代码拆成 3 到 5 个片段，按执行顺序或理解顺序讲解",
+                "每个片段解释它在做什么、为什么这样写、你可以怎么改",
+                "仅在用户明确要求时展示完整代码",
+            ],
+            "sections": [
+                {"key": "setup", "title": "初始化", "focus": "依赖、配置、输入约束"},
+                {"key": "prompt", "title": "提示词或样例构造", "focus": "模板、示例、上下文"},
+                {"key": "execution", "title": "核心调用流程", "focus": "模型调用、推理、控制流"},
+                {"key": "parsing", "title": "结果解析", "focus": "输出结构、校验、后处理"},
+                {"key": "entry", "title": "运行入口", "focus": "如何触发、如何替换成你的任务"},
+            ],
         }
 
     def randomize_options(

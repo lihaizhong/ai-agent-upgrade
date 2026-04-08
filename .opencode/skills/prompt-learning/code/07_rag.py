@@ -12,7 +12,10 @@ RAG 通过检索外部知识来增强生成质量。
 生产环境建议使用 LangChain、LlamaIndex 等成熟框架。
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 import json
 
 

@@ -13,7 +13,10 @@
 注意：这是一个简化框架，展示了图提示的核心概念。
 """
 
-from utils import call_llm
+try:
+    from .utils import call_llm
+except ImportError:
+    from utils import call_llm
 
 
 class GraphPrompting:
