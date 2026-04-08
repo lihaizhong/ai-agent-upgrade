@@ -1,6 +1,6 @@
 {
   "skill_name": "prompt-learning",
-  "version": "7.0.2",
+  "version": "7.0.3",
   "evals": [
     {
       "id": 1,
@@ -19,7 +19,8 @@
       "expected_output": "展示课程列表供用户选择",
       "assertions": [
         {"type": "contains", "value": "课程"},
-        {"type": "contains_any", "value": ["零样本", "少样本", "思维链"]}
+        {"type": "contains_any", "value": ["零样本", "少样本", "思维链"]},
+        {"type": "not_contains", "value": "学完了"}
       ]
     },
     {
@@ -209,6 +210,17 @@
         {"type": "contains_any", "value": ["第7课", "RAG", "检索增强生成"]},
         {"type": "contains_any", "value": ["核心概念", "适用场景", "工作原理"]},
         {"type": "contains_any", "value": ["可直接学习", "可以直接开始", "建议先了解", "前置知识"]}
+      ]
+    },
+    {
+      "id": 22,
+      "name": "学习模式-未展示课程前不能直接结课",
+      "prompt": "进入学习模式",
+      "expected_output": "先介绍六大类课程并引导选课，不能直接说学完了或进入课后面板",
+      "assertions": [
+        {"type": "contains_any", "value": ["六大类", "基础课程", "推理课程"]},
+        {"type": "contains_any", "value": ["选择课程", "选课", "课程类别"]},
+        {"type": "not_contains", "value": "学完了"}
       ]
     }
   ]
