@@ -88,6 +88,8 @@
 
 本项目包含预配置的 AI Agents 和 Skills，详见 [AGENTS.md](AGENTS.md)。
 
+自定义 skill 统一维护在根目录 `agent-skills/`，并通过软链接暴露到 `.opencode/skills` 与 `.codex/skills`。
+
 ## 📝 许可证
 
 Apache License 2.0

@@ -72,6 +72,14 @@ Behavioral guidelines for all contributors and AI agents working on this project
 - Keep responses concise (fewer than 4 lines unless detail is requested)
 - Never generate or guess URLs unless confident they help with programming
 
+### Interaction & Change Discipline
+
+- Prefer the current AI executor's native selector UI whenever a skill, script, or existing workflow provides structured choices
+- Use plain-text numbered menus only as a fallback when the current executor clearly does not support structured selection
+- Treat structured choice payloads as the source of truth for `label`, `description`, and `value`; do not rewrite them into ad hoc menu text unless fallback is necessary
+- Do not implement UX, interaction flow, or product behavior changes before a spec change exists and plan/tasks have been created or explicitly approved
+- If the user is still exploring, discussing, or refining direction, stay in analysis mode and help produce the spec change, plan, and tasks first
+
 ### Security Rules for Agents
 
 - Never expose or log secrets and keys
@@ -86,12 +94,16 @@ Behavioral guidelines for all contributors and AI agents working on this project
 
 ```
 ai-agent-upgrade/
-├── .opencode/          # OpenCode config, agents, skills
-├── docs/               # Documentation (histories, architecture, plans)
-├── exam-result/        # Exam records
-├── notebook/           # Learning notes (organized by topic)
-├── practice/           # Hands-on projects
-└── AGENTS.md           # This file — code of conduct
+├── agent-skills/              # Repository-owned custom skills, linked into runtime skill dirs
+├── .opencode/                  # OpenCode config, agents, and skills
+├── docs/                       # Documentation, histories, and architecture notes
+├── notebook/                   # Learning notes organized by topic
+├── practice/                   # Hands-on projects and experiments
+├── prompt-learning-workspace/  # Persistent workspace data for the prompt-learning skill
+├── specs/                      # Spec changes, plans, and tasks
+├── main.py                     # Project entry script
+├── README.md                   # Project overview and usage notes
+└── AGENTS.md                   # This file — code of conduct
 ```
 
 ### File Naming
@@ -102,7 +114,7 @@ ai-agent-upgrade/
 
 ### Adding New Components
 
-- **Skill**: Create directory under `.opencode/skills/` with `SKILL.md`
+- **Skill**: Create directory under `agent-skills/` with `SKILL.md`, then link it into `.opencode/skills/`
 - **Agent**: Create `.md` file under `.opencode/agents/`
 - **Practice project**: Create directory under `practice/`
 - Update this file and `README.md` when adding new components

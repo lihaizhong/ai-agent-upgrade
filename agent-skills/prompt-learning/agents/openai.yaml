@@ -1,0 +1,7 @@
+interface:
+  display_name: "提示词学习平台"
+  short_description: "统一的提示词学习平台，覆盖学习、练习、考试、Prompt Lab 与学习档案"
+  default_prompt: "Use $prompt-learning as a prompt learning platform: route the user into learning, practice, exam, Prompt Lab, or profile, teach concepts, guide practice, and maintain continuity through the platform model. When scripts already provide structured choices, prefer the current executor's native selector UI and fall back to plain-text numbered menus only if structured selection is unavailable."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,104 @@
+{
+  "skill_name": "prompt-learning",
+  "version": "8.1.0",
+  "evals": [
+    {
+      "id": 1,
+      "name": "平台首页-统一入口",
+      "prompt": "我想学习提示词工程",
+      "expected_output": "进入统一学习平台入口，而不是让用户先在旧模式之间选择",
+      "assertions": [
+        {"type": "contains_any", "value": ["学习平台", "继续学习", "开始练习", "Prompt Lab"]},
+        {"type": "not_contains", "value": "选择模式"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "学习中心-课程目录",
+      "prompt": "带我看看课程目录",
+      "expected_output": "展示学习中心课程结构和课程类别",
+      "assertions": [
+        {"type": "contains_any", "value": ["课程目录", "基础课程", "推理课程", "知识课程"]},
+        {"type": "contains_any", "value": ["零样本", "思维链", "检索增强生成"]}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "学习中心-指定课程直达",
+      "prompt": "我想学第7课检索增强生成",
+      "expected_output": "直接进入目标课程讲解，并最多补充前置建议",
+      "assertions": [
+        {"type": "contains_any", "value": ["第7课", "检索增强生成", "RAG"]},
+        {"type": "contains_any", "value": ["核心概念", "适用场景", "工作原理"]}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "练习中心-统一入口",
+      "prompt": "我想刷题",
+      "expected_output": "进入练习中心，而不是停留在旧课后附属动作心智",
+      "assertions": [
+        {"type": "contains_any", "value": ["练习中心", "当前课程继续练", "专项练习", "错题回练"]}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "练习中心-默认动态出题",
+      "prompt": "学完思维链提示后给我来一题",
+      "expected_output": "先围绕当前课程给出动态练习，而不是固定题库",
+      "assertions": [
+        {"type": "contains_any", "value": ["练习", "题目", "思维链"]},
+        {"type": "not_contains", "value": "固定题库"}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "考试中心-诊断与综合入口",
+      "prompt": "我要考试",
+      "expected_output": "进入考试中心并区分诊断考试与综合考试",
+      "assertions": [
+        {"type": "contains_any", "value": ["考试中心", "诊断考试", "综合考试"]},
+        {"type": "contains_any", "value": ["选择题", "填空题", "大题", "100"]}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Prompt Lab-实战入口",
+      "prompt": "帮我写一个会议纪要总结 prompt",
+      "expected_output": "进入 Prompt Lab，先澄清任务槽位，再生成 prompt",
+      "assertions": [
+        {"type": "contains_any", "value": ["Prompt Lab", "task", "output_format", "constraints"]},
+        {"type": "not_contains", "value": "提示词生成模式"}
+      ]
+    },
+    {
+      "id": 8,
+      "name": "学习档案-进度与错题",
+      "prompt": "看看我的学习进度和错题",
+      "expected_output": "进入学习档案，展示进度、错题或考试记录摘要",
+      "assertions": [
+        {"type": "contains_any", "value": ["学习档案", "进度", "错题", "考试历史", "模板"]} 
+      ]
+    },
+    {
+      "id": 9,
+      "name": "平台心智-不再暴露旧模式",
+      "prompt": "进入学习模式",
+      "expected_output": "即使用户沿用旧说法，也应被带回新平台模块心智，而不是继续维护旧模式接口",
+      "assertions": [
+        {"type": "contains_any", "value": ["学习中心", "学习平台", "课程"]},
+        {"type": "not_contains", "value": "learn --"}
+      ]
+    },
+    {
+      "id": 10,
+      "name": "技能边界-不原样贴课文",
+      "prompt": "讲一下零样本提示",
+      "expected_output": "使用教学结构讲解课程，而不是直接贴课程原文",
+      "assertions": [
+        {"type": "contains_any", "value": ["一句话", "核心概念", "工作原理", "适用场景"]},
+        {"type": "not_contains", "value": "课程文件内容如下"}
+      ]
+    }
+  ]
+}
