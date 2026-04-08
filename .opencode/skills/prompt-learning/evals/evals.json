@@ -1,226 +1,103 @@
 {
   "skill_name": "prompt-learning",
-  "version": "7.0.3",
+  "version": "8.0.0",
   "evals": [
     {
       "id": 1,
-      "name": "模式选择机制",
+      "name": "平台首页-统一入口",
       "prompt": "我想学习提示词工程",
-      "expected_output": "优先使用 question 工具询问用户选择学习模式、考试模式或提示词生成模式",
+      "expected_output": "进入统一学习平台入口，而不是让用户先在旧模式之间选择",
       "assertions": [
-        {"type": "contains_any", "value": ["question", "Question", "选择模式"]},
-        {"type": "contains_any", "value": ["学习模式", "考试模式", "生成", "学习", "考试"]}
+        {"type": "contains_any", "value": ["学习平台", "继续学习", "开始练习", "Prompt Lab"]},
+        {"type": "not_contains", "value": "选择模式"}
       ]
     },
     {
       "id": 2,
-      "name": "学习模式-课程选择",
-      "prompt": "学习",
-      "expected_output": "展示课程列表供用户选择",
+      "name": "学习中心-课程目录",
+      "prompt": "带我看看课程目录",
+      "expected_output": "展示学习中心课程结构和课程类别",
       "assertions": [
-        {"type": "contains", "value": "课程"},
-        {"type": "contains_any", "value": ["零样本", "少样本", "思维链"]},
-        {"type": "not_contains", "value": "学完了"}
+        {"type": "contains_any", "value": ["课程目录", "基础课程", "推理课程", "知识课程"]},
+        {"type": "contains_any", "value": ["零样本", "思维链", "检索增强生成"]}
       ]
     },
     {
       "id": 3,
-      "name": "学习模式-课程内容展示",
-      "prompt": "我想学习零样本提示",
-      "expected_output": "展示零样本提示的课程内容",
+      "name": "学习中心-指定课程直达",
+      "prompt": "我想学第7课检索增强生成",
+      "expected_output": "直接进入目标课程讲解，并最多补充前置建议",
       "assertions": [
-        {"type": "contains", "value": "零样本"},
-        {"type": "contains_any", "value": ["核心概念", "示例", "适用场景"]}
+        {"type": "contains_any", "value": ["第7课", "检索增强生成", "RAG"]},
+        {"type": "contains_any", "value": ["核心概念", "适用场景", "工作原理"]}
       ]
     },
     {
       "id": 4,
-      "name": "考试模式-完整流程",
-      "prompt": "我要考试",
-      "expected_output": "直接进入考试模式，先展示考试结构（11题满分100分），然后开始答题",
+      "name": "练习中心-统一入口",
+      "prompt": "我想刷题",
+      "expected_output": "进入练习中心，而不是停留在旧课后附属动作心智",
       "assertions": [
-        {"type": "contains", "value": "选择题"},
-        {"type": "contains", "value": "填空题"},
-        {"type": "contains", "value": "大题"},
-        {"type": "contains", "value": "100分"}
+        {"type": "contains_any", "value": ["练习中心", "当前课程继续练", "专项练习", "错题回练"]}
       ]
     },
     {
       "id": 5,
-      "name": "考试模式-选择题结构",
-      "prompt": "开始提示词工程考试",
-      "expected_output": "选择题共5题，每题5分共25分，使用Question工具交互，答案随机分布",
+      "name": "练习中心-默认动态出题",
+      "prompt": "学完思维链提示后给我来一题",
+      "expected_output": "先围绕当前课程给出动态练习，而不是固定题库",
       "assertions": [
-        {"type": "contains", "value": "选择题"},
-        {"type": "contains", "value": "5"}
+        {"type": "contains_any", "value": ["练习", "题目", "思维链"]},
+        {"type": "not_contains", "value": "固定题库"}
       ]
     },
     {
       "id": 6,
-      "name": "考试模式-填空题结构",
-      "prompt": "参加考试",
-      "expected_output": "填空题固定3题，每题10分共30分，全部中级及以上难度",
+      "name": "考试中心-诊断与综合入口",
+      "prompt": "我要考试",
+      "expected_output": "进入考试中心并区分诊断考试与综合考试",
       "assertions": [
-        {"type": "contains", "value": "填空题"},
-        {"type": "contains", "value": "3"}
+        {"type": "contains_any", "value": ["考试中心", "诊断考试", "综合考试"]},
+        {"type": "contains_any", "value": ["选择题", "填空题", "大题", "100"]}
       ]
     },
     {
       "id": 7,
-      "name": "考试模式-大题结构",
-      "prompt": "我想参加提示词考试测试综合能力",
-      "expected_output": "大题固定3题，每题15分共45分，全部中级及以上难度",
+      "name": "Prompt Lab-实战入口",
+      "prompt": "帮我写一个会议纪要总结 prompt",
+      "expected_output": "进入 Prompt Lab，先澄清任务槽位，再生成 prompt",
       "assertions": [
-        {"type": "contains", "value": "大题"},
-        {"type": "contains", "value": "3"}
+        {"type": "contains_any", "value": ["Prompt Lab", "task", "output_format", "constraints"]},
+        {"type": "not_contains", "value": "提示词生成模式"}
       ]
     },
     {
       "id": 8,
-      "name": "考试模式-严厉评价",
-      "prompt": "考试结束，查看我的成绩和评价",
-      "expected_output": "提供严厉老师风格的评价，直接指出问题并给出建设性建议",
+      "name": "学习档案-进度与错题",
+      "prompt": "看看我的学习进度和错题",
+      "expected_output": "进入学习档案，展示进度、错题或考试记录摘要",
       "assertions": [
-        {"type": "contains_any", "value": ["得分", "分数", "评价", "建议"]}
+        {"type": "contains_any", "value": ["学习档案", "进度", "错题", "考试历史", "模板"]} 
       ]
     },
     {
       "id": 9,
-      "name": "考试模式-详细解析",
-      "prompt": "查看考试详细解析",
-      "expected_output": "提供每道题的详细解析，大题有深度剖析（核心技术、解题思路、改进建议）",
+      "name": "平台心智-不再暴露旧模式",
+      "prompt": "进入学习模式",
+      "expected_output": "即使用户沿用旧说法，也应被带回新平台模块心智，而不是继续维护旧模式接口",
       "assertions": [
-        {"type": "contains_any", "value": ["解析", "讲解", "答案", "分析"]}
+        {"type": "contains_any", "value": ["学习中心", "学习平台", "课程"]},
+        {"type": "not_contains", "value": "learn --"}
       ]
     },
     {
       "id": 10,
-      "name": "考试模式-结果保存",
-      "prompt": "考试完成了，我的报告在哪里",
-      "expected_output": "告知考试报告已保存到exam-result目录，包含完整考试分析和建议",
+      "name": "技能边界-不原样贴课文",
+      "prompt": "讲一下零样本提示",
+      "expected_output": "使用教学结构讲解课程，而不是直接贴课程原文",
       "assertions": [
-        {"type": "contains", "value": "exam-result"}
-      ]
-    },
-    {
-      "id": 11,
-      "name": "互动问答-概念解释",
-      "prompt": "零样本提示和少样本提示有什么区别？",
-      "expected_output": "用通俗语言解释两者区别",
-      "assertions": [
-        {"type": "contains_any", "value": ["示例", "例子", "区别"]}
-      ]
-    },
-    {
-      "id": 12,
-      "name": "提示词分析",
-      "prompt": "分析这个提示词：帮我写个函数",
-      "expected_output": "分析提示词问题并给出改进建议",
-      "assertions": [
-        {"type": "contains_any", "value": ["问题", "改进", "建议", "优化"]}
-      ]
-    },
-    {
-      "id": 13,
-      "name": "考试模式-即时反馈",
-      "prompt": "考试第一题我选B",
-      "expected_output": "对选择题答案进行即时反馈，告知对错并简要说明",
-      "assertions": [
-        {"type": "contains_any", "value": ["正确", "错误", "✅", "❌"]}
-      ]
-    },
-    {
-      "id": 14,
-      "name": "提示词生成模式",
-      "prompt": "帮我生成一个提示词",
-      "expected_output": "进入提示词生成模式，通过头脑风暴帮助梳理需求",
-      "assertions": [
-        {"type": "contains_any", "value": ["生成", "提示词", "需求", "目的"]}
-      ]
-    },
-    {
-      "id": 15,
-      "name": "学习模式-启发式提问引导",
-      "prompt": "学习完思维链提示课程",
-      "expected_output": "在课程内容后进入启发式提问环节，提供4个简单提问角度（是什么/何时用/有何区别/怎么用）",
-      "assertions": [
-        {"type": "contains_any", "value": ["问题1", "是什么", "什么时候用"]},
-        {"type": "contains_any", "value": ["问题2", "什么时候用", "何时用"]},
-        {"type": "contains_any", "value": ["问题3", "区别", "有什么不同"]},
-        {"type": "contains_any", "value": ["问题4", "怎么用", "如何用"]}
-      ]
-    },
-    {
-      "id": 16,
-      "name": "学习模式-知识关联",
-      "prompt": "学习自我一致性课程，看看和之前的思维链有什么关系",
-      "expected_output": "在启发式提问中明确关联前置课程（思维链），说明技术之间的演进关系",
-      "assertions": [
-        {"type": "contains", "value": "关联"},
-        {"type": "contains_any", "value": ["前置", "之前", "思维链"]}
-      ]
-    },
-    {
-      "id": 17,
-      "name": "学习模式-可选练习",
-      "prompt": "学习完课程，现在可以做什么",
-      "expected_output": "提供可选的练习题，用户可自主选择是否做题，不强制要求",
-      "assertions": [
-        {"type": "contains_any", "value": ["练习", "做题", "巩固", "可选"]}
-      ]
-    },
-    {
-      "id": 18,
-      "name": "学习模式-互动问答关联",
-      "prompt": "为什么思维链比直接问答更好？",
-      "expected_output": "回答用户问题时关联前置知识（如少样本提示），建立知识体系",
-      "assertions": [
-        {"type": "contains", "value": "关联"},
-        {"type": "contains_any", "value": ["思考", "对比", "区别"]}
-      ]
-    },
-    {
-      "id": 19,
-      "name": "学习模式-先教学后练习",
-      "prompt": "我要学习第3课，然后做练习",
-      "expected_output": "先展示思维链提示的课程内容，再提供可选练习，不能一开始直接出题",
-      "assertions": [
-        {"type": "contains", "value": "思维链"},
-        {"type": "contains_any", "value": ["核心概念", "工作原理", "示例"]},
-        {"type": "contains_any", "value": ["练习", "做题", "可选"]}
-      ]
-    },
-    {
-      "id": 20,
-      "name": "学习模式-六大类说明",
-      "prompt": "我想系统学习 prompt engineering，先介绍一下课程结构",
-      "expected_output": "先说明六大类课程及对应课程编号，再让用户选类别或课程",
-      "assertions": [
-        {"type": "contains_any", "value": ["六大类", "基础课程", "推理课程"]},
-        {"type": "contains_any", "value": ["知识课程", "工具课程", "优化课程", "前沿课程"]},
-        {"type": "contains_any", "value": ["01-02", "03-05", "06-08"]}
-      ]
-    },
-    {
-      "id": 21,
-      "name": "学习模式-支持指定课程直达",
-      "prompt": "不要按顺序，我就想学第7课 RAG",
-      "expected_output": "直接进入第7课，同时最多补充前置建议，不能要求先学完前面课程",
-      "assertions": [
-        {"type": "contains_any", "value": ["第7课", "RAG", "检索增强生成"]},
-        {"type": "contains_any", "value": ["核心概念", "适用场景", "工作原理"]},
-        {"type": "contains_any", "value": ["可直接学习", "可以直接开始", "建议先了解", "前置知识"]}
-      ]
-    },
-    {
-      "id": 22,
-      "name": "学习模式-未展示课程前不能直接结课",
-      "prompt": "进入学习模式",
-      "expected_output": "先介绍六大类课程并引导选课，不能直接说学完了或进入课后面板",
-      "assertions": [
-        {"type": "contains_any", "value": ["六大类", "基础课程", "推理课程"]},
-        {"type": "contains_any", "value": ["选择课程", "选课", "课程类别"]},
-        {"type": "not_contains", "value": "学完了"}
+        {"type": "contains_any", "value": ["一句话", "核心概念", "工作原理", "适用场景"]},
+        {"type": "not_contains", "value": "课程文件内容如下"}
       ]
     }
   ]

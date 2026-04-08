@@ -3,29 +3,76 @@
 题目生成、评分、报告生成
 """
 
+from __future__ import annotations
+
+import json
 import random
 import re
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+from .state import LearningStateStore
+from .workspace import get_workspace_paths
+
 
 class ExamEngine:
     """考试引擎"""
 
-    def __init__(self, skill_dir: Optional[str] = None):
+    def __init__(
+        self,
+        skill_dir: Optional[str | Path] = None,
+        username: str | None = None,
+    ):
         if skill_dir is None:
             skill_dir = Path(__file__).parent.parent
         self.skill_dir = Path(skill_dir)
-        self.exam_dir = Path(skill_dir).parent.parent.parent / "exam-result"
+        workspace_paths = get_workspace_paths(self.skill_dir, username=username)
+        self.exam_dir = workspace_paths["exam_reports_dir"]
         self.exam_dir.mkdir(parents=True, exist_ok=True)
         self.questions = []
         self.answers = []
         self.scores = []
 
-    def build_exam_blueprint(self) -> dict:
-        """固定考试流程和槽位，题目内容由 LLM 生成。"""
+    def get_entry_points(self) -> dict:
+        """返回考试中心入口。"""
         return {
+            "question": {
+                "header": "考试中心",
+                "question": "你想进行哪种考试？",
+                "options": [
+                    {
+                        "label": "诊断考试",
+                        "description": "快速识别知识缺口和薄弱课程",
+                        "value": "diagnostic",
+                    },
+                    {
+                        "label": "综合考试",
+                        "description": "系统检查跨课程理解和技术组合能力",
+                        "value": "final",
+                    },
+                ],
+                "multiple": False,
+            }
+        }
+
+    def build_exam_blueprint(self, exam_type: str = "diagnostic") -> dict:
+        """固定考试流程和槽位，题目内容由 LLM 生成。"""
+        type_meta = {
+            "diagnostic": {
+                "label": "诊断考试",
+                "goal": "快速识别知识缺口并输出补强建议",
+            },
+            "final": {
+                "label": "综合考试",
+                "goal": "系统检查综合掌握情况与跨技术组合能力",
+            },
+        }
+        meta = type_meta.get(exam_type, type_meta["diagnostic"])
+        return {
+            "exam_type": exam_type,
+            "exam_label": meta["label"],
+            "goal": meta["goal"],
             "total_questions": 11,
             "total_score": 100,
             "workflow": [
@@ -115,9 +162,23 @@ class ExamEngine:
             ],
         }
 
-    def generate_exam_structure(self) -> dict:
+    def generate_exam_structure(self, exam_type: str = "diagnostic") -> dict:
         """生成考试结构说明"""
+        type_meta = {
+            "diagnostic": {
+                "label": "诊断考试",
+                "goal": "快速识别知识缺口和薄弱点",
+            },
+            "final": {
+                "label": "综合考试",
+                "goal": "系统检查综合掌握情况与技术组合能力",
+            },
+        }
+        meta = type_meta.get(exam_type, type_meta["diagnostic"])
         return {
+            "exam_type": exam_type,
+            "exam_label": meta["label"],
+            "goal": meta["goal"],
             "total_questions": 11,
             "total_score": 100,
             "sections": [
@@ -401,7 +462,7 @@ class ExamEngine:
         fill_scores = sum(s for q, s in zip(questions, scores) if q["type"] == "fill")
         essay_scores = sum(s for q, s in zip(questions, scores) if q["type"] == "essay")
 
-        report = f"""# 📝 提示词工程考试报告
+        report = f"""# 提示词工程考试报告
 
 **考试日期**：{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 **考生**：{username}
@@ -411,13 +472,13 @@ class ExamEngine:
 
 ---
 
-## 🎯 综合评价
+## 综合评价
 
 {self._get_evaluation(total_score)}
 
 ---
 
-## 📊 各题得分明细
+## 各题得分明细
 
 ### 第一部分：选择题（5题，共25分）
 """
@@ -452,12 +513,92 @@ class ExamEngine:
         return str(report_path)
 
     def _get_evaluation(self, score: int) -> str:
-        """获取严厉评价"""
+        """获取严格但尊重学生的评价。"""
         if score >= 90:
-            return "这次考试表现不错，基本掌握了提示词工程的核心技术。但别以为这就够了！大题的自我反思机制设计还有明显漏洞，建议你深入学习前沿技术。记住：考试高分不代表实际应用能力强，多实践才是真本事。"
+            return "这次考试表现扎实，核心技术已经掌握得比较完整。接下来不要停在会做题这一层，建议继续加强复杂场景下的技术组合、自我反思机制和真实任务迁移能力。"
         elif score >= 70:
-            return "勉强及格，但漏洞百出！选择题错了基础题，说明你概念还不够扎实。大题的技术融合生硬，像是在硬凑。提示词工程不是背公式，是理解原理！建议你回去把基础课程再学一遍，别急着做难题。"
+            return "整体达到合格线，但基础概念和技术组合还不够稳。建议先回看错题对应课程，把“为什么选这个技术、为什么不用别的技术”讲清楚，再继续做中高级题。"
         elif score >= 50:
-            return "这成绩我只能说：你还需要大量练习！基础概念模糊，技术应用混乱。看你大题的答案，完全是凭着感觉写的，没有系统思维。立即回去重修初级和中级课程，把每门课的练习都做了！"
+            return "当前暴露出的主要问题是概念区分不清、应用链路不完整。建议回到基础和中级课程，先把每门课的核心作用、适用场景和边界条件重新梳理一遍，再做针对性练习。"
         else:
-            return "这成绩令人失望！基本概念不清，技术应用错误，大题几乎不得分。你是不是根本没认真学习？还是只是走马观花地看了几眼？建议：从第一课开始，老老实实学，每学完一门做练习，别想着走捷径！"
+            return "当前基础还不够，先不要急着做综合题。建议从前几课重新建立概念框架，每学完一课做一题小练习，重点确认自己能说清“它解决什么问题、何时该用、何时不该用”。"
+
+
+class ExamService:
+    """考试中心持久化与摘要服务。"""
+
+    def __init__(self, workspace_paths: dict[str, Path], state_store: LearningStateStore):
+        self.workspace_paths = workspace_paths
+        self.state_store = state_store
+        self.exam_history_file = workspace_paths["exam_history_file"]
+
+    @classmethod
+    def from_skill_dir(
+        cls, skill_dir: Path, username: str | None = None
+    ) -> "ExamService":
+        workspace_paths = get_workspace_paths(skill_dir, username=username)
+        return cls(
+            workspace_paths=workspace_paths,
+            state_store=LearningStateStore(workspace_paths),
+        )
+
+    def _timestamp(self) -> str:
+        return datetime.now().astimezone().isoformat()
+
+    def _append_jsonl(self, path: Path, payload: dict) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(payload, ensure_ascii=False) + "\n")
+
+    def record_history(self, payload: dict) -> dict:
+        exam_type = payload.get("exam_type", "diagnostic")
+        score = payload.get("score")
+        total_score = payload.get("total_score", 100)
+        weak_courses = payload.get("weak_courses", [])
+        weak_topics = payload.get("weak_topics", [])
+        report_path = payload.get("report_path")
+
+        if exam_type not in {"diagnostic", "final"}:
+            raise ValueError("exam_type 必须是 diagnostic 或 final")
+        if not isinstance(score, int):
+            raise ValueError("score 必须是整数")
+        if not isinstance(total_score, int):
+            raise ValueError("total_score 必须是整数")
+
+        entry = {
+            "timestamp": self._timestamp(),
+            "exam_type": exam_type,
+            "score": score,
+            "total_score": total_score,
+            "weak_courses": weak_courses,
+            "weak_topics": weak_topics,
+            "report_path": report_path,
+        }
+        self._append_jsonl(self.exam_history_file, entry)
+        self.state_store.update_current_state(
+            current_module="exam",
+            last_action="exam_completed",
+            recommended_next_action="review_weak_topics",
+        )
+        return {
+            "recorded": True,
+            "entry": entry,
+        }
+
+    def get_history_summary(self) -> dict:
+        if not self.exam_history_file.exists():
+            return {
+                "count": 0,
+                "latest": None,
+                "latest_weak_topics": [],
+            }
+
+        with open(self.exam_history_file, "r", encoding="utf-8") as f:
+            rows = [json.loads(line) for line in f if line.strip()]
+
+        latest = rows[-1] if rows else None
+        return {
+            "count": len(rows),
+            "latest": latest,
+            "latest_weak_topics": latest.get("weak_topics", []) if latest else [],
+        }

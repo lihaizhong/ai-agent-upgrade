@@ -3,17 +3,37 @@
 提供命令行接口供 AI Agent 调用
 """
 
+from __future__ import annotations
+
 import argparse
 import json
 import os
 import subprocess
 import sys
+from pathlib import Path
 
-from .engine import PromptLearningEngine
-from .exam import ExamEngine
+from .exam import ExamEngine, ExamService
+from .home import HomeService
+from .learning import LearningService
+from .practice import PracticeService
+from .profile import ProfileService
+from .prompt_lab import (
+    PromptLabService,
+    build_interview_blueprint,
+    build_review_checklist,
+    build_workflow,
+    validate_draft,
+    validate_slots,
+)
+from .workspace import (
+    ensure_workspace,
+    get_workspace_root,
+    normalize_workspace_username,
+    resolve_git_username,
+)
 
 
-def resolve_username(explicit_username: str | None) -> str:
+def resolve_username(explicit_username: str = None) -> str:
     """解析报告使用的用户名。"""
     if explicit_username and explicit_username.strip():
         return explicit_username.strip()
@@ -33,178 +53,101 @@ def resolve_username(explicit_username: str | None) -> str:
 
     return os.environ.get("USER", "unknown")
 
-
-def build_generate_workflow(topic: str | None) -> dict:
-    """返回提示词生成固定流程。"""
-    return {
-        "topic": topic,
-        "workflow": [
-            "先收集任务目标、输入、输出、限制",
-            "脚本检查是否缺少关键槽位",
-            "LLM 生成初稿提示词",
-            "脚本按审查清单逐项复核",
-            "LLM 只修改未通过项",
-        ],
-        "required_slots": [
-            "task",
-            "input",
-            "output_format",
-            "constraints",
-            "quality_bar",
-        ],
-        "interview_order": [
-            "task",
-            "input",
-            "output_format",
-            "constraints",
-            "quality_bar",
-        ],
-    }
-
-
-def build_generate_checklist(topic: str | None) -> dict:
-    """返回提示词审查清单。"""
-    return {
-        "topic": topic,
-        "checklist": [
-            "任务目标是否单一明确",
-            "输入信息是否定义清楚",
-            "输出格式是否可直接判定",
-            "约束条件是否可执行",
-            "是否明确了失败或边界处理方式",
-            "是否避免了重复或冲突指令",
-        ],
-    }
-
-
-def build_generate_interview(topic: str | None) -> dict:
-    """返回提示词生成模式的固定澄清槽位。"""
-    return {
-        "topic": topic,
-        "goal": "先补齐稳定槽位，再生成提示词初稿",
-        "slots": [
-            {
-                "name": "task",
-                "required": True,
-                "question": "你希望 AI 最终完成什么任务？",
-                "examples": ["总结会议纪要", "把产品评论翻译成中文并保留情感"],
-            },
-            {
-                "name": "input",
-                "required": True,
-                "question": "AI 会拿到什么输入？输入里有哪些字段或材料？",
-                "examples": ["一段用户评论", "一份 Markdown 文档和一张表格"],
-            },
-            {
-                "name": "output_format",
-                "required": True,
-                "question": "你希望输出长什么样？是段落、列表、JSON 还是表格？",
-                "examples": ["JSON", "三段式总结", "固定字段表格"],
-            },
-            {
-                "name": "constraints",
-                "required": True,
-                "question": "有哪些限制、禁区或必须遵守的规则？",
-                "examples": ["不要编造来源", "只返回中文", "不得超过 200 字"],
-            },
-            {
-                "name": "quality_bar",
-                "required": True,
-                "question": "什么样的结果才算合格？你最看重准确、完整、速度还是风格？",
-                "examples": ["格式稳定", "专业术语准确", "可直接复制给客户"],
-            },
-        ],
-    }
-
-
-def validate_generate_slots(payload: dict, required_slots: list[str]) -> dict:
-    """校验生成模式所需槽位。"""
-    missing = []
-    empty = []
-
-    for slot in required_slots:
-        if slot not in payload:
-            missing.append(slot)
-            continue
-        value = payload.get(slot)
-        if value is None or value == "" or value == [] or value == {}:
-            empty.append(slot)
-
-    return {
-        "valid": not missing and not empty,
-        "missing_slots": missing,
-        "empty_slots": empty,
-    }
-
-
-def validate_generate_draft(payload: dict, checklist: list[str]) -> dict:
-    """校验提示词草稿结构和审查结果。"""
-    errors = []
-
-    prompt = payload.get("prompt")
-    if not isinstance(prompt, str) or not prompt.strip():
-        errors.append("prompt 必须是非空字符串")
-
-    review = payload.get("review", {})
-    if not isinstance(review, dict):
-        errors.append("review 必须是对象")
-        review = {}
-
-    failed_items = []
-    for item in checklist:
-        if item not in review:
-            errors.append(f"review 缺少检查项: {item}")
-            continue
-        status = review[item]
-        if status not in {"pass", "fail"}:
-            errors.append(f"review[{item}] 必须为 pass 或 fail")
-        elif status == "fail":
-            failed_items.append(item)
-
-    revisions = payload.get("revisions", [])
-    if failed_items and not isinstance(revisions, list):
-        errors.append("存在未通过项时，revisions 必须为列表")
-    elif failed_items and not revisions:
-        errors.append("存在未通过项时，必须提供 revisions")
-
-    return {
-        "valid": not errors,
-        "failed_items": failed_items,
-        "errors": errors,
-    }
-
-
 def main():
     parser = argparse.ArgumentParser(description="提示词工程学习系统")
     subparsers = parser.add_subparsers(dest="command", help="可用命令")
 
-    # 模式选择
-    subparsers.add_parser("mode", help="获取模式选择菜单")
+    # Workspace
+    parser_workspace = subparsers.add_parser("workspace", help="workspace 管理")
+    parser_workspace.add_argument(
+        "--resolve-user", action="store_true", help="解析当前 workspace 用户名"
+    )
+    parser_workspace.add_argument(
+        "--show-root", action="store_true", help="显示 workspace 根目录"
+    )
+    parser_workspace.add_argument(
+        "--bootstrap", action="store_true", help="初始化当前用户 workspace"
+    )
+    parser_workspace.add_argument("--username", type=str, help="显式指定用户名")
 
-    # 学习模式
-    parser_learn = subparsers.add_parser("learn", help="学习模式")
-    parser_learn.add_argument("--course", type=int, help="课程编号 (1-17)")
-    parser_learn.add_argument("--list", action="store_true", help="列出所有课程")
-    parser_learn.add_argument("--category", type=str, help="按类别列出课程")
-    parser_learn.add_argument("--content", action="store_true", help="获取课程内容")
-    parser_learn.add_argument("--code", action="store_true", help="获取代码实现")
-    parser_learn.add_argument("--panel", action="store_true", help="获取课程完成后的下一步面板")
-    parser_learn.add_argument(
-        "--code-outline", action="store_true", help="获取固定代码讲解结构"
+    # Home
+    parser_home = subparsers.add_parser("home", help="平台首页")
+    parser_home.add_argument("--dashboard", action="store_true", help="获取首页面板")
+    parser_home.add_argument("--resume", action="store_true", help="获取继续学习目标")
+    parser_home.add_argument(
+        "--recommend", action="store_true", help="获取下一步推荐动作"
     )
-    parser_learn.add_argument("--next", action="store_true", help="获取下一课推荐")
-    parser_learn.add_argument("--complete", action="store_true", help="标记课程完成")
-    parser_learn.add_argument(
-        "--practice-type", action="store_true", help="获取练习题类型"
+    parser_home.add_argument("--username", type=str, help="显式指定用户名")
+
+    # Learning
+    parser_learning = subparsers.add_parser("learning", help="学习中心")
+    parser_learning.add_argument("--catalog", action="store_true", help="获取课程目录")
+    parser_learning.add_argument("--category", type=str, help="按类别列出课程")
+    parser_learning.add_argument(
+        "--recommend-course", action="store_true", help="获取推荐课程"
     )
-    parser_learn.add_argument(
-        "--practice-blueprint", action="store_true", help="获取稳定练习题蓝图"
+    parser_learning.add_argument(
+        "--lesson-meta", action="store_true", help="获取课程内容元数据"
     )
+    parser_learning.add_argument(
+        "--lesson-panel", action="store_true", help="获取课后面板"
+    )
+    parser_learning.add_argument("--code-meta", action="store_true", help="获取代码元数据")
+    parser_learning.add_argument(
+        "--code-outline", action="store_true", help="获取代码讲解结构"
+    )
+    parser_learning.add_argument("--course", type=int, help="课程编号")
+    parser_learning.add_argument("--complete", action="store_true", help="标记课程完成")
+    parser_learning.add_argument("--username", type=str, help="显式指定用户名")
+
+    # Practice
+    parser_practice = subparsers.add_parser("practice", help="练习中心")
+    parser_practice.add_argument(
+        "--entry-points", action="store_true", help="获取练习入口"
+    )
+    parser_practice.add_argument("--resume", action="store_true", help="获取继续练习目标")
+    parser_practice.add_argument(
+        "--blueprint", action="store_true", help="获取练习蓝图"
+    )
+    parser_practice.add_argument(
+        "--record-result", action="store_true", help="记录练习结果摘要"
+    )
+    parser_practice.add_argument(
+        "--review-mistakes", action="store_true", help="查看未解决错题"
+    )
+    parser_practice.add_argument("--summary", action="store_true", help="获取练习摘要")
+    parser_practice.add_argument(
+        "--mode",
+        type=str,
+        choices=["current", "targeted", "mistake"],
+        help="练习模式",
+    )
+    parser_practice.add_argument("--course", type=int, help="课程编号")
+    parser_practice.add_argument("--focus-tag", type=str, help="错题回练焦点标签")
+    parser_practice.add_argument("--username", type=str, help="显式指定用户名")
+
+    # Profile
+    parser_profile = subparsers.add_parser("profile", help="学习档案")
+    parser_profile.add_argument("--summary", action="store_true", help="获取档案摘要")
+    parser_profile.add_argument("--progress", action="store_true", help="获取进度详情")
+    parser_profile.add_argument("--mistakes", action="store_true", help="获取错题详情")
+    parser_profile.add_argument(
+        "--exam-history", action="store_true", help="获取考试历史"
+    )
+    parser_profile.add_argument("--templates", action="store_true", help="获取模板列表")
+    parser_profile.add_argument("--username", type=str, help="显式指定用户名")
 
     # 考试模式
     parser_exam = subparsers.add_parser("exam", help="考试模式")
+    parser_exam.add_argument("--entry-points", action="store_true", help="获取考试入口")
     parser_exam.add_argument("--structure", action="store_true", help="获取考试结构")
     parser_exam.add_argument("--blueprint", action="store_true", help="获取考试蓝图")
+    parser_exam.add_argument(
+        "--type",
+        type=str,
+        choices=["diagnostic", "final"],
+        help="考试类型",
+    )
     parser_exam.add_argument("--grade-mc", action="store_true", help="评分选择题")
     parser_exam.add_argument("--grade-fill", action="store_true", help="评分填空题")
     parser_exam.add_argument("--grade-essay", action="store_true", help="评分大题")
@@ -221,34 +164,32 @@ def main():
         "--validate-paper", action="store_true", help="校验整张试卷结构"
     )
     parser_exam.add_argument("--report", action="store_true", help="生成考试报告")
+    parser_exam.add_argument(
+        "--record-history", action="store_true", help="记录考试历史摘要"
+    )
+    parser_exam.add_argument(
+        "--history-summary", action="store_true", help="获取考试历史摘要"
+    )
     parser_exam.add_argument("--question", type=int, help="题号")
     parser_exam.add_argument("--difficulty", type=str, help="难度")
     parser_exam.add_argument("--answer", type=str, help="用户答案")
     parser_exam.add_argument("--username", type=str, help="用户名")
 
-    # 状态管理
-    parser_state = subparsers.add_parser("state", help="状态管理")
-    parser_state.add_argument("--show", action="store_true", help="显示当前状态")
-    parser_state.add_argument("--recommend", action="store_true", help="获取学习推荐")
-
-    # 提示词生成
-    parser_gen = subparsers.add_parser("generate", help="提示词生成模式")
-    parser_gen.add_argument("--topic", type=str, help="主题")
-    parser_gen.add_argument(
-        "--workflow", action="store_true", help="获取提示词生成固定流程"
-    )
-    parser_gen.add_argument(
-        "--review-checklist", action="store_true", help="获取提示词审查清单"
-    )
-    parser_gen.add_argument(
+    # Prompt Lab
+    parser_lab = subparsers.add_parser("lab", help="Prompt Lab")
+    parser_lab.add_argument("--topic", type=str, help="主题")
+    parser_lab.add_argument("--workflow", action="store_true", help="获取固定流程")
+    parser_lab.add_argument(
         "--interview-blueprint", action="store_true", help="获取固定澄清槽位"
     )
-    parser_gen.add_argument(
-        "--validate-slots", action="store_true", help="校验提示词生成必填槽位"
+    parser_lab.add_argument(
+        "--review-checklist", action="store_true", help="获取审查清单"
     )
-    parser_gen.add_argument(
-        "--validate-draft", action="store_true", help="校验提示词草稿和审查结果"
-    )
+    parser_lab.add_argument("--validate-slots", action="store_true", help="校验槽位")
+    parser_lab.add_argument("--validate-draft", action="store_true", help="校验草稿")
+    parser_lab.add_argument("--save-template", action="store_true", help="保存模板")
+    parser_lab.add_argument("--list-templates", action="store_true", help="列出模板")
+    parser_lab.add_argument("--username", type=str, help="显式指定用户名")
 
     args = parser.parse_args()
 
@@ -256,134 +197,34 @@ def main():
         parser.print_help()
         sys.exit(1)
 
-    if args.command == "mode":
-        print(
-            json.dumps(
-                {
-                    "modes": [
-                        {
-                            "id": "learn",
-                            "name": "学习模式",
-                            "desc": "系统学习提示词技术，互动问答",
-                        },
-                        {
-                            "id": "exam",
-                            "name": "考试模式",
-                            "desc": "挑战自我，即时反馈评分",
-                        },
-                        {
-                            "id": "generate",
-                            "name": "提示词生成",
-                            "desc": "头脑风暴生成提示词",
-                        },
-                    ],
-                    "question": {
-                        "header": "选择模式",
-                        "question": "请选择你要进入的提示词模式：",
-                        "options": [
-                            {
-                                "label": "学习模式",
-                                "description": "系统学习提示词技术，互动问答",
-                                "value": "learn",
-                            },
-                            {
-                                "label": "考试模式",
-                                "description": "挑战自我，即时反馈评分",
-                                "value": "exam",
-                            },
-                            {
-                                "label": "提示词生成",
-                                "description": "头脑风暴生成提示词",
-                                "value": "generate",
-                            },
-                        ],
-                        "multiple": False,
-                    },
-                },
-                ensure_ascii=False,
-                indent=2,
-            )
-        )
+    if args.command == "exam":
+        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        ensure_workspace(skill_dir, username=args.username)
+        exam = ExamEngine(skill_dir=skill_dir, username=args.username)
+        exam_service = ExamService.from_skill_dir(skill_dir, username=args.username)
 
-    elif args.command == "learn":
-        engine = PromptLearningEngine()
+        exam_type = args.type or "diagnostic"
 
-        if args.list:
-            courses = engine.get_course_list_by_category()
-            print(json.dumps(courses, ensure_ascii=False, indent=2, default=str))
+        if args.entry_points:
+            print(json.dumps(exam.get_entry_points(), ensure_ascii=False, indent=2))
 
-        elif args.category:
-            courses = engine.get_courses_by_category(args.category)
-            print(json.dumps(courses, ensure_ascii=False, indent=2, default=str))
-
-        elif args.content and args.course:
-            content = engine.get_course_content(args.course)
+        elif args.structure:
             print(
                 json.dumps(
-                    {"course_id": args.course, "content": content},
+                    exam.generate_exam_structure(exam_type),
                     ensure_ascii=False,
                     indent=2,
                 )
-            )
-
-        elif args.code and args.course:
-            code = engine.get_code_implementation(args.course)
-            print(
-                json.dumps(
-                    {"course_id": args.course, "code": code},
-                    ensure_ascii=False,
-                    indent=2,
-                )
-            )
-
-        elif args.panel and args.course:
-            panel = engine.build_learning_panel(args.course)
-            print(json.dumps(panel, ensure_ascii=False, indent=2))
-
-        elif args.code_outline and args.course:
-            outline = engine.build_code_explanation_outline(args.course)
-            print(json.dumps(outline, ensure_ascii=False, indent=2))
-
-        elif args.next:
-            rec = engine.get_next_course_recommendation()
-            print(json.dumps(rec, ensure_ascii=False, indent=2))
-
-        elif args.complete and args.course:
-            engine.state.complete_course(
-                f"{args.course:02d}-{engine._load_deps()[args.course]['name']}"
-            )
-            print(
-                json.dumps(
-                    {"status": "completed", "course": args.course},
-                    ensure_ascii=False,
-                    indent=2,
-                )
-            )
-
-        elif args.practice_type and args.course:
-            qtype = engine.select_question_type(args.course)
-            print(
-                json.dumps(
-                    {"course_id": args.course, "question_type": qtype},
-                    ensure_ascii=False,
-                    indent=2,
-                )
-            )
-
-        elif args.practice_blueprint and args.course:
-            blueprint = engine.build_practice_blueprint(args.course)
-            print(json.dumps(blueprint, ensure_ascii=False, indent=2))
-
-    elif args.command == "exam":
-        exam = ExamEngine()
-
-        if args.structure:
-            print(
-                json.dumps(exam.generate_exam_structure(), ensure_ascii=False, indent=2)
             )
 
         elif args.blueprint:
-            print(json.dumps(exam.build_exam_blueprint(), ensure_ascii=False, indent=2))
+            print(
+                json.dumps(
+                    exam.build_exam_blueprint(exam_type),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
 
         elif args.grade_mc and args.question and args.answer:
             question = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else {}
@@ -409,19 +250,35 @@ def main():
 
         elif args.validate_mc:
             question = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else {}
-            print(json.dumps(exam.validate_mc_question(question), ensure_ascii=False, indent=2))
+            print(
+                json.dumps(
+                    exam.validate_mc_question(question), ensure_ascii=False, indent=2
+                )
+            )
 
         elif args.validate_fill:
             question = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else {}
-            print(json.dumps(exam.validate_fill_question(question), ensure_ascii=False, indent=2))
+            print(
+                json.dumps(
+                    exam.validate_fill_question(question), ensure_ascii=False, indent=2
+                )
+            )
 
         elif args.validate_essay:
             question = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else {}
-            print(json.dumps(exam.validate_essay_question(question), ensure_ascii=False, indent=2))
+            print(
+                json.dumps(
+                    exam.validate_essay_question(question), ensure_ascii=False, indent=2
+                )
+            )
 
         elif args.validate_paper:
             questions = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else []
-            print(json.dumps(exam.validate_exam_paper(questions), ensure_ascii=False, indent=2))
+            print(
+                json.dumps(
+                    exam.validate_exam_paper(questions), ensure_ascii=False, indent=2
+                )
+            )
 
         elif args.report:
             questions = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else []
@@ -431,67 +288,348 @@ def main():
             print(
                 json.dumps({"report_path": report_path}, ensure_ascii=False, indent=2)
             )
+        elif args.record_history:
+            payload = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else {}
+            print(
+                json.dumps(
+                    exam_service.record_history(payload),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.history_summary:
+            print(
+                json.dumps(
+                    exam_service.get_history_summary(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
         else:
             parser_exam.print_help()
             sys.exit(1)
 
-    elif args.command == "state":
-        engine = PromptLearningEngine()
+    elif args.command == "lab":
+        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        ensure_workspace(skill_dir, username=args.username)
+        prompt_lab = PromptLabService.from_skill_dir(skill_dir, username=args.username)
 
-        if args.show:
-            print(json.dumps(engine.state.state, ensure_ascii=False, indent=2))
-
-        elif args.recommend:
-            rec = engine.state.get_recommended_path()
-            print(json.dumps(rec, ensure_ascii=False, indent=2))
-
-    elif args.command == "generate":
         if args.workflow:
-            print(json.dumps(build_generate_workflow(args.topic), ensure_ascii=False, indent=2))
+            print(json.dumps(build_workflow(args.topic), ensure_ascii=False, indent=2))
         elif args.review_checklist:
             print(
                 json.dumps(
-                    build_generate_checklist(args.topic), ensure_ascii=False, indent=2
+                    build_review_checklist(args.topic),
+                    ensure_ascii=False,
+                    indent=2,
                 )
             )
         elif args.interview_blueprint:
             print(
                 json.dumps(
-                    build_generate_interview(args.topic), ensure_ascii=False, indent=2
+                    build_interview_blueprint(args.topic),
+                    ensure_ascii=False,
+                    indent=2,
                 )
             )
         elif args.validate_slots:
             payload = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else {}
-            required_slots = build_generate_workflow(args.topic)["required_slots"]
+            required_slots = build_workflow(args.topic)["required_slots"]
             print(
                 json.dumps(
-                    validate_generate_slots(payload, required_slots),
+                    validate_slots(payload, required_slots),
                     ensure_ascii=False,
                     indent=2,
                 )
             )
         elif args.validate_draft:
             payload = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else {}
-            checklist = build_generate_checklist(args.topic)["checklist"]
+            checklist = build_review_checklist(args.topic)["checklist"]
             print(
                 json.dumps(
-                    validate_generate_draft(payload, checklist),
+                    validate_draft(payload, checklist),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.save_template:
+            payload = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else {}
+            print(
+                json.dumps(
+                    prompt_lab.save_template(payload),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.list_templates:
+            print(
+                json.dumps(
+                    prompt_lab.list_templates(),
                     ensure_ascii=False,
                     indent=2,
                 )
             )
         else:
+            parser_lab.print_help()
+            sys.exit(1)
+
+    elif args.command == "workspace":
+        skill_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        if args.resolve_user:
+            source_git_username = (
+                args.username if args.username is not None else resolve_git_username()
+            )
             print(
                 json.dumps(
                     {
-                        "status": "ready",
-                        "topic": args.topic,
-                        "message": "提示词生成模式已就绪，请描述你的需求",
+                        "source_git_username": source_git_username,
+                        "workspace_user": normalize_workspace_username(
+                            source_git_username
+                        ),
                     },
                     ensure_ascii=False,
                     indent=2,
                 )
             )
+        elif args.show_root:
+            print(
+                json.dumps(
+                    {
+                        "workspace_root": str(get_workspace_root(Path(skill_dir))),
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.bootstrap:
+            print(
+                json.dumps(
+                    ensure_workspace(Path(skill_dir), username=args.username),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            parser_workspace.print_help()
+            sys.exit(1)
+
+    elif args.command == "home":
+        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        ensure_workspace(skill_dir, username=args.username)
+        home_service = HomeService.from_skill_dir(skill_dir, username=args.username)
+
+        if args.dashboard:
+            print(json.dumps(home_service.get_dashboard(), ensure_ascii=False, indent=2))
+        elif args.resume:
+            print(
+                json.dumps(
+                    home_service.get_resume_target(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.recommend:
+            print(
+                json.dumps(
+                    home_service.get_recommendation(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            parser_home.print_help()
+            sys.exit(1)
+
+    elif args.command == "learning":
+        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        ensure_workspace(skill_dir, username=args.username)
+        learning_service = LearningService.from_skill_dir(
+            skill_dir, username=args.username
+        )
+
+        if args.catalog:
+            print(
+                json.dumps(
+                    learning_service.get_catalog(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.category:
+            print(
+                json.dumps(
+                    learning_service.get_category(args.category),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.recommend_course:
+            print(
+                json.dumps(
+                    learning_service.recommend_course(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.lesson_meta and args.course:
+            print(
+                json.dumps(
+                    learning_service.get_lesson_meta(args.course),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.lesson_panel and args.course:
+            print(
+                json.dumps(
+                    learning_service.get_lesson_panel(args.course),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.code_meta and args.course:
+            print(
+                json.dumps(
+                    learning_service.get_code_meta(args.course),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.code_outline and args.course:
+            print(
+                json.dumps(
+                    learning_service.get_code_outline(args.course),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.complete and args.course:
+            print(
+                json.dumps(
+                    learning_service.complete_course(args.course),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            parser_learning.print_help()
+            sys.exit(1)
+
+    elif args.command == "practice":
+        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        ensure_workspace(skill_dir, username=args.username)
+        practice_service = PracticeService.from_skill_dir(
+            skill_dir, username=args.username
+        )
+
+        if args.entry_points:
+            print(
+                json.dumps(
+                    practice_service.get_entry_points(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.resume:
+            print(
+                json.dumps(
+                    practice_service.get_resume_target(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.blueprint:
+            print(
+                json.dumps(
+                    practice_service.build_blueprint(
+                        course_id=args.course,
+                        mode=args.mode or "current",
+                        focus_tag=args.focus_tag,
+                    ),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.record_result:
+            payload = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else {}
+            print(
+                json.dumps(
+                    practice_service.record_result(payload),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.review_mistakes:
+            print(
+                json.dumps(
+                    practice_service.list_open_mistakes(course_id=args.course),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.summary:
+            print(
+                json.dumps(
+                    practice_service.get_practice_summary(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            parser_practice.print_help()
+            sys.exit(1)
+
+    elif args.command == "profile":
+        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        ensure_workspace(skill_dir, username=args.username)
+        profile_service = ProfileService.from_skill_dir(
+            skill_dir, username=args.username
+        )
+
+        if args.summary:
+            print(
+                json.dumps(
+                    profile_service.get_summary(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.progress:
+            print(
+                json.dumps(
+                    profile_service.get_progress(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.mistakes:
+            print(
+                json.dumps(
+                    profile_service.get_mistakes(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.exam_history:
+            print(
+                json.dumps(
+                    profile_service.get_exam_history(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        elif args.templates:
+            print(
+                json.dumps(
+                    profile_service.get_templates(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            parser_profile.print_help()
+            sys.exit(1)
 
 
 if __name__ == "__main__":

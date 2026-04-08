@@ -1,5 +1,96 @@
 # 版本历史
 
+## v8.0.0 (2026-04-08)
+
+### 重大更新：移除 Legacy 兼容层
+
+#### 本次调整
+
+**命令面收敛为平台模块**：
+- 移除旧 `mode / learn / generate / state`
+- CLI 只保留 `workspace / home / learning / practice / exam / lab / profile`
+
+**旧引擎彻底退场**：
+- 删除 `scripts/engine.py`
+- `scripts/__init__.py` 不再导出 `PromptLearningEngine`
+
+**文档与评测切换为平台心智**：
+- reference 文档改写为学习中心、考试中心和 Prompt Lab 参考
+- `evals/evals.json` 重写为平台导向评测集
+- `agents/openai.yaml` 改为平台型描述
+
+**产品边界更清晰**：
+- 新版本不再兼容旧模式接口
+- 后续增强默认都基于平台模块展开
+
+## v7.0.11 (2026-04-08)
+
+### 修正：执行路径、生成流程与推荐语义
+
+#### 本次调整
+
+**移除本机绝对路径依赖**：
+- `SKILL.md` 不再把 Python 解释器写死为作者本机路径
+- 改回先检查 skill 根目录可达的 `../../../.venv/bin/python`
+- 若虚拟环境不可用，再检查 `python3`
+
+**恢复提示词生成模式的脚本校验链**：
+- `SKILL.md` 再次把 `--interview-blueprint`、`--validate-slots`、`--validate-draft` 写回主流程
+- `reference/prompt-generation-mode.md` 同步强调槽位校验和草稿校验不可跳过
+
+**修正下一课推荐语义**：
+- `scripts/state.py` 不再把“当前正在学但尚未完成的课程”重新当作 `next_course`
+- 同类别推荐现在会跳过未完成的当前课，避免循环推荐
+
+## v7.0.10 (2026-04-08)
+
+### 修正：恢复结构化交互优先级
+
+#### 本次调整
+
+**恢复 Question 类工具优先级**：
+- `SKILL.md` 再次明确 Script-First
+- 选课、模式选择、课后面板在工具可用时优先使用脚本返回的 `question`
+- 只有结构化工具不可用时，才退化到自然语言文本提示
+
+**状态与评测同步**：
+- `scripts/state.py` 默认重新设为 `use_question_tool: true`
+- `evals/evals.json` 恢复对结构化交互优先级的评测预期
+
+**保留近期有效改动**：
+- 保留“老师主导讲解”的教学定位
+- 保留严格但尊重学生的反馈语气
+- 保留自由选课与更合理的学习推荐逻辑
+
+## v7.0.9 (2026-04-08)
+
+### 修正：教学 Skill 角色与执行路径对齐
+
+#### 本次调整
+
+**老师主导型定位统一**：
+- 更新 `SKILL.md`、`agents/openai.yaml` 和参考文档
+- 明确 AI 执行器是老师，用户是学生
+- 提示词生成模式改为“边生成边教学”，而不是纯协作代写
+
+**去除对 Question 工具的硬依赖**：
+- 选课、课后面板和模式选择改为“有结构化工具则用，没有也能继续”
+- `evals/evals.json` 不再把 Question 工具作为强制成功条件
+- `scripts/state.py` 默认不再假设 Question 工具一定可用
+
+**学习推荐逻辑修正**：
+- `scripts/state.py` 不再按课程编号线性强推下一课
+- 优先建议补当前课程缺失的前置知识
+- 否则优先推荐同类别未完成课程，保持自由选课原则
+
+**考试反馈语气修正**：
+- `scripts/exam.py` 的综合评价改为严格但尊重学生
+- 移除“令人失望”“没认真学习”这类羞辱性措辞
+
+**CLI 兼容性补强**：
+- `scripts/__main__.py` 去掉 `str | None` 写法，降低在较老 Python 上直接崩溃的概率
+- 模式描述改为老师主导型文案
+
 ## v7.0.8 (2026-04-08)
 
 ### 修正：整体审查发现的问题
@@ -111,6 +202,32 @@
 - 更新 `scripts/__main__.py`：为 `mode` 命令增加 `question` 结构输出
 - 更新 `SKILL.md`：补充模式选择的强约束与标准示例
 - 更新 `evals/evals.json`：增加 Question 工具相关断言
+
+---
+
+## v7.0.3 (2026-04-08)
+
+### 调整：学习模式默认课后练习
+
+#### 本次调整
+
+**课程末尾固定 1 道练习题**：
+- 学习模式先讲课，再立即给 1 道课后练习
+- 不再要求用户先主动提出“我要练习”
+- 练习题仍由 `practice-blueprint` 固定结构，LLM 负责填充题干和反馈
+
+**练习后固定三选项**：
+- 启发式提问
+- 继续做练习题
+- 查看代码实现
+
+#### 文档与脚本更新
+
+- 更新 `SKILL.md`：改写学习模式流程，练习从可选变为默认
+- 更新 `reference/learning-mode.md`：同步课后练习与练习后分支
+- 更新 `scripts/engine.py`：重写 `learn --panel` 的固定选项
+- 更新 `scripts/__main__.py`：同步 `--panel` 帮助文案
+- 更新 `evals/evals.json`：将学习模式断言调整为默认练习
 
 ---
 

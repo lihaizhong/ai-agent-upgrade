@@ -1,7 +1,7 @@
 interface:
-  display_name: "提示词工程学习"
-  short_description: "学习、练习、考试并生成高质量提示词"
-  default_prompt: "Use $prompt-learning to learn prompt engineering, take a structured exam, or co-design a prompt."
+  display_name: "提示词学习平台"
+  short_description: "统一的提示词学习平台，覆盖学习、练习、考试、Prompt Lab 与学习档案"
+  default_prompt: "Use $prompt-learning as a prompt learning platform: route the user into learning, practice, exam, Prompt Lab, or profile, teach concepts, guide practice, and maintain continuity through the platform model."
 
 policy:
   allow_implicit_invocation: true
