@@ -1,5 +1,25 @@
 # 版本历史
 
+## v8.2.0 (2026-04-09)
+
+### 更新：考试题目存储与提交流程优化
+
+#### 本次调整
+
+**考试会话流程调整**：
+- 新增 `exam --submit-question --session <id>`，LLM 生成题目后先校验并写入 session
+- `exam --submit-answer --session <id>` 不再接收完整 `question` 对象，选择题和填空题只提交 `answer` 与 `question_num`
+- 大题提交答案时继续允许传 `rubric_scores`，避免脚本评分逻辑回归为 0 分
+
+**选择题交互对齐 selector-first**：
+- 当前题已存储且为选择题时，`current_question` 返回 `interaction.mode: "selector"`
+- 题目未存储时仍返回题位 slot 元数据，保持动态出题流程
+
+**文档与验证同步**：
+- 更新 `SKILL.md`，补充 mc/fill/essay 的结构化 JSON 示例和新提交流程
+- 更新考试中心架构文档与 CLI 模块文档，记录 `submit_question -> submit_answer` 流程
+- 更新考试会话测试，覆盖题目存储、选择题 selector、essay rubric 评分、报告生成和弱点分析
+
 ## v8.1.1 (2026-04-08)
 
 ### 优化：结构化选择 payload 补充稳定 id

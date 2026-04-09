@@ -168,6 +168,7 @@ V1 固定四张：
 - 返回考试入口
 - 返回考试结构与题位蓝图
 - 负责题目结构校验
+- 维护考试会话中的题目与答案提交
 - 生成考试报告
 
 ### 建议命令
@@ -175,6 +176,13 @@ V1 固定四张：
 - `exam --entry-points`
 - `exam --structure --type <diagnostic|final>`
 - `exam --blueprint --type <diagnostic|final>`
+- `exam --start --type <diagnostic|final>`
+- `exam --current-question --session <id>`
+- `exam --submit-question --session <id>`
+- `exam --submit-answer --session <id>`
+- `exam --resume`
+- `exam --abandon --session <id>`
+- `exam --finish --session <id>`
 - `exam --validate-mc`
 - `exam --validate-fill`
 - `exam --validate-essay`

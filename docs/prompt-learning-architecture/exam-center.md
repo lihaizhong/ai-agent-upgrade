@@ -104,12 +104,12 @@ V1 建议保留：
 3. 获取考试结构说明
 4. 获取题位蓝图
 5. LLM 按蓝图生成题目内容
-6. 脚本校验各题结构
-7. 一次只展示当前题
-8. 用户作答并提交，脚本锁定该题
-9. 若中断，再次进入时先选择恢复或放弃
-10. 全部题目完成后再统一评分
-11. 生成考试报告
+6. 调用 `exam --submit-question --session <id>` 校验并存储当前题
+7. 一次只展示当前题；选择题已存储时通过 selector 展示选项
+8. 用户作答后调用 `exam --submit-answer --session <id>`，仅提交答案和题号；大题可额外提交 `rubric_scores`
+9. 脚本从 session 读取题目并记录答案、分数和当前进度
+10. 若中断，再次进入时先选择恢复或放弃
+11. 全部题目完成后生成考试报告
 12. 回写考试历史与薄弱点摘要
 
 ## 作答过程与终局报告
@@ -117,8 +117,10 @@ V1 建议保留：
 ### 作答过程
 
 - 每次只展示一道题。
+- 题目内容先写入 session，再展示给用户作答。
 - 题目提交后立即锁定，上一题不可回看。
 - 考试过程中不公布对错、得分或解析。
+- 答案提交时不再传完整题目对象，只传 `answer` 和 `question_num`；大题可额外传 `rubric_scores`。
 - 若存在未完成会话，再次进入考试中心时优先给“恢复考试 / 放弃考试”选择。
 
 ### 终局报告
@@ -157,6 +159,7 @@ V1 建议保留：
 - `exam --blueprint --type <diagnostic|final>`
 - `exam --start --type <diagnostic|final>`
 - `exam --current-question --session <id>`
+- `exam --submit-question --session <id>`
 - `exam --submit-answer --session <id>`
 - `exam --resume`
 - `exam --abandon --session <id>`

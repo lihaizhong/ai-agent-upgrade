@@ -165,7 +165,7 @@ class PromptLearningExamSessionTest(unittest.TestCase):
                     topic_tags=[f"{exam_type}-mc-topic-{num}"],
                 )
                 answer = "A" if num == 1 else "B"
-                payload = {"question": question, "answer": answer}
+                answer_payload = {"answer": answer, "question_num": num}
             elif num <= 8:
                 question = self._fill_question(
                     num,
@@ -174,7 +174,7 @@ class PromptLearningExamSessionTest(unittest.TestCase):
                     topic_tags=[f"{exam_type}-fill-topic-{num}"],
                 )
                 answer = "test answer" if num == 6 else "wrong answer"
-                payload = {"question": question, "answer": answer}
+                answer_payload = {"answer": answer, "question_num": num}
             else:
                 question = self._essay_question(
                     num,
@@ -182,16 +182,29 @@ class PromptLearningExamSessionTest(unittest.TestCase):
                     course_id=num if exam_type == "diagnostic" else num + 20,
                     topic_tags=[f"{exam_type}-essay-topic-{num}"],
                 )
-                payload = {
-                    "question": question,
+                answer_payload = {
                     "answer": "完整回答",
+                    "question_num": num,
                     "rubric_scores": {
                         "结构完整": 6 if num == 9 else 3,
                         "技术选择": 4.5 if num == 9 else 2,
                         "权衡分析": 4.5 if num == 9 else 2,
                     },
                 }
-            run_cli("exam", "--submit-answer", "--session", session_id, stdin_data=payload)
+            run_cli(
+                "exam",
+                "--submit-question",
+                "--session",
+                session_id,
+                stdin_data={"question": question},
+            )
+            run_cli(
+                "exam",
+                "--submit-answer",
+                "--session",
+                session_id,
+                stdin_data=answer_payload,
+            )
         return run_cli("exam", "--finish", "--session", session_id)
 
     def _assert_finished_exam(
@@ -258,9 +271,9 @@ class PromptLearningExamSessionTest(unittest.TestCase):
 
     def test_submit_answer_advances_without_feedback(self) -> None:
         started = run_cli("exam", "--start", "--type", "diagnostic")
-        submit = run_cli(
+        run_cli(
             "exam",
-            "--submit-answer",
+            "--submit-question",
             "--session",
             started["session_id"],
             stdin_data={
@@ -269,8 +282,23 @@ class PromptLearningExamSessionTest(unittest.TestCase):
                     "初级",
                     course_id=1,
                     topic_tags=["diagnostic-mc-topic-1"],
-                ),
+                )
+            },
+        )
+        stored_question = run_cli(
+            "exam",
+            "--current-question",
+            "--session",
+            started["session_id"],
+        )
+        submit = run_cli(
+            "exam",
+            "--submit-answer",
+            "--session",
+            started["session_id"],
+            stdin_data={
                 "answer": "A",
+                "question_num": 1,
             },
         )
         current = run_cli(
@@ -280,6 +308,8 @@ class PromptLearningExamSessionTest(unittest.TestCase):
             started["session_id"],
         )
 
+        self.assertEqual(stored_question["interaction"]["mode"], "selector")
+        self.assertEqual(stored_question["question"]["options"][0]["value"], "A")
         self.assertTrue(submit["recorded"])
         self.assertFalse(submit["finished"])
         self.assertEqual(submit["next_question_num"], 2)
@@ -291,7 +321,7 @@ class PromptLearningExamSessionTest(unittest.TestCase):
         started = run_cli("exam", "--start", "--type", "diagnostic")
         error = run_cli_error(
             "exam",
-            "--submit-answer",
+            "--submit-question",
             "--session",
             started["session_id"],
             stdin_data={
@@ -308,8 +338,7 @@ class PromptLearningExamSessionTest(unittest.TestCase):
                     ],
                     "correct_answer": "A",
                     "score": 5,
-                },
-                "answer": "A",
+                }
             },
         )
 

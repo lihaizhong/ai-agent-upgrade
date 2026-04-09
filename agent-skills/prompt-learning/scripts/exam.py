@@ -57,7 +57,7 @@ class ExamEngine:
                     },
                 ],
                 "multiple": False,
-            }
+            },
         }
 
     def build_exam_blueprint(self, exam_type: str = "diagnostic") -> dict:
@@ -442,7 +442,9 @@ class ExamEngine:
         range_match = re.fullmatch(r"(\d+)\s*[-~到]\s*(\d+)", s2)
         if range_match:
             user_numbers = [part for part in re.split(r"\D+", s1) if part]
-            if len(user_numbers) >= 2 and user_numbers[:2] == list(range_match.groups()):
+            if len(user_numbers) >= 2 and user_numbers[:2] == list(
+                range_match.groups()
+            ):
                 return 1.0
 
         set1 = set(s1.split())
@@ -623,7 +625,9 @@ class ExamService:
         if not result["valid"]:
             raise ValueError("题目结构校验失败: " + "; ".join(result["errors"]))
 
-    def _grade_answer(self, question: dict, answer: str, rubric_scores: dict | None) -> tuple[int, str]:
+    def _grade_answer(
+        self, question: dict, answer: str, rubric_scores: dict | None
+    ) -> tuple[int, str]:
         engine = ExamEngine(skill_dir=self.skill_dir, username=self.username)
         if question["type"] == "mc":
             is_correct, score = engine.grade_mc(question, answer)
@@ -640,7 +644,9 @@ class ExamService:
         weak_courses: list[int] = []
         weak_topics: list[str] = []
 
-        for question, score in zip(session.get("questions", []), session.get("scores", [])):
+        for question, score in zip(
+            session.get("questions", []), session.get("scores", [])
+        ):
             max_score = question.get("score", 0)
             if score >= max_score:
                 continue
@@ -664,10 +670,8 @@ class ExamService:
         current_num = session["current_question_num"]
         current_slot = session["question_summaries"][current_num - 1]
         total_questions = session["total_questions"]
-        return {
-            "interaction": {
-                "mode": "inform",
-            },
+
+        base = {
             "session_id": session["session_id"],
             "exam_type": session["exam_type"],
             "exam_label": session["exam_label"],
@@ -676,7 +680,34 @@ class ExamService:
             "total_questions": total_questions,
             "remaining_questions": total_questions - current_num + 1,
             "current_slot": current_slot,
+            "interaction": {"mode": "inform"},
         }
+
+        questions = session.get("questions", [])
+        if len(questions) < current_num or questions[current_num - 1] is None:
+            return base
+
+        question = questions[current_num - 1]
+        if question.get("type") != "mc" or not question.get("options"):
+            base["question_content"] = question
+            return base
+
+        base["interaction"] = {"mode": "selector"}
+        base["question"] = {
+            "id": f"exam-q{current_num}",
+            "header": f"第 {current_num} 题",
+            "question": question.get("question", ""),
+            "options": [
+                {
+                    "label": opt.get("label", ""),
+                    "description": opt.get("text", opt.get("description", "")),
+                    "value": opt.get("label", ""),
+                }
+                for opt in question["options"]
+            ],
+            "multiple": False,
+        }
+        return base
 
     def get_in_progress_session(self) -> dict | None:
         session = self._read_session()
@@ -793,6 +824,43 @@ class ExamService:
             "status": session["status"],
         }
 
+    def submit_question(self, payload: dict, session_id: str | None = None) -> dict:
+        session = self.get_in_progress_session()
+        if not session:
+            raise ValueError("没有进行中的考试会话")
+        if session_id and session["session_id"] != session_id:
+            raise ValueError("session_id 不匹配")
+
+        question = payload.get("question")
+        if not isinstance(question, dict):
+            raise ValueError("question 必须是对象")
+
+        current_num = session["current_question_num"]
+        slot = session["question_summaries"][current_num - 1]
+
+        questions = session.setdefault("questions", [])
+        if len(questions) >= current_num and questions[current_num - 1] is not None:
+            raise ValueError(f"第 {current_num} 题已经提交，不可重复提交")
+
+        self._validate_slot_question(slot, question)
+
+        while len(questions) < current_num:
+            questions.append(None)
+        questions[current_num - 1] = question
+
+        self._write_session(session)
+        self.state_store.update_current_state(
+            current_module="exam",
+            last_action="exam_question_submitted",
+            recommended_next_action="answer_question",
+        )
+        return {
+            "interaction": {"mode": "inform"},
+            "stored": True,
+            "session_id": session["session_id"],
+            "question_num": current_num,
+        }
+
     def submit_answer(self, payload: dict, session_id: str | None = None) -> dict:
         session = self.get_in_progress_session()
         if not session:
@@ -801,19 +869,28 @@ class ExamService:
             raise ValueError("session_id 不匹配")
 
         answer = payload.get("answer")
-        question = payload.get("question")
+        question_num = payload.get("question_num")
         rubric_scores = payload.get("rubric_scores", {})
         if not isinstance(answer, str) or not answer.strip():
             raise ValueError("answer 不能为空")
-        if not isinstance(question, dict):
-            raise ValueError("question 必须是对象")
+        if not isinstance(question_num, int):
+            raise ValueError("question_num 必须是整数")
+        if not isinstance(rubric_scores, dict):
+            raise ValueError("rubric_scores 必须是对象")
 
         current_num = session["current_question_num"]
+        if question_num != current_num:
+            raise ValueError(f"question_num 不匹配，当前应该是第 {current_num} 题")
         if len(session["answers"]) != current_num - 1:
             raise ValueError("当前题状态异常")
-        slot = session["question_summaries"][current_num - 1]
-        self._validate_slot_question(slot, question)
 
+        questions = session.get("questions", [])
+        if len(questions) < current_num or questions[current_num - 1] is None:
+            raise ValueError(
+                f"第 {current_num} 题尚未提交题目，请先调用 submit_question"
+            )
+
+        question = questions[current_num - 1]
         score, feedback = self._grade_answer(question, answer, rubric_scores)
         answer_record = {
             "num": current_num,
@@ -822,7 +899,6 @@ class ExamService:
             "feedback": feedback,
         }
 
-        session["questions"].append(question)
         session["answers"].append(answer_record)
         session["scores"].append(score)
         session["updated_at"] = self._timestamp()

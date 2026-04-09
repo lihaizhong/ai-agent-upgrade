@@ -1,0 +1,172 @@
+{
+  "session_id": "exam-2026-04-09-11-19-03",
+  "exam_type": "final",
+  "exam_label": "综合考试",
+  "status": "in_progress",
+  "current_question_num": 3,
+  "total_questions": 11,
+  "started_at": "2026-04-09T11:19:03.238768+08:00",
+  "updated_at": "2026-04-09T11:23:53.254459+08:00",
+  "completed_at": null,
+  "answers": [
+    {
+      "num": 1,
+      "type": "mc",
+      "answer": "B",
+      "feedback": "已记录选择题答案"
+    },
+    {
+      "num": 2,
+      "type": "mc",
+      "answer": "B",
+      "feedback": "已记录选择题答案"
+    }
+  ],
+  "scores": [
+    5,
+    5
+  ],
+  "questions": [
+    {
+      "num": 1,
+      "type": "mc",
+      "difficulty": "初级",
+      "score": 5,
+      "course_id": 1,
+      "topic_tags": [
+        "零样本提示",
+        "基础概念"
+      ],
+      "question": "在提示词工程中，\"零样本提示\"（Zero-Shot Prompting）的核心特征是什么？",
+      "options": [
+        {
+          "label": "A",
+          "text": "提供 1-3 个示例，让 AI 学习任务模式"
+        },
+        {
+          "label": "B",
+          "text": "直接用自然语言指令完成任务，不提供任何示例"
+        },
+        {
+          "label": "C",
+          "text": "让 AI 自己思考推理步骤后再给出答案"
+        },
+        {
+          "label": "D",
+          "text": "通过多轮对话逐步完善任务要求"
+        }
+      ],
+      "correct_answer": "B"
+    },
+    {
+      "num": 2,
+      "type": "mc",
+      "difficulty": "初级",
+      "score": 5,
+      "course_id": 1,
+      "topic_tags": [
+        "零样本提示",
+        "指令设计"
+      ],
+      "question": "当你需要让 AI 将一段中文文章翻译成英文，同时保持专业术语的准确性时，以下哪种提示词最合适？",
+      "options": [
+        {
+          "label": "A",
+          "text": "把下面文章翻译成英文"
+        },
+        {
+          "label": "B",
+          "text": "请将以下中文文章翻译成英文，对于专业术语请保持其原有英文术语，不要翻译成中文。请使用正式书面语。"
+        },
+        {
+          "label": "C",
+          "text": "你是一个翻译专家，请把文章翻成英文"
+        },
+        {
+          "label": "D",
+          "text": "把文章变成英文，越简单越好"
+        }
+      ],
+      "correct_answer": "B"
+    }
+  ],
+  "question_summaries": [
+    {
+      "num": 1,
+      "type": "mc",
+      "difficulty": "初级",
+      "goal": "基础概念识别",
+      "score": 5
+    },
+    {
+      "num": 2,
+      "type": "mc",
+      "difficulty": "初级",
+      "goal": "简单场景判断",
+      "score": 5
+    },
+    {
+      "num": 3,
+      "type": "mc",
+      "difficulty": "中级",
+      "goal": "技术选择",
+      "score": 5
+    },
+    {
+      "num": 4,
+      "type": "mc",
+      "difficulty": "中级",
+      "goal": "方案对比",
+      "score": 5
+    },
+    {
+      "num": 5,
+      "type": "mc",
+      "difficulty": "高级/专家",
+      "goal": "复杂权衡",
+      "score": 5
+    },
+    {
+      "num": 6,
+      "type": "fill",
+      "difficulty": "中级",
+      "goal": "关键参数",
+      "score": 10
+    },
+    {
+      "num": 7,
+      "type": "fill",
+      "difficulty": "中级",
+      "goal": "步骤或机制",
+      "score": 10
+    },
+    {
+      "num": 8,
+      "type": "fill",
+      "difficulty": "高级",
+      "goal": "场景匹配",
+      "score": 10
+    },
+    {
+      "num": 9,
+      "type": "essay",
+      "difficulty": "中级",
+      "goal": "提示词设计",
+      "score": 15
+    },
+    {
+      "num": 10,
+      "type": "essay",
+      "difficulty": "高级",
+      "goal": "多技术融合",
+      "score": 15
+    },
+    {
+      "num": 11,
+      "type": "essay",
+      "difficulty": "专家",
+      "goal": "系统性权衡",
+      "score": 15
+    }
+  ]
+}

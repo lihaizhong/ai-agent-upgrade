@@ -115,7 +115,9 @@ def main():
     parser_learning.add_argument(
         "--lesson-panel", action="store_true", help="获取课后面板"
     )
-    parser_learning.add_argument("--code-meta", action="store_true", help="获取代码元数据")
+    parser_learning.add_argument(
+        "--code-meta", action="store_true", help="获取代码元数据"
+    )
     parser_learning.add_argument(
         "--code-outline", action="store_true", help="获取代码讲解结构"
     )
@@ -128,7 +130,9 @@ def main():
     parser_practice.add_argument(
         "--entry-points", action="store_true", help="获取练习入口"
     )
-    parser_practice.add_argument("--resume", action="store_true", help="获取继续练习目标")
+    parser_practice.add_argument(
+        "--resume", action="store_true", help="获取继续练习目标"
+    )
     parser_practice.add_argument(
         "--blueprint", action="store_true", help="获取练习蓝图"
     )
@@ -171,7 +175,12 @@ def main():
     )
     parser_exam.add_argument("--resume", action="store_true", help="获取恢复考试入口")
     parser_exam.add_argument("--abandon", action="store_true", help="放弃考试会话")
-    parser_exam.add_argument("--submit-answer", action="store_true", help="提交当前题答案")
+    parser_exam.add_argument(
+        "--submit-answer", action="store_true", help="提交当前题答案"
+    )
+    parser_exam.add_argument(
+        "--submit-question", action="store_true", help="提交题目到考试会话"
+    )
     parser_exam.add_argument("--finish", action="store_true", help="完成考试并生成报告")
     parser_exam.add_argument(
         "--type",
@@ -299,6 +308,16 @@ def main():
             print(
                 json.dumps(
                     exam_service.submit_answer(payload, args.session),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+
+        elif args.submit_question:
+            payload = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else {}
+            print(
+                json.dumps(
+                    exam_service.submit_question(payload, args.session),
                     ensure_ascii=False,
                     indent=2,
                 )
@@ -507,7 +526,9 @@ def main():
         home_service = HomeService.from_skill_dir(skill_dir, username=args.username)
 
         if args.dashboard:
-            print(json.dumps(home_service.get_dashboard(), ensure_ascii=False, indent=2))
+            print(
+                json.dumps(home_service.get_dashboard(), ensure_ascii=False, indent=2)
+            )
         elif args.resume:
             print(
                 json.dumps(
