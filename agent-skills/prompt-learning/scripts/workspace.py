@@ -36,7 +36,8 @@ def normalize_workspace_username(raw_name: str | None) -> str:
 
 def get_repo_root(skill_dir: Path) -> Path:
     """返回仓库根目录。"""
-    return skill_dir.parent.parent
+    resolved = skill_dir.resolve()
+    return resolved.parent.parent
 
 
 def get_workspace_root(skill_dir: Path) -> Path:
@@ -51,7 +52,9 @@ def get_user_workspace(skill_dir: Path, username: str | None = None) -> Path:
     return get_workspace_root(skill_dir) / workspace_user
 
 
-def get_workspace_paths(skill_dir: Path, username: str | None = None) -> dict[str, Path]:
+def get_workspace_paths(
+    skill_dir: Path, username: str | None = None
+) -> dict[str, Path]:
     """返回当前用户 workspace 关键路径。"""
     user_workspace = get_user_workspace(skill_dir, username=username)
     profile_dir = user_workspace / "profile"

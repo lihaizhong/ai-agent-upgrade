@@ -14,6 +14,8 @@
 
 `prompt-learning-workspace/<username>/`
 
+路径解析必须兼容 skill 软链接入口。无论脚本从 `agent-skills/prompt-learning/`、`.opencode/skills/prompt-learning/` 还是 `.codex/skills/prompt-learning/` 启动，workspace 根目录都必须解析到项目根目录下的 `prompt-learning-workspace/`，不能创建在 skill 目录、`.opencode/` 或 `.codex/` 下。
+
 ## 用户名规则
 
 用户目录名生成规则如下：

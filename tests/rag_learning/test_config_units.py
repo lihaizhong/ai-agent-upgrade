@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.util
 import sys
 import unittest
 from pathlib import Path
@@ -16,8 +17,30 @@ from config import load_platform_config  # noqa: E402
 from config import load_review_fields  # noqa: E402
 from config import load_review_scenarios  # noqa: E402
 
+spec = importlib.util.spec_from_file_location(
+    "rag_learning_workspace", SCRIPTS_DIR / "workspace.py"
+)
+if spec is None or spec.loader is None:
+    raise ImportError("Cannot load rag-learning workspace module")
+workspace_module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = workspace_module
+spec.loader.exec_module(workspace_module)
+get_workspace_root = workspace_module.get_workspace_root
+
 
 class RagLearningConfigUnitTest(unittest.TestCase):
+    def test_workspace_root_resolves_from_skill_symlink_paths(self) -> None:
+        expected = REPO_ROOT / "rag-learning-workspace"
+
+        self.assertEqual(
+            get_workspace_root(REPO_ROOT / ".codex" / "skills" / "rag-learning"),
+            expected,
+        )
+        self.assertEqual(
+            get_workspace_root(REPO_ROOT / ".opencode" / "skills" / "rag-learning"),
+            expected,
+        )
+
     def test_load_course_catalog_returns_expected_fields(self) -> None:
         courses = load_course_catalog(SKILL_DIR)
 

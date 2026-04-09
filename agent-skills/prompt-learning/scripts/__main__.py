@@ -55,6 +55,10 @@ else:
     )
 
 
+def _skill_dir() -> Path:
+    return Path(__file__).resolve().parent.parent
+
+
 def resolve_username(explicit_username: str = None) -> str:
     """解析报告使用的用户名。"""
     if explicit_username and explicit_username.strip():
@@ -239,7 +243,7 @@ def main():
         sys.exit(1)
 
     if args.command == "exam":
-        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        skill_dir = _skill_dir()
         ensure_workspace(skill_dir, username=args.username)
         exam = ExamEngine(skill_dir=skill_dir, username=args.username)
         exam_service = ExamService.from_skill_dir(skill_dir, username=args.username)
@@ -416,7 +420,7 @@ def main():
             sys.exit(1)
 
     elif args.command == "lab":
-        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        skill_dir = _skill_dir()
         ensure_workspace(skill_dir, username=args.username)
         prompt_lab = PromptLabService.from_skill_dir(skill_dir, username=args.username)
 
@@ -480,7 +484,7 @@ def main():
             sys.exit(1)
 
     elif args.command == "workspace":
-        skill_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        skill_dir = _skill_dir()
 
         if args.resolve_user:
             source_git_username = (
@@ -502,7 +506,7 @@ def main():
             print(
                 json.dumps(
                     {
-                        "workspace_root": str(get_workspace_root(Path(skill_dir))),
+                        "workspace_root": str(get_workspace_root(skill_dir)),
                     },
                     ensure_ascii=False,
                     indent=2,
@@ -511,7 +515,7 @@ def main():
         elif args.bootstrap:
             print(
                 json.dumps(
-                    ensure_workspace(Path(skill_dir), username=args.username),
+                    ensure_workspace(skill_dir, username=args.username),
                     ensure_ascii=False,
                     indent=2,
                 )
@@ -521,7 +525,7 @@ def main():
             sys.exit(1)
 
     elif args.command == "home":
-        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        skill_dir = _skill_dir()
         ensure_workspace(skill_dir, username=args.username)
         home_service = HomeService.from_skill_dir(skill_dir, username=args.username)
 
@@ -550,7 +554,7 @@ def main():
             sys.exit(1)
 
     elif args.command == "learning":
-        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        skill_dir = _skill_dir()
         ensure_workspace(skill_dir, username=args.username)
         learning_service = LearningService.from_skill_dir(
             skill_dir, username=args.username
@@ -625,7 +629,7 @@ def main():
             sys.exit(1)
 
     elif args.command == "practice":
-        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        skill_dir = _skill_dir()
         ensure_workspace(skill_dir, username=args.username)
         practice_service = PracticeService.from_skill_dir(
             skill_dir, username=args.username
@@ -689,7 +693,7 @@ def main():
             sys.exit(1)
 
     elif args.command == "profile":
-        skill_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        skill_dir = _skill_dir()
         ensure_workspace(skill_dir, username=args.username)
         profile_service = ProfileService.from_skill_dir(
             skill_dir, username=args.username

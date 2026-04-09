@@ -25,7 +25,7 @@ class ExamEngine:
         username: str | None = None,
     ):
         if skill_dir is None:
-            skill_dir = Path(__file__).parent.parent
+            skill_dir = Path(__file__).resolve().parent.parent
         self.skill_dir = Path(skill_dir)
         workspace_paths = get_workspace_paths(self.skill_dir, username=username)
         self.exam_dir = workspace_paths["exam_reports_dir"]

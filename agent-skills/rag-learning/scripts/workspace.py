@@ -36,7 +36,7 @@ def normalize_workspace_username(raw_name: str | None) -> str:
 
 def get_repo_root(skill_dir: Path) -> Path:
     """返回仓库根目录。"""
-    return skill_dir.parent.parent
+    return skill_dir.resolve().parent.parent
 
 
 def get_workspace_root(skill_dir: Path) -> Path:
