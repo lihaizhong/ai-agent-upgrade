@@ -1,0 +1,7 @@
+{
+  "language": "zh-CN",
+  "preferred_runtime": "python",
+  "preferred_stack": "langchain",
+  "deployment_preference": "hybrid",
+  "updated_at": "2026-04-09T09:23:26.239709+08:00"
+}

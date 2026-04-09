@@ -18,6 +18,7 @@
 项目包含预配置的 Skills，可以直接使用：
 
 - `prompt-learning` - 提示词工程学习系统
+- `rag-learning` - RAG 系统设计训练平台
 - `poetry` - 中国古诗词检索展示
 - `doc-coauthoring` - 结构化文档协作
 - `internal-comms` - 内部沟通内容
@@ -33,7 +34,6 @@
 ### 📚 文档
 
 - [提示词工程发展史](docs/prompt-engineering-history.md) - 从 2020 年至今的提示词技术演进历程
-- [AI Agent 架构分层](docs/ai-agent-architecture.md) - 基于 Anthropic、Google、OpenAI 的权威架构分析
 
 ### 🟢 基础技术（入门）
 
@@ -89,6 +89,46 @@
 本项目包含预配置的 AI Agents 和 Skills，详见 [AGENTS.md](AGENTS.md)。
 
 自定义 skill 统一维护在根目录 `agent-skills/`，并通过软链接暴露到 `.opencode/skills` 与 `.codex/skills`。
+
+## RAG Learning 开发说明
+
+`rag-learning` 当前已经切到平台型结构，核心模块位于：
+
+- `agent-skills/rag-learning/scripts/`
+  - `workspace`
+  - `home`
+  - `learning`
+  - `build`
+  - `lab`
+  - `review`
+  - `profile`
+- `agent-skills/rag-learning/reference/`
+  - `catalog.md`
+  - `platform-config.json`
+- `docs/rag-learning-architecture/`
+
+常用验证命令：
+
+```bash
+./.venv/bin/ruff check agent-skills/rag-learning/scripts tests/test_rag_learning_*.py
+
+./.venv/bin/python -m unittest tests.test_rag_learning_platform
+./.venv/bin/python -m unittest tests.test_rag_learning_content_quality
+./.venv/bin/python -m unittest tests.test_rag_learning_config_units
+./.venv/bin/python -m unittest tests.test_rag_learning_state_flow
+```
+
+常用 CLI 示例：
+
+```bash
+./.venv/bin/python agent-skills/rag-learning/scripts/__main__.py workspace --bootstrap
+./.venv/bin/python agent-skills/rag-learning/scripts/__main__.py home --dashboard
+./.venv/bin/python agent-skills/rag-learning/scripts/__main__.py learning --catalog
+./.venv/bin/python agent-skills/rag-learning/scripts/__main__.py build --entry-points
+./.venv/bin/python agent-skills/rag-learning/scripts/__main__.py lab --entry-points
+./.venv/bin/python agent-skills/rag-learning/scripts/__main__.py review --entry-points
+./.venv/bin/python agent-skills/rag-learning/scripts/__main__.py profile --summary
+```
 
 ## 📝 许可证
 

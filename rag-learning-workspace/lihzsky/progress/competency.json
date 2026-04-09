@@ -1,0 +1,33 @@
+{
+  "areas": {
+    "rag_foundations": {
+      "level": "developing",
+      "evidence_count": 1
+    },
+    "embedding_selection": {
+      "level": "developing",
+      "evidence_count": 1
+    },
+    "vector_db_selection": {
+      "level": "developing",
+      "evidence_count": 1
+    },
+    "retrieval_design": {
+      "level": "new",
+      "evidence_count": 0
+    },
+    "rerank_decision": {
+      "level": "new",
+      "evidence_count": 0
+    },
+    "evaluation_design": {
+      "level": "new",
+      "evidence_count": 0
+    },
+    "architecture_review": {
+      "level": "good",
+      "evidence_count": 2
+    }
+  },
+  "updated_at": "2026-04-09T09:27:25.398600+08:00"
+}

@@ -1,0 +1,1 @@
+{"timestamp": "2026-04-09T09:26:59.358140+08:00", "topic": "embedding", "scenario": "local-minimum-rag", "variants": ["bge-m3", "text-embedding-3-small"], "metric_focus": ["hit_rate_at_5", "latency", "cost"], "summary": "中文语料下 bge-m3 召回更稳。", "recommended_choice": "bge-m3", "tradeoff_note": "效果更稳，但本地推理成本更高。"}

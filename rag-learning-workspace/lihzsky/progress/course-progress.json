@@ -1,0 +1,13 @@
+{
+  "completed_courses": [],
+  "in_progress_course": 4,
+  "last_completed_course": null,
+  "course_status": {
+    "4": {
+      "status": "in_progress",
+      "started_at": "2026-04-09T09:23:37.330039+08:00",
+      "completed_at": null
+    }
+  },
+  "updated_at": "2026-04-09T09:23:37.330793+08:00"
+}

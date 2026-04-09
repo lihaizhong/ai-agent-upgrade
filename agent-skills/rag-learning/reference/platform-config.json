@@ -1,0 +1,83 @@
+{
+  "lab_topics": {
+    "embedding": {
+      "label": "Embedding 对比",
+      "goal": "比较两种 embedding 在当前语料上的检索表现。",
+      "variables": ["model_a", "model_b"],
+      "fixed_conditions": ["same_corpus", "same_chunking", "same_top_k"],
+      "metrics": ["hit_rate_at_5", "latency", "cost"],
+      "output_fields": ["result_summary", "recommended_choice", "tradeoff_note"],
+      "default_variants": ["bge-m3", "text-embedding-3-small"],
+      "recommended_next_action": "return_to_build",
+      "competency_area": "embedding_selection"
+    },
+    "rerank": {
+      "label": "Rerank 判断",
+      "goal": "判断当前阶段是否值得引入 rerank 提升排序质量。",
+      "variables": ["with_rerank", "without_rerank"],
+      "fixed_conditions": ["same_corpus", "same_chunking", "same_retriever"],
+      "metrics": ["precision_at_3", "latency", "cost"],
+      "output_fields": ["result_summary", "recommended_choice", "tradeoff_note"],
+      "default_variants": ["with-rerank", "without-rerank"],
+      "recommended_next_action": "return_to_build",
+      "competency_area": "rerank_decision"
+    },
+    "chunking": {
+      "label": "Chunking 对比",
+      "goal": "比较 chunk size 和 top-k 组合对召回质量的影响。",
+      "variables": ["chunk_strategy_a", "chunk_strategy_b"],
+      "fixed_conditions": ["same_corpus", "same_embedding", "same_vector_db"],
+      "metrics": ["hit_rate_at_5", "citation_accuracy", "latency"],
+      "output_fields": ["result_summary", "recommended_choice", "tradeoff_note"],
+      "default_variants": ["small-chunk", "semantic-chunk"],
+      "recommended_next_action": "return_to_build",
+      "competency_area": "retrieval_design"
+    }
+  },
+  "review_scenarios": {
+    "enterprise-knowledge-search": {
+      "label": "企业知识库搜索",
+      "description": "面向权限、过滤、检索质量和成本的企业搜索方案。",
+      "recommended_stack": {
+        "embedding": "bge-m3",
+        "vector_db": "qdrant",
+        "retrieval": "hybrid",
+        "rerank": "bge-reranker-v2-m3"
+      }
+    },
+    "customer-support-rag": {
+      "label": "客服机器人 RAG",
+      "description": "面向多轮客服、帮助中心和对话体验的方案。",
+      "recommended_stack": {
+        "embedding": "text-embedding-3-small",
+        "vector_db": "qdrant",
+        "retrieval": "vector-plus-metadata",
+        "rerank": "conditional"
+      }
+    },
+    "private-deployment-rag": {
+      "label": "私有部署 RAG",
+      "description": "面向私有化、安全合规和数据隔离的方案。",
+      "recommended_stack": {
+        "embedding": "bge-m3",
+        "vector_db": "milvus-or-qdrant",
+        "retrieval": "hybrid",
+        "rerank": "open-source-reranker"
+      }
+    }
+  },
+  "review_fields": [
+    "业务场景",
+    "目标用户",
+    "数据来源",
+    "语言与规模",
+    "部署方式",
+    "成功标准",
+    "推荐架构",
+    "组件选型",
+    "取舍理由",
+    "主要风险",
+    "评估方案",
+    "上线后优化路线"
+  ]
+}

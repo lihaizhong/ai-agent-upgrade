@@ -1,5 +1,17 @@
 # rag-learning Skill 版本记录
 
+## v2.0.0 (2026-04-09)
+
+### 重构内容
+
+- 将 `rag-learning` 从旧路由型 skill 重构为平台型 skill
+- 新增脚本骨架：`workspace / home / learning / build / lab / review / profile`
+- 将 `SKILL.md` 改为平台 contract，明确 `学习中心 / 实战中心 / RAG Lab / 架构评审 / 学习档案`
+- 引入 `rag-learning-workspace/<username>/` 持久化结构
+- 新增实验记录、评审摘要和学习档案聚合
+- 将核心 reference 从旧三路径心智切换为平台模块说明
+- 将课程入口重组为“基础理解 → 组件选型 → 第一个项目 → 场景扩展 → 企业与线上”的主线
+
 ## v1.1.2 (2026-04-07)
 
 ### 重构内容
