@@ -50,7 +50,7 @@ Behavioral guidelines for all contributors and AI agents working on this project
 
 - **NEVER** commit API keys, tokens, passwords, or credentials
 - Use `.env` for local secrets (already gitignored)
-- Use Vibeguard patterns to detect accidental secret exposure
+- Review diffs for accidental secret exposure before committing
 
 ---
 
@@ -94,13 +94,16 @@ Behavioral guidelines for all contributors and AI agents working on this project
 
 ```
 ai-agent-upgrade/
+├── .codex/                     # Codex runtime config and skill links
 ├── agent-skills/              # Repository-owned custom skills, linked into runtime skill dirs
-├── .opencode/                  # OpenCode config, agents, and skills
+├── .opencode/                 # OpenCode config, agents, and skills
 ├── docs/                       # Documentation, histories, and architecture notes
 ├── notebook/                   # Learning notes organized by topic
 ├── practice/                   # Hands-on projects and experiments
 ├── prompt-learning-workspace/  # Persistent workspace data for the prompt-learning skill
+├── rag-learning-workspace/     # Persistent workspace data for the rag-learning skill
 ├── specs/                      # Spec changes, plans, and tasks
+├── tests/                      # Product-level test suites
 ├── main.py                     # Project entry script
 ├── README.md                   # Project overview and usage notes
 └── AGENTS.md                   # This file — code of conduct
@@ -114,7 +117,7 @@ ai-agent-upgrade/
 
 ### Adding New Components
 
-- **Skill**: Create directory under `agent-skills/` with `SKILL.md`, then link it into `.opencode/skills/`
+- **Skill**: Create directory under `agent-skills/` with `SKILL.md`, then link it into both `.opencode/skills/` and `.codex/skills/`
 - **Agent**: Create `.md` file under `.opencode/agents/`
 - **Practice project**: Create directory under `practice/`
 - Update this file and `README.md` when adding new components

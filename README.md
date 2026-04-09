@@ -20,8 +20,7 @@
 - `prompt-learning` - 提示词工程学习系统
 - `rag-learning` - RAG 系统设计训练平台
 - `poetry` - 中国古诗词检索展示
-- `doc-coauthoring` - 结构化文档协作
-- `internal-comms` - 内部沟通内容
+- `github-stars` - GitHub Stars 管理与整理
 
 更多 Agents 和 Skills 的使用方式详见 [AGENTS.md](AGENTS.md)。
 
@@ -79,10 +78,12 @@
 
 - `build-custom-rag-agent/` - 自定义 RAG Agent
 - `build-data-analysis-agent/` - 数据分析 Agent
+- `build-internet-search/` - 网络搜索 Agent
 - `build-rag-agent/` - RAG Agent
 - `build-semantic-search-engine/` - 语义搜索引擎
 - `build-sql-agent/` - SQL Agent
 - `build-voice-agent/` - 语音 Agent
+- `build-your-claude-code/` - Claude Code 实践项目
 
 ## 🛠️ Skills & Agents
 
@@ -120,6 +121,7 @@
 
 ./.venv/bin/python -m unittest tests.prompt_learning.test_platform
 ./.venv/bin/python -m unittest tests.prompt_learning.test_content_quality
+./.venv/bin/python -m unittest tests.prompt_learning.test_exam_session
 ./.venv/bin/python -m unittest tests.prompt_learning.test_state_flow
 ```
 
