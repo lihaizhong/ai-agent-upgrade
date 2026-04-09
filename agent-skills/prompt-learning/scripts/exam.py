@@ -604,6 +604,14 @@ class ExamService:
             raise ValueError("难度与当前题位不匹配")
         if question.get("score") != slot["score"]:
             raise ValueError("分值与当前题位不匹配")
+        if not isinstance(question.get("course_id"), int):
+            raise ValueError("course_id 必须是整数")
+
+        topic_tags = question.get("topic_tags")
+        if not isinstance(topic_tags, list) or not topic_tags:
+            raise ValueError("topic_tags 必须是非空列表")
+        if any(not isinstance(tag, str) or not tag for tag in topic_tags):
+            raise ValueError("topic_tags 必须只包含非空字符串")
 
         engine = ExamEngine(skill_dir=self.skill_dir, username=self.username)
         if slot["type"] == "mc":

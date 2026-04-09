@@ -33,6 +33,23 @@ def run_cli(*args: str, stdin_data: dict | list | None = None) -> dict:
     return json.loads(result.stdout)
 
 
+def run_cli_error(*args: str, stdin_data: dict | list | None = None) -> subprocess.CalledProcessError:
+    with unittest.TestCase().assertRaises(subprocess.CalledProcessError) as ctx:
+        subprocess.run(
+            [sys.executable, str(SCRIPT_PATH), *args, "--username", TEST_USERNAME],
+            check=True,
+            capture_output=True,
+            text=True,
+            cwd=REPO_ROOT,
+            input=(
+                None
+                if stdin_data is None
+                else json.dumps(stdin_data, ensure_ascii=False)
+            ),
+        )
+    return ctx.exception
+
+
 def read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -247,7 +264,12 @@ class PromptLearningExamSessionTest(unittest.TestCase):
             "--session",
             started["session_id"],
             stdin_data={
-                "question": self._mc_question(1, "初级"),
+                "question": self._mc_question(
+                    1,
+                    "初级",
+                    course_id=1,
+                    topic_tags=["diagnostic-mc-topic-1"],
+                ),
                 "answer": "A",
             },
         )
@@ -264,6 +286,34 @@ class PromptLearningExamSessionTest(unittest.TestCase):
         self.assertNotIn("score", submit)
         self.assertEqual(current["current_question_num"], 2)
         self.assertEqual(current["current_slot"]["num"], 2)
+
+    def test_submit_answer_rejects_missing_weakness_metadata(self) -> None:
+        started = run_cli("exam", "--start", "--type", "diagnostic")
+        error = run_cli_error(
+            "exam",
+            "--submit-answer",
+            "--session",
+            started["session_id"],
+            stdin_data={
+                "question": {
+                    "type": "mc",
+                    "num": 1,
+                    "difficulty": "初级",
+                    "question": "缺少元数据的题目",
+                    "options": [
+                        {"label": "A", "text": "选项 A", "description": ""},
+                        {"label": "B", "text": "选项 B", "description": ""},
+                        {"label": "C", "text": "选项 C", "description": ""},
+                        {"label": "D", "text": "选项 D", "description": ""},
+                    ],
+                    "correct_answer": "A",
+                    "score": 5,
+                },
+                "answer": "A",
+            },
+        )
+
+        self.assertIn("course_id 必须是整数", error.stderr)
 
     def test_finish_diagnostic_session_generates_report_and_history(self) -> None:
         started = run_cli("exam", "--start", "--type", "diagnostic")
