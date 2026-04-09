@@ -171,6 +171,8 @@ def main():
     )
     parser_exam.add_argument("--resume", action="store_true", help="获取恢复考试入口")
     parser_exam.add_argument("--abandon", action="store_true", help="放弃考试会话")
+    parser_exam.add_argument("--submit-answer", action="store_true", help="提交当前题答案")
+    parser_exam.add_argument("--finish", action="store_true", help="完成考试并生成报告")
     parser_exam.add_argument(
         "--type",
         type=str,
@@ -287,6 +289,25 @@ def main():
             print(
                 json.dumps(
                     exam_service.abandon_session(args.session),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+
+        elif args.submit_answer:
+            payload = json.loads(sys.stdin.read()) if not sys.stdin.isatty() else {}
+            print(
+                json.dumps(
+                    exam_service.submit_answer(payload, args.session),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+
+        elif args.finish:
+            print(
+                json.dumps(
+                    exam_service.finish_session(args.session),
                     ensure_ascii=False,
                     indent=2,
                 )

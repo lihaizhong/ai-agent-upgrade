@@ -537,9 +537,17 @@ class ExamEngine:
 class ExamService:
     """考试中心持久化与摘要服务。"""
 
-    def __init__(self, workspace_paths: dict[str, Path], state_store: LearningStateStore):
+    def __init__(
+        self,
+        workspace_paths: dict[str, Path],
+        state_store: LearningStateStore,
+        skill_dir: Path,
+        username: str | None = None,
+    ):
         self.workspace_paths = workspace_paths
         self.state_store = state_store
+        self.skill_dir = skill_dir
+        self.username = username
         self.exam_history_file = workspace_paths["exam_history_file"]
         self.exam_session_file = workspace_paths["exam_session_file"]
 
@@ -551,6 +559,8 @@ class ExamService:
         return cls(
             workspace_paths=workspace_paths,
             state_store=LearningStateStore(workspace_paths),
+            skill_dir=skill_dir,
+            username=username,
         )
 
     def _timestamp(self) -> str:
@@ -584,6 +594,39 @@ class ExamService:
             }
             for slot in blueprint["slots"]
         ]
+
+    def _validate_slot_question(self, slot: dict, question: dict) -> None:
+        if question.get("num") != slot["num"]:
+            raise ValueError("题号与当前题位不匹配")
+        if question.get("type") != slot["type"]:
+            raise ValueError("题型与当前题位不匹配")
+        if question.get("difficulty") != slot["difficulty"]:
+            raise ValueError("难度与当前题位不匹配")
+        if question.get("score") != slot["score"]:
+            raise ValueError("分值与当前题位不匹配")
+
+        engine = ExamEngine(skill_dir=self.skill_dir, username=self.username)
+        if slot["type"] == "mc":
+            result = engine.validate_mc_question(question)
+        elif slot["type"] == "fill":
+            result = engine.validate_fill_question(question)
+        else:
+            result = engine.validate_essay_question(question)
+        if not result["valid"]:
+            raise ValueError("题目结构校验失败: " + "; ".join(result["errors"]))
+
+    def _grade_answer(self, question: dict, answer: str, rubric_scores: dict | None) -> tuple[int, str]:
+        engine = ExamEngine(skill_dir=self.skill_dir, username=self.username)
+        if question["type"] == "mc":
+            is_correct, score = engine.grade_mc(question, answer)
+            feedback = "已记录选择题答案"
+            return score, feedback
+        if question["type"] == "fill":
+            is_correct, score = engine.grade_fill(question, answer)
+            feedback = "已记录填空题答案"
+            return score, feedback
+        score, feedback = engine.grade_essay(question, answer, rubric_scores or {})
+        return score, feedback
 
     def _session_to_context(self, session: dict) -> dict:
         current_num = session["current_question_num"]
@@ -673,6 +716,7 @@ class ExamService:
             "completed_at": None,
             "answers": [],
             "scores": [],
+            "questions": [],
             "question_summaries": self._build_question_summary(blueprint),
         }
         self._write_session(session)
@@ -715,6 +759,124 @@ class ExamService:
             "session_id": session["session_id"],
             "exam_type": session["exam_type"],
             "status": session["status"],
+        }
+
+    def submit_answer(self, payload: dict, session_id: str | None = None) -> dict:
+        session = self.get_in_progress_session()
+        if not session:
+            raise ValueError("没有进行中的考试会话")
+        if session_id and session["session_id"] != session_id:
+            raise ValueError("session_id 不匹配")
+
+        answer = payload.get("answer")
+        question = payload.get("question")
+        rubric_scores = payload.get("rubric_scores", {})
+        if not isinstance(answer, str) or not answer.strip():
+            raise ValueError("answer 不能为空")
+        if not isinstance(question, dict):
+            raise ValueError("question 必须是对象")
+
+        current_num = session["current_question_num"]
+        if len(session["answers"]) != current_num - 1:
+            raise ValueError("当前题状态异常")
+        slot = session["question_summaries"][current_num - 1]
+        self._validate_slot_question(slot, question)
+
+        score, feedback = self._grade_answer(question, answer, rubric_scores)
+        answer_record = {
+            "num": current_num,
+            "type": question["type"],
+            "answer": answer,
+            "feedback": feedback,
+        }
+
+        session["questions"].append(question)
+        session["answers"].append(answer_record)
+        session["scores"].append(score)
+        session["updated_at"] = self._timestamp()
+
+        is_last_question = current_num >= session["total_questions"]
+        if not is_last_question:
+            session["current_question_num"] = current_num + 1
+            self._write_session(session)
+            self.state_store.update_current_state(
+                current_module="exam",
+                last_action="exam_answer_recorded",
+                recommended_next_action="continue_exam",
+            )
+            return {
+                "interaction": {
+                    "mode": "inform",
+                },
+                "recorded": True,
+                "session_id": session["session_id"],
+                "current_question_num": current_num,
+                "next_question_num": session["current_question_num"],
+                "finished": False,
+            }
+
+        self._write_session(session)
+        self.state_store.update_current_state(
+            current_module="exam",
+            last_action="exam_waiting_finish",
+            recommended_next_action="finish_exam",
+        )
+        return {
+            "interaction": {
+                "mode": "inform",
+            },
+            "recorded": True,
+            "session_id": session["session_id"],
+            "current_question_num": current_num,
+            "next_question_num": None,
+            "finished": True,
+        }
+
+    def finish_session(self, session_id: str | None = None) -> dict:
+        session = self.get_in_progress_session()
+        if not session:
+            raise ValueError("没有进行中的考试会话")
+        if session_id and session["session_id"] != session_id:
+            raise ValueError("session_id 不匹配")
+        if len(session["answers"]) != session["total_questions"]:
+            raise ValueError("考试尚未完成全部题目")
+        if len(session["questions"]) != session["total_questions"]:
+            raise ValueError("题目记录不完整，无法生成报告")
+
+        engine = ExamEngine(skill_dir=self.skill_dir, username=self.username)
+        report_path = engine.generate_report(
+            session["questions"],
+            session["answers"],
+            session["scores"],
+            self.username or "unknown",
+        )
+        total_score = sum(session["scores"])
+        session["status"] = "completed"
+        session["completed_at"] = self._timestamp()
+        session["updated_at"] = session["completed_at"]
+        self._write_session(session)
+
+        history_result = self.record_history(
+            {
+                "exam_type": session["exam_type"],
+                "score": total_score,
+                "total_score": 100,
+                "weak_courses": [],
+                "weak_topics": [],
+                "report_path": report_path,
+            }
+        )
+        return {
+            "interaction": {
+                "mode": "inform",
+            },
+            "finished": True,
+            "session_id": session["session_id"],
+            "exam_type": session["exam_type"],
+            "score": total_score,
+            "total_score": 100,
+            "report_path": report_path,
+            "history_recorded": history_result["recorded"],
         }
 
     def record_history(self, payload: dict) -> dict:
