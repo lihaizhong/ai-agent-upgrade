@@ -90,9 +90,54 @@
 
 自定义 skill 统一维护在根目录 `agent-skills/`，并通过软链接暴露到 `.opencode/skills` 与 `.codex/skills`。
 
-## RAG Learning 开发说明
+## Learning Products 开发说明
 
-`rag-learning` 当前已经切到平台型结构，核心模块位于：
+`prompt-learning` 和 `rag-learning` 都已经切到平台型结构。测试目录也按产品拆分：
+
+- `tests/prompt_learning/`
+- `tests/rag_learning/`
+
+### Prompt Learning
+
+核心模块位于：
+
+- `agent-skills/prompt-learning/scripts/`
+  - `workspace`
+  - `home`
+  - `learning`
+  - `practice`
+  - `exam`
+  - `lab`
+  - `profile`
+- `agent-skills/prompt-learning/courses/`
+- `agent-skills/prompt-learning/code/`
+- `docs/prompt-learning-architecture/`
+
+常用验证命令：
+
+```bash
+./.venv/bin/ruff check agent-skills/prompt-learning/scripts tests/prompt_learning
+
+./.venv/bin/python -m unittest tests.prompt_learning.test_platform
+./.venv/bin/python -m unittest tests.prompt_learning.test_content_quality
+./.venv/bin/python -m unittest tests.prompt_learning.test_state_flow
+```
+
+常用 CLI 示例：
+
+```bash
+./.venv/bin/python agent-skills/prompt-learning/scripts/__main__.py workspace --bootstrap
+./.venv/bin/python agent-skills/prompt-learning/scripts/__main__.py home --dashboard
+./.venv/bin/python agent-skills/prompt-learning/scripts/__main__.py learning --catalog
+./.venv/bin/python agent-skills/prompt-learning/scripts/__main__.py practice --entry-points
+./.venv/bin/python agent-skills/prompt-learning/scripts/__main__.py exam --entry-points
+./.venv/bin/python agent-skills/prompt-learning/scripts/__main__.py lab --workflow
+./.venv/bin/python agent-skills/prompt-learning/scripts/__main__.py profile --summary
+```
+
+### RAG Learning
+
+核心模块位于：
 
 - `agent-skills/rag-learning/scripts/`
   - `workspace`
@@ -110,12 +155,12 @@
 常用验证命令：
 
 ```bash
-./.venv/bin/ruff check agent-skills/rag-learning/scripts tests/test_rag_learning_*.py
+./.venv/bin/ruff check agent-skills/rag-learning/scripts tests/rag_learning
 
-./.venv/bin/python -m unittest tests.test_rag_learning_platform
-./.venv/bin/python -m unittest tests.test_rag_learning_content_quality
-./.venv/bin/python -m unittest tests.test_rag_learning_config_units
-./.venv/bin/python -m unittest tests.test_rag_learning_state_flow
+./.venv/bin/python -m unittest tests.rag_learning.test_platform
+./.venv/bin/python -m unittest tests.rag_learning.test_content_quality
+./.venv/bin/python -m unittest tests.rag_learning.test_config_units
+./.venv/bin/python -m unittest tests.rag_learning.test_state_flow
 ```
 
 常用 CLI 示例：

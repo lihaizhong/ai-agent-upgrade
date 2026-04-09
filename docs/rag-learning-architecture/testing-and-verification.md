@@ -10,7 +10,7 @@
 
 文件：
 
-- `tests/test_rag_learning_platform.py`
+- `tests/rag_learning/test_platform.py`
 
 覆盖：
 
@@ -25,14 +25,14 @@
 运行：
 
 ```bash
-./.venv/bin/python -m unittest tests.test_rag_learning_platform
+./.venv/bin/python -m unittest tests.rag_learning.test_platform
 ```
 
 ### 2. 内容质量测试
 
 文件：
 
-- `tests/test_rag_learning_content_quality.py`
+- `tests/rag_learning/test_content_quality.py`
 
 覆盖：
 
@@ -46,14 +46,14 @@
 运行：
 
 ```bash
-./.venv/bin/python -m unittest tests.test_rag_learning_content_quality
+./.venv/bin/python -m unittest tests.rag_learning.test_content_quality
 ```
 
 ### 3. 配置解析单元测试
 
 文件：
 
-- `tests/test_rag_learning_config_units.py`
+- `tests/rag_learning/test_config_units.py`
 
 覆盖：
 
@@ -65,14 +65,14 @@
 运行：
 
 ```bash
-./.venv/bin/python -m unittest tests.test_rag_learning_config_units
+./.venv/bin/python -m unittest tests.rag_learning.test_config_units
 ```
 
 ### 4. 状态流转测试
 
 文件：
 
-- `tests/test_rag_learning_state_flow.py`
+- `tests/rag_learning/test_state_flow.py`
 
 覆盖：
 
@@ -84,7 +84,7 @@
 运行：
 
 ```bash
-./.venv/bin/python -m unittest tests.test_rag_learning_state_flow
+./.venv/bin/python -m unittest tests.rag_learning.test_state_flow
 ```
 
 ## 统一运行命令
@@ -92,17 +92,17 @@
 Lint：
 
 ```bash
-./.venv/bin/ruff check agent-skills/rag-learning/scripts tests/test_rag_learning_*.py
+./.venv/bin/ruff check agent-skills/rag-learning/scripts tests/rag_learning
 ```
 
 全部测试：
 
 ```bash
 ./.venv/bin/python -m unittest \
-  tests.test_rag_learning_platform \
-  tests.test_rag_learning_content_quality \
-  tests.test_rag_learning_config_units \
-  tests.test_rag_learning_state_flow
+  tests.rag_learning.test_platform \
+  tests.rag_learning.test_content_quality \
+  tests.rag_learning.test_config_units \
+  tests.rag_learning.test_state_flow
 ```
 
 ## 验证策略

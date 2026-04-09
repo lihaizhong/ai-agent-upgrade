@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 SKILL_DIR = REPO_ROOT / "agent-skills" / "rag-learning"
 COURSES_DIR = SKILL_DIR / "courses"
 REFERENCE_DIR = SKILL_DIR / "reference"

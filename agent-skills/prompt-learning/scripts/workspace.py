@@ -36,7 +36,7 @@ def normalize_workspace_username(raw_name: str | None) -> str:
 
 def get_repo_root(skill_dir: Path) -> Path:
     """返回仓库根目录。"""
-    return skill_dir.parent.parent.parent
+    return skill_dir.parent.parent
 
 
 def get_workspace_root(skill_dir: Path) -> Path:
@@ -90,6 +90,7 @@ def _timestamp() -> str:
 def _write_json_if_missing(path: Path, payload: dict) -> bool:
     if path.exists():
         return False
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return True
 

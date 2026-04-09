@@ -12,25 +12,47 @@ import subprocess
 import sys
 from pathlib import Path
 
-from .exam import ExamEngine, ExamService
-from .home import HomeService
-from .learning import LearningService
-from .practice import PracticeService
-from .profile import ProfileService
-from .prompt_lab import (
-    PromptLabService,
-    build_interview_blueprint,
-    build_review_checklist,
-    build_workflow,
-    validate_draft,
-    validate_slots,
-)
-from .workspace import (
-    ensure_workspace,
-    get_workspace_root,
-    normalize_workspace_username,
-    resolve_git_username,
-)
+if __package__ in {None, ""}:
+    sys.path.append(str(Path(__file__).resolve().parent.parent))
+    from scripts.exam import ExamEngine, ExamService
+    from scripts.home import HomeService
+    from scripts.learning import LearningService
+    from scripts.practice import PracticeService
+    from scripts.profile import ProfileService
+    from scripts.prompt_lab import (
+        PromptLabService,
+        build_interview_blueprint,
+        build_review_checklist,
+        build_workflow,
+        validate_draft,
+        validate_slots,
+    )
+    from scripts.workspace import (
+        ensure_workspace,
+        get_workspace_root,
+        normalize_workspace_username,
+        resolve_git_username,
+    )
+else:
+    from .exam import ExamEngine, ExamService
+    from .home import HomeService
+    from .learning import LearningService
+    from .practice import PracticeService
+    from .profile import ProfileService
+    from .prompt_lab import (
+        PromptLabService,
+        build_interview_blueprint,
+        build_review_checklist,
+        build_workflow,
+        validate_draft,
+        validate_slots,
+    )
+    from .workspace import (
+        ensure_workspace,
+        get_workspace_root,
+        normalize_workspace_username,
+        resolve_git_username,
+    )
 
 
 def resolve_username(explicit_username: str = None) -> str:
@@ -52,6 +74,7 @@ def resolve_username(explicit_username: str = None) -> str:
         pass
 
     return os.environ.get("USER", "unknown")
+
 
 def main():
     parser = argparse.ArgumentParser(description="提示词工程学习系统")

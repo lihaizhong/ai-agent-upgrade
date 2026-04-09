@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT_PATH = REPO_ROOT / "agent-skills" / "rag-learning" / "scripts" / "__main__.py"
 WORKSPACE_ROOT = REPO_ROOT / "rag-learning-workspace"
 TEST_USERNAME = "rag-learning-test"
@@ -93,7 +93,10 @@ class RagLearningPlatformSmokeTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        self.assertIn("embedding", build_progress["projects"]["local-minimum-rag"]["completed_steps"])
+        self.assertIn(
+            "embedding",
+            build_progress["projects"]["local-minimum-rag"]["completed_steps"],
+        )
 
     def test_build_flow_rejects_unknown_project_id(self) -> None:
         with self.assertRaises(subprocess.CalledProcessError):

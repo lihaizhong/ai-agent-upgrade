@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT_PATH = REPO_ROOT / "agent-skills" / "rag-learning" / "scripts" / "__main__.py"
 WORKSPACE_ROOT = REPO_ROOT / "rag-learning-workspace"
 TEST_USERNAME = "rag-learning-state-test"
@@ -97,7 +97,11 @@ class RagLearningStateFlowTest(unittest.TestCase):
 
         current_state = read_json(TEST_WORKSPACE / "progress" / "current-state.json")
         history_path = TEST_WORKSPACE / "lab" / "experiment-history.jsonl"
-        rows = [json.loads(line) for line in history_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        rows = [
+            json.loads(line)
+            for line in history_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
 
         self.assertEqual(current_state["current_module"], "lab")
         self.assertEqual(current_state["current_lab_topic"], "rerank")
@@ -131,7 +135,11 @@ class RagLearningStateFlowTest(unittest.TestCase):
         current_state = read_json(TEST_WORKSPACE / "progress" / "current-state.json")
         competency = read_json(TEST_WORKSPACE / "progress" / "competency.json")
         history_path = TEST_WORKSPACE / "review" / "review-history.jsonl"
-        rows = [json.loads(line) for line in history_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        rows = [
+            json.loads(line)
+            for line in history_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
 
         self.assertEqual(current_state["current_module"], "review")
         self.assertEqual(current_state["current_review_id"], "customer-support-rag")
