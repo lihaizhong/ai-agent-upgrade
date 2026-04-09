@@ -165,6 +165,12 @@ def main():
     parser_exam.add_argument("--entry-points", action="store_true", help="获取考试入口")
     parser_exam.add_argument("--structure", action="store_true", help="获取考试结构")
     parser_exam.add_argument("--blueprint", action="store_true", help="获取考试蓝图")
+    parser_exam.add_argument("--start", action="store_true", help="开始考试会话")
+    parser_exam.add_argument(
+        "--current-question", action="store_true", help="获取当前题上下文"
+    )
+    parser_exam.add_argument("--resume", action="store_true", help="获取恢复考试入口")
+    parser_exam.add_argument("--abandon", action="store_true", help="放弃考试会话")
     parser_exam.add_argument(
         "--type",
         type=str,
@@ -196,6 +202,7 @@ def main():
     parser_exam.add_argument("--question", type=int, help="题号")
     parser_exam.add_argument("--difficulty", type=str, help="难度")
     parser_exam.add_argument("--answer", type=str, help="用户答案")
+    parser_exam.add_argument("--session", type=str, help="考试会话 ID")
     parser_exam.add_argument("--username", type=str, help="用户名")
 
     # Prompt Lab
@@ -244,6 +251,42 @@ def main():
             print(
                 json.dumps(
                     exam.build_exam_blueprint(exam_type),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+
+        elif args.start:
+            print(
+                json.dumps(
+                    exam_service.start_session(exam_type),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+
+        elif args.current_question:
+            print(
+                json.dumps(
+                    exam_service.get_current_question_context(args.session),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+
+        elif args.resume:
+            print(
+                json.dumps(
+                    exam_service.get_resume_prompt(),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+
+        elif args.abandon:
+            print(
+                json.dumps(
+                    exam_service.abandon_session(args.session),
                     ensure_ascii=False,
                     indent=2,
                 )

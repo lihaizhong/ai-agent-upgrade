@@ -541,6 +541,7 @@ class ExamService:
         self.workspace_paths = workspace_paths
         self.state_store = state_store
         self.exam_history_file = workspace_paths["exam_history_file"]
+        self.exam_session_file = workspace_paths["exam_session_file"]
 
     @classmethod
     def from_skill_dir(
@@ -559,6 +560,162 @@ class ExamService:
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "a", encoding="utf-8") as f:
             f.write(json.dumps(payload, ensure_ascii=False) + "\n")
+
+    def _read_session(self) -> dict | None:
+        if not self.exam_session_file.exists():
+            return None
+        with open(self.exam_session_file, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+    def _write_session(self, payload: dict) -> dict:
+        self.exam_session_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.exam_session_file, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+        return payload
+
+    def _build_question_summary(self, blueprint: dict) -> list[dict]:
+        return [
+            {
+                "num": slot["num"],
+                "type": slot["type"],
+                "difficulty": slot["difficulty"],
+                "goal": slot["goal"],
+                "score": slot["score"],
+            }
+            for slot in blueprint["slots"]
+        ]
+
+    def _session_to_context(self, session: dict) -> dict:
+        current_num = session["current_question_num"]
+        current_slot = session["question_summaries"][current_num - 1]
+        total_questions = session["total_questions"]
+        return {
+            "interaction": {
+                "mode": "inform",
+            },
+            "session_id": session["session_id"],
+            "exam_type": session["exam_type"],
+            "exam_label": session["exam_label"],
+            "status": session["status"],
+            "current_question_num": current_num,
+            "total_questions": total_questions,
+            "remaining_questions": total_questions - current_num + 1,
+            "current_slot": current_slot,
+        }
+
+    def get_in_progress_session(self) -> dict | None:
+        session = self._read_session()
+        if not session or session.get("status") != "in_progress":
+            return None
+        return session
+
+    def get_resume_prompt(self) -> dict:
+        session = self.get_in_progress_session()
+        if not session:
+            return {
+                "interaction": {
+                    "mode": "inform",
+                },
+                "has_in_progress": False,
+                "session": None,
+            }
+
+        return {
+            "interaction": {
+                "mode": "selector",
+            },
+            "has_in_progress": True,
+            "session": {
+                "session_id": session["session_id"],
+                "exam_type": session["exam_type"],
+                "exam_label": session["exam_label"],
+                "current_question_num": session["current_question_num"],
+                "total_questions": session["total_questions"],
+                "started_at": session["started_at"],
+                "updated_at": session["updated_at"],
+            },
+            "question": {
+                "id": "exam-session-resume-selection",
+                "header": "未完成考试",
+                "question": "检测到未完成的考试，你想怎么处理？",
+                "options": [
+                    {
+                        "label": "恢复考试",
+                        "description": "回到当前未完成题，继续逐题作答",
+                        "value": "resume",
+                    },
+                    {
+                        "label": "放弃考试",
+                        "description": "放弃当前考试会话，不写入正式成绩",
+                        "value": "abandon",
+                    },
+                ],
+                "multiple": False,
+            },
+        }
+
+    def start_session(self, exam_type: str) -> dict:
+        existing = self.get_in_progress_session()
+        if existing:
+            return self.get_resume_prompt()
+
+        engine = ExamEngine()
+        blueprint = engine.build_exam_blueprint(exam_type)
+        session = {
+            "session_id": f"exam-{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}",
+            "exam_type": exam_type,
+            "exam_label": blueprint["exam_label"],
+            "status": "in_progress",
+            "current_question_num": 1,
+            "total_questions": blueprint["total_questions"],
+            "started_at": self._timestamp(),
+            "updated_at": self._timestamp(),
+            "completed_at": None,
+            "answers": [],
+            "scores": [],
+            "question_summaries": self._build_question_summary(blueprint),
+        }
+        self._write_session(session)
+        self.state_store.update_current_state(
+            current_module="exam",
+            last_action="exam_started",
+            recommended_next_action="continue_exam",
+        )
+        return self._session_to_context(session)
+
+    def get_current_question_context(self, session_id: str | None = None) -> dict:
+        session = self.get_in_progress_session()
+        if not session:
+            raise ValueError("没有进行中的考试会话")
+        if session_id and session["session_id"] != session_id:
+            raise ValueError("session_id 不匹配")
+        return self._session_to_context(session)
+
+    def abandon_session(self, session_id: str | None = None) -> dict:
+        session = self.get_in_progress_session()
+        if not session:
+            raise ValueError("没有进行中的考试会话")
+        if session_id and session["session_id"] != session_id:
+            raise ValueError("session_id 不匹配")
+
+        session["status"] = "abandoned"
+        session["completed_at"] = self._timestamp()
+        session["updated_at"] = session["completed_at"]
+        self._write_session(session)
+        self.state_store.update_current_state(
+            current_module="exam",
+            last_action="exam_abandoned",
+            recommended_next_action="exam_entry",
+        )
+        return {
+            "interaction": {
+                "mode": "inform",
+            },
+            "abandoned": True,
+            "session_id": session["session_id"],
+            "exam_type": session["exam_type"],
+            "status": session["status"],
+        }
 
     def record_history(self, payload: dict) -> dict:
         exam_type = payload.get("exam_type", "diagnostic")

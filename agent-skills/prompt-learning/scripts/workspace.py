@@ -79,6 +79,7 @@ def get_workspace_paths(skill_dir: Path, username: str | None = None) -> dict[st
         "practice_history_file": practice_dir / "practice-history.jsonl",
         "mistakes_file": practice_dir / "mistakes.jsonl",
         "exam_history_file": exam_dir / "exam-history.jsonl",
+        "exam_session_file": exam_dir / "current-session.json",
         "template_index_file": lab_dir / "template-index.json",
     }
 
