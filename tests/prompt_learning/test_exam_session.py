@@ -57,12 +57,21 @@ class PromptLearningExamSessionTest(unittest.TestCase):
         if exam_history_file.exists():
             exam_history_file.unlink()
 
-    def _mc_question(self, num: int, difficulty: str, correct_answer: str = "A") -> dict:
+    def _mc_question(
+        self,
+        num: int,
+        difficulty: str,
+        correct_answer: str = "A",
+        course_id: int | None = None,
+        topic_tags: list[str] | None = None,
+    ) -> dict:
         return {
             "type": "mc",
             "num": num,
             "difficulty": difficulty,
             "question": f"第 {num} 题题干",
+            "course_id": course_id,
+            "topic_tags": topic_tags or [],
             "options": [
                 {"label": "A", "text": "选项 A", "description": ""},
                 {"label": "B", "text": "选项 B", "description": ""},
@@ -73,23 +82,40 @@ class PromptLearningExamSessionTest(unittest.TestCase):
             "score": 5,
         }
 
-    def _fill_question(self, num: int, difficulty: str, answer: str = "test answer") -> dict:
+    def _fill_question(
+        self,
+        num: int,
+        difficulty: str,
+        answer: str = "test answer",
+        course_id: int | None = None,
+        topic_tags: list[str] | None = None,
+    ) -> dict:
         return {
             "type": "fill",
             "num": num,
             "difficulty": difficulty,
             "question": f"第 {num} 题填空",
+            "course_id": course_id,
+            "topic_tags": topic_tags or [],
             "answer": answer,
             "acceptable_variants": [],
             "score": 10,
         }
 
-    def _essay_question(self, num: int, difficulty: str) -> dict:
+    def _essay_question(
+        self,
+        num: int,
+        difficulty: str,
+        course_id: int | None = None,
+        topic_tags: list[str] | None = None,
+    ) -> dict:
         return {
             "type": "essay",
             "num": num,
             "difficulty": difficulty,
             "scenario": f"第 {num} 题场景",
+            "course_id": course_id,
+            "topic_tags": topic_tags or [],
             "requirements": ["要求 1", "要求 2"],
             "scoring_rubric": {
                 "结构完整": 0.4,
@@ -99,7 +125,7 @@ class PromptLearningExamSessionTest(unittest.TestCase):
             "score": 15,
         }
 
-    def _complete_diagnostic_exam(self, session_id: str) -> dict:
+    def _complete_exam(self, session_id: str, exam_type: str = "diagnostic") -> dict:
         difficulties = [
             "初级",
             "初级",
@@ -115,24 +141,63 @@ class PromptLearningExamSessionTest(unittest.TestCase):
         ]
         for num, difficulty in enumerate(difficulties, start=1):
             if num <= 5:
-                question = self._mc_question(num, difficulty)
-                payload = {"question": question, "answer": "A"}
+                question = self._mc_question(
+                    num,
+                    difficulty,
+                    course_id=num if exam_type == "diagnostic" else num + 20,
+                    topic_tags=[f"{exam_type}-mc-topic-{num}"],
+                )
+                answer = "A" if num == 1 else "B"
+                payload = {"question": question, "answer": answer}
             elif num <= 8:
-                question = self._fill_question(num, difficulty)
-                payload = {"question": question, "answer": "test answer"}
+                question = self._fill_question(
+                    num,
+                    difficulty,
+                    course_id=num if exam_type == "diagnostic" else num + 20,
+                    topic_tags=[f"{exam_type}-fill-topic-{num}"],
+                )
+                answer = "test answer" if num == 6 else "wrong answer"
+                payload = {"question": question, "answer": answer}
             else:
-                question = self._essay_question(num, difficulty)
+                question = self._essay_question(
+                    num,
+                    difficulty,
+                    course_id=num if exam_type == "diagnostic" else num + 20,
+                    topic_tags=[f"{exam_type}-essay-topic-{num}"],
+                )
                 payload = {
                     "question": question,
                     "answer": "完整回答",
                     "rubric_scores": {
-                        "结构完整": 6,
-                        "技术选择": 4.5,
-                        "权衡分析": 4.5,
+                        "结构完整": 6 if num == 9 else 3,
+                        "技术选择": 4.5 if num == 9 else 2,
+                        "权衡分析": 4.5 if num == 9 else 2,
                     },
                 }
             run_cli("exam", "--submit-answer", "--session", session_id, stdin_data=payload)
         return run_cli("exam", "--finish", "--session", session_id)
+
+    def _assert_finished_exam(
+        self,
+        *,
+        finished: dict,
+        session: dict,
+        rows: list[dict],
+        expected_type: str,
+        expected_weak_courses: list[int],
+        expected_weak_topics: list[str],
+    ) -> None:
+        self.assertTrue(finished["finished"])
+        self.assertEqual(finished["exam_type"], expected_type)
+        self.assertLess(finished["score"], 100)
+        self.assertTrue(Path(finished["report_path"]).exists())
+        self.assertEqual(session["status"], "completed")
+        self.assertEqual(finished["weak_courses"], expected_weak_courses)
+        self.assertEqual(finished["weak_topics"], expected_weak_topics)
+        self.assertEqual(rows[-1]["score"], finished["score"])
+        self.assertEqual(rows[-1]["exam_type"], expected_type)
+        self.assertEqual(rows[-1]["weak_courses"], expected_weak_courses)
+        self.assertEqual(rows[-1]["weak_topics"], expected_weak_topics)
 
     def test_start_session_creates_in_progress_exam(self) -> None:
         result = run_cli("exam", "--start", "--type", "diagnostic")
@@ -200,9 +265,9 @@ class PromptLearningExamSessionTest(unittest.TestCase):
         self.assertEqual(current["current_question_num"], 2)
         self.assertEqual(current["current_slot"]["num"], 2)
 
-    def test_finish_session_generates_report_and_history(self) -> None:
+    def test_finish_diagnostic_session_generates_report_and_history(self) -> None:
         started = run_cli("exam", "--start", "--type", "diagnostic")
-        finished = self._complete_diagnostic_exam(started["session_id"])
+        finished = self._complete_exam(started["session_id"], "diagnostic")
         session_file = TEST_WORKSPACE / "exam" / "current-session.json"
         exam_history_path = TEST_WORKSPACE / "exam" / "exam-history.jsonl"
         session = read_json(session_file)
@@ -212,12 +277,53 @@ class PromptLearningExamSessionTest(unittest.TestCase):
             if line.strip()
         ]
 
-        self.assertTrue(finished["finished"])
-        self.assertEqual(finished["score"], 100)
-        self.assertTrue(Path(finished["report_path"]).exists())
-        self.assertEqual(session["status"], "completed")
-        self.assertEqual(rows[-1]["score"], 100)
-        self.assertEqual(rows[-1]["exam_type"], "diagnostic")
+        self._assert_finished_exam(
+            finished=finished,
+            session=session,
+            rows=rows,
+            expected_type="diagnostic",
+            expected_weak_courses=[2, 3, 4, 5, 7, 8, 10, 11],
+            expected_weak_topics=[
+                "diagnostic-mc-topic-2",
+                "diagnostic-mc-topic-3",
+                "diagnostic-mc-topic-4",
+                "diagnostic-mc-topic-5",
+                "diagnostic-fill-topic-7",
+                "diagnostic-fill-topic-8",
+                "diagnostic-essay-topic-10",
+                "diagnostic-essay-topic-11",
+            ],
+        )
+
+    def test_finish_final_session_generates_report_and_history(self) -> None:
+        started = run_cli("exam", "--start", "--type", "final")
+        finished = self._complete_exam(started["session_id"], "final")
+        session_file = TEST_WORKSPACE / "exam" / "current-session.json"
+        exam_history_path = TEST_WORKSPACE / "exam" / "exam-history.jsonl"
+        session = read_json(session_file)
+        rows = [
+            json.loads(line)
+            for line in exam_history_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+
+        self._assert_finished_exam(
+            finished=finished,
+            session=session,
+            rows=rows,
+            expected_type="final",
+            expected_weak_courses=[22, 23, 24, 25, 27, 28, 30, 31],
+            expected_weak_topics=[
+                "final-mc-topic-2",
+                "final-mc-topic-3",
+                "final-mc-topic-4",
+                "final-mc-topic-5",
+                "final-fill-topic-7",
+                "final-fill-topic-8",
+                "final-essay-topic-10",
+                "final-essay-topic-11",
+            ],
+        )
 
 
 if __name__ == "__main__":

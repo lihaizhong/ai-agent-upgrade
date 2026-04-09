@@ -628,6 +628,30 @@ class ExamService:
         score, feedback = engine.grade_essay(question, answer, rubric_scores or {})
         return score, feedback
 
+    def _summarize_weaknesses(self, session: dict) -> dict:
+        weak_courses: list[int] = []
+        weak_topics: list[str] = []
+
+        for question, score in zip(session.get("questions", []), session.get("scores", [])):
+            max_score = question.get("score", 0)
+            if score >= max_score:
+                continue
+
+            course_id = question.get("course_id")
+            if isinstance(course_id, int) and course_id not in weak_courses:
+                weak_courses.append(course_id)
+
+            topic_tags = question.get("topic_tags", [])
+            if isinstance(topic_tags, list):
+                for tag in topic_tags:
+                    if isinstance(tag, str) and tag and tag not in weak_topics:
+                        weak_topics.append(tag)
+
+        return {
+            "weak_courses": weak_courses,
+            "weak_topics": weak_topics,
+        }
+
     def _session_to_context(self, session: dict) -> dict:
         current_num = session["current_question_num"]
         current_slot = session["question_summaries"][current_num - 1]
@@ -851,6 +875,7 @@ class ExamService:
             self.username or "unknown",
         )
         total_score = sum(session["scores"])
+        weaknesses = self._summarize_weaknesses(session)
         session["status"] = "completed"
         session["completed_at"] = self._timestamp()
         session["updated_at"] = session["completed_at"]
@@ -861,8 +886,8 @@ class ExamService:
                 "exam_type": session["exam_type"],
                 "score": total_score,
                 "total_score": 100,
-                "weak_courses": [],
-                "weak_topics": [],
+                "weak_courses": weaknesses["weak_courses"],
+                "weak_topics": weaknesses["weak_topics"],
                 "report_path": report_path,
             }
         )
@@ -876,6 +901,8 @@ class ExamService:
             "score": total_score,
             "total_score": 100,
             "report_path": report_path,
+            "weak_courses": weaknesses["weak_courses"],
+            "weak_topics": weaknesses["weak_topics"],
             "history_recorded": history_result["recorded"],
         }
 
