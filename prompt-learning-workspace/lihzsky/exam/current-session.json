@@ -3,10 +3,10 @@
   "exam_type": "final",
   "exam_label": "综合考试",
   "status": "in_progress",
-  "current_question_num": 3,
+  "current_question_num": 10,
   "total_questions": 11,
   "started_at": "2026-04-09T11:19:03.238768+08:00",
-  "updated_at": "2026-04-09T11:23:53.254459+08:00",
+  "updated_at": "2026-04-09T15:24:26.043621+08:00",
   "completed_at": null,
   "answers": [
     {
@@ -20,11 +20,60 @@
       "type": "mc",
       "answer": "B",
       "feedback": "已记录选择题答案"
+    },
+    {
+      "num": 3,
+      "type": "mc",
+      "answer": "B",
+      "feedback": "已记录选择题答案"
+    },
+    {
+      "num": 4,
+      "type": "mc",
+      "answer": "A",
+      "feedback": "已记录选择题答案"
+    },
+    {
+      "num": 5,
+      "type": "mc",
+      "answer": "D",
+      "feedback": "已记录选择题答案"
+    },
+    {
+      "num": 6,
+      "type": "fill",
+      "answer": "样本",
+      "feedback": "已记录填空题答案"
+    },
+    {
+      "num": 7,
+      "type": "fill",
+      "answer": "思考步骤",
+      "feedback": "已记录填空题答案"
+    },
+    {
+      "num": 8,
+      "type": "fill",
+      "answer": "自我一致性",
+      "feedback": "已记录填空题答案"
+    },
+    {
+      "num": 9,
+      "type": "essay",
+      "answer": "你是一个资深技术面试官，拥有12年的全栈技术经验。首先，你需要查看简历，了解面试者的技术亮点和疑点，依据其中的几个点来向面试者提问，根据面试者的回答，不断深入，判断面试者的能力深度，直到完整这条技术细节的回答或者面试者无法回答。\n\n要求：\n1. 必须覆盖所有疑点，尽量覆盖全部亮点，每次回答都需要计算相关度，给出评分。\n2. 当面试者回答与答案低于30%相关度，即认为面试者深度已探索完成，给出当前这个疑点或者亮点的综合评分，然后进行下一个疑点或亮点探索。\n3. 根据这个综合评分再计算总评分，给出面试者评价，字数在300字左右。",
+      "feedback": "角色设定: 需要改进; 对话策略: 需要改进; 评估机制: 需要改进"
     }
   ],
   "scores": [
     5,
-    5
+    5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
   ],
   "questions": [
     {
@@ -88,6 +137,230 @@
         }
       ],
       "correct_answer": "B"
+    },
+    {
+      "type": "mc",
+      "num": 3,
+      "difficulty": "中级",
+      "goal": "技术选择",
+      "question": "当你需要让模型完成一个从未见过的全新任务时，以下哪种提示策略最合适？",
+      "course_id": 1,
+      "topic_tags": [
+        "零样本提示",
+        "技术选择"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "text": "直接给出任务描述和期望输出格式的示例",
+          "description": "通过少量示例让模型学习模式"
+        },
+        {
+          "label": "B",
+          "text": "提供详细的步骤说明和约束条件",
+          "description": "用结构化方式分解任务"
+        },
+        {
+          "label": "C",
+          "text": "仅描述任务目标和验收标准",
+          "description": "不给具体步骤，让模型自己推理"
+        },
+        {
+          "label": "D",
+          "text": "要求模型先提出问题再逐步确认",
+          "description": "通过交互式对话澄清需求"
+        }
+      ],
+      "correct_answer": "C",
+      "score": 5
+    },
+    {
+      "type": "mc",
+      "num": 4,
+      "difficulty": "中级",
+      "goal": "方案对比",
+      "question": "对比 Chain-of-Thought (CoT) 和 Tree-of-Thoughts (ToT) 两种推理策略，以下说法正确的是？",
+      "course_id": 1,
+      "topic_tags": [
+        "思维链",
+        "思维树",
+        "推理策略"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "text": "CoT 适用于需要深度探索的复杂问题，ToT 适用于需要广度探索的多方案问题",
+          "description": ""
+        },
+        {
+          "label": "B",
+          "text": "CoT 生成单一推理路径，ToT 生成并评估多条推理路径",
+          "description": ""
+        },
+        {
+          "label": "C",
+          "text": "ToT 本质上是多次调用 CoT 的组合，可以完全替代 CoT",
+          "description": ""
+        },
+        {
+          "label": "D",
+          "text": "CoT 的 token 消耗通常高于 ToT，因为需要探索更多分支",
+          "description": ""
+        }
+      ],
+      "correct_answer": "B",
+      "score": 5
+    },
+    {
+      "type": "mc",
+      "num": 5,
+      "difficulty": "高级/专家",
+      "goal": "复杂权衡",
+      "question": "在一个对响应延迟要求极高的实时对话系统中，你需要选择提示策略。此时面临的主要权衡是：",
+      "course_id": 1,
+      "topic_tags": [
+        "延迟优化",
+        "复杂权衡",
+        "实时系统"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "text": "选择 CoT 策略，虽然延迟增加，但能保证推理质量",
+          "description": "延迟↑ 质量↑"
+        },
+        {
+          "label": "B",
+          "text": "选择零样本提示，延迟最低，但复杂任务质量不可控",
+          "description": "延迟↓ 质量波动"
+        },
+        {
+          "label": "C",
+          "text": "在系统提示中内置思维链模板，但强制模型跳过思考过程直接输出结果",
+          "description": "延迟不变 质量↓"
+        },
+        {
+          "label": "D",
+          "text": "使用缓存的历史推理路径，相同任务直接复用，延迟和质量均可控",
+          "description": "延迟↓ 质量稳"
+        }
+      ],
+      "correct_answer": "B",
+      "score": 5
+    },
+    {
+      "type": "fill",
+      "num": 6,
+      "difficulty": "中级",
+      "goal": "关键参数",
+      "question": "在使用 Few-Shot Learning 时，若提示中包含 N 个示例，则这 N 个示例被称为 ____，它们的作用是帮助模型理解任务模式。",
+      "course_id": 1,
+      "topic_tags": [
+        "少样本学习",
+        "关键概念"
+      ],
+      "answer": "演示样本",
+      "acceptable_variants": [
+        "示例",
+        "exemplars",
+        "examples",
+        "样本示例"
+      ],
+      "score": 10
+    },
+    {
+      "type": "fill",
+      "num": 7,
+      "difficulty": "中级",
+      "goal": "步骤或机制",
+      "question": "CoT (Chain-of-Thought) 提示的核心机制是引导模型在给出最终答案之前，先输出 ____，从而暴露推理过程。",
+      "course_id": 1,
+      "topic_tags": [
+        "思维链",
+        "推理机制"
+      ],
+      "answer": "中间推理步骤",
+      "acceptable_variants": [
+        "推理步骤",
+        "中间步骤",
+        "思考过程",
+        "推理过程",
+        "中间推理"
+      ],
+      "score": 10
+    },
+    {
+      "type": "fill",
+      "num": 8,
+      "difficulty": "高级",
+      "goal": "场景匹配",
+      "question": "当你需要模型解决一个需要自我验证的数学证明题时，最适合的提示策略是 ____，因为它可以引导模型在推理过程中主动检查每一步的正确性。",
+      "course_id": 1,
+      "topic_tags": [
+        "自我验证",
+        "思维链",
+        "复杂推理"
+      ],
+      "answer": "自洽性提示",
+      "acceptable_variants": [
+        "自洽性思维链",
+        "Self-Verification",
+        "自验证",
+        "一致性检查提示"
+      ],
+      "score": 10
+    },
+    {
+      "type": "essay",
+      "num": 9,
+      "difficulty": "中级",
+      "goal": "提示词设计",
+      "scenario": "你需要设计一个提示词，让 AI 助手扮演一位资深技术面试官，对候选人的简历进行深度追问。面试官需要具备以下能力：1）识别简历中的技术亮点与疑点；2）根据候选人的回答动态调整追问方向；3）评估候选人的思维深度和沟通能力。",
+      "course_id": 1,
+      "topic_tags": [
+        "角色扮演",
+        "提示词设计",
+        "动态交互"
+      ],
+      "requirements": [
+        "明确面试官的身份设定和专业背景",
+        "设计多轮对话的引导策略",
+        "包含评估维度和判断标准",
+        "说明如何处理候选人跑题或答不上来的情况"
+      ],
+      "scoring_rubric": {
+        "角色设定": 0.3,
+        "对话策略": 0.4,
+        "评估机制": 0.3
+      },
+      "score": 15
+    },
+    {
+      "type": "essay",
+      "num": 10,
+      "difficulty": "高级",
+      "goal": "多技术融合",
+      "scenario": "某电商平台希望用 AI 自动化生成商品详描（Product Description），要求：1）符合平台风格且吸引买家；2）准确传达商品核心卖点；3）适配不同国家的本地化需求；4）能批量处理数十万级 SKU。",
+      "course_id": 1,
+      "topic_tags": [
+        "批量生成",
+        "本地化",
+        "质量控制",
+        "提示词链"
+      ],
+      "requirements": [
+        "设计完整的技术架构，包括如何保证大规模生成的效率和质量一致性",
+        "设计提示词模板的核心结构，说明各模块的作用",
+        "说明如何处理本地化与平台风格的平衡",
+        "讨论如何建立质量评估和迭代优化机制"
+      ],
+      "scoring_rubric": {
+        "架构设计": 0.3,
+        "提示词设计": 0.3,
+        "权衡分析": 0.2,
+        "质量机制": 0.2
+      },
+      "score": 15
     }
   ],
   "question_summaries": [
