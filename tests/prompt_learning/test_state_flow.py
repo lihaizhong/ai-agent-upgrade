@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -15,6 +16,7 @@ SCRIPT_PATH = (
 WORKSPACE_ROOT = REPO_ROOT / "prompt-learning-workspace"
 TEST_USERNAME = "prompt-learning-state-test"
 TEST_WORKSPACE = WORKSPACE_ROOT / TEST_USERNAME
+TEST_ENV = {"PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "1"}
 
 
 def run_cli(*args: str, stdin_data: dict | list | None = None) -> dict:
@@ -24,6 +26,7 @@ def run_cli(*args: str, stdin_data: dict | list | None = None) -> dict:
         capture_output=True,
         text=True,
         cwd=REPO_ROOT,
+        env={**os.environ, **TEST_ENV},
         input=(
             None
             if stdin_data is None

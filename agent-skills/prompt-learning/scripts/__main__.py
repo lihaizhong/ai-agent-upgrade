@@ -30,8 +30,7 @@ if __package__ in {None, ""}:
     from scripts.workspace import (
         ensure_workspace,
         get_workspace_root,
-        normalize_workspace_username,
-        resolve_git_username,
+        resolve_workspace_identity,
     )
 else:
     from .exam import ExamEngine, ExamService
@@ -50,13 +49,20 @@ else:
     from .workspace import (
         ensure_workspace,
         get_workspace_root,
-        normalize_workspace_username,
-        resolve_git_username,
+        resolve_workspace_identity,
     )
 
 
 def _skill_dir() -> Path:
     return Path(__file__).resolve().parent.parent
+
+
+def _ensure_workspace_or_exit(skill_dir: Path, username: str | None = None) -> dict:
+    try:
+        return ensure_workspace(skill_dir, username=username)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        sys.exit(2)
 
 
 def resolve_username(explicit_username: str = None) -> str:
@@ -244,7 +250,7 @@ def main():
 
     if args.command == "exam":
         skill_dir = _skill_dir()
-        ensure_workspace(skill_dir, username=args.username)
+        _ensure_workspace_or_exit(skill_dir, username=args.username)
         exam = ExamEngine(skill_dir=skill_dir, username=args.username)
         exam_service = ExamService.from_skill_dir(skill_dir, username=args.username)
 
@@ -421,7 +427,7 @@ def main():
 
     elif args.command == "lab":
         skill_dir = _skill_dir()
-        ensure_workspace(skill_dir, username=args.username)
+        _ensure_workspace_or_exit(skill_dir, username=args.username)
         prompt_lab = PromptLabService.from_skill_dir(skill_dir, username=args.username)
 
         if args.workflow:
@@ -487,16 +493,13 @@ def main():
         skill_dir = _skill_dir()
 
         if args.resolve_user:
-            source_git_username = (
-                args.username if args.username is not None else resolve_git_username()
-            )
+            identity = resolve_workspace_identity(args.username)
             print(
                 json.dumps(
                     {
-                        "source_git_username": source_git_username,
-                        "workspace_user": normalize_workspace_username(
-                            source_git_username
-                        ),
+                        "explicit_username": identity["explicit_username"],
+                        "source_git_username": identity["source_git_username"],
+                        "workspace_user": identity["workspace_user"],
                     },
                     ensure_ascii=False,
                     indent=2,
@@ -515,7 +518,7 @@ def main():
         elif args.bootstrap:
             print(
                 json.dumps(
-                    ensure_workspace(skill_dir, username=args.username),
+                    _ensure_workspace_or_exit(skill_dir, username=args.username),
                     ensure_ascii=False,
                     indent=2,
                 )
@@ -526,7 +529,7 @@ def main():
 
     elif args.command == "home":
         skill_dir = _skill_dir()
-        ensure_workspace(skill_dir, username=args.username)
+        _ensure_workspace_or_exit(skill_dir, username=args.username)
         home_service = HomeService.from_skill_dir(skill_dir, username=args.username)
 
         if args.dashboard:
@@ -555,7 +558,7 @@ def main():
 
     elif args.command == "learning":
         skill_dir = _skill_dir()
-        ensure_workspace(skill_dir, username=args.username)
+        _ensure_workspace_or_exit(skill_dir, username=args.username)
         learning_service = LearningService.from_skill_dir(
             skill_dir, username=args.username
         )
@@ -630,7 +633,7 @@ def main():
 
     elif args.command == "practice":
         skill_dir = _skill_dir()
-        ensure_workspace(skill_dir, username=args.username)
+        _ensure_workspace_or_exit(skill_dir, username=args.username)
         practice_service = PracticeService.from_skill_dir(
             skill_dir, username=args.username
         )
@@ -694,7 +697,7 @@ def main():
 
     elif args.command == "profile":
         skill_dir = _skill_dir()
-        ensure_workspace(skill_dir, username=args.username)
+        _ensure_workspace_or_exit(skill_dir, username=args.username)
         profile_service = ProfileService.from_skill_dir(
             skill_dir, username=args.username
         )
