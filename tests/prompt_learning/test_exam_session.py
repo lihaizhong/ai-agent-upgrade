@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -12,9 +14,13 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT_PATH = (
     REPO_ROOT / "agent-skills" / "prompt-learning" / "scripts" / "__main__.py"
 )
-WORKSPACE_ROOT = REPO_ROOT / "prompt-learning-workspace"
+WORKSPACE_ROOT = Path(tempfile.mkdtemp(prefix="prompt-learning-exam-workspace-"))
 TEST_USERNAME = "prompt-learning-exam-session-test"
 TEST_WORKSPACE = WORKSPACE_ROOT / TEST_USERNAME
+TEST_ENV = {
+    "PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "1",
+    "PROMPT_LEARNING_WORKSPACE_ROOT": str(WORKSPACE_ROOT),
+}
 
 
 def run_cli(*args: str, stdin_data: dict | list | None = None) -> dict:
@@ -24,6 +30,7 @@ def run_cli(*args: str, stdin_data: dict | list | None = None) -> dict:
         capture_output=True,
         text=True,
         cwd=REPO_ROOT,
+        env={**os.environ, **TEST_ENV},
         input=(
             None
             if stdin_data is None
@@ -41,6 +48,7 @@ def run_cli_error(*args: str, stdin_data: dict | list | None = None) -> subproce
             capture_output=True,
             text=True,
             cwd=REPO_ROOT,
+            env={**os.environ, **TEST_ENV},
             input=(
                 None
                 if stdin_data is None
@@ -63,8 +71,8 @@ class PromptLearningExamSessionTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        if TEST_WORKSPACE.exists():
-            shutil.rmtree(TEST_WORKSPACE)
+        if WORKSPACE_ROOT.exists():
+            shutil.rmtree(WORKSPACE_ROOT)
 
     def setUp(self) -> None:
         session_file = TEST_WORKSPACE / "exam" / "current-session.json"

@@ -6,6 +6,7 @@ Prompt Learning workspace 管理
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -31,7 +32,40 @@ def normalize_workspace_username(raw_name: str | None) -> str:
     """将用户名规范化为 workspace 目录名。"""
     if raw_name and raw_name.strip():
         return raw_name.strip().replace(" ", "-")
-    return "default-zoom"
+    raise ValueError(
+        "workspace identity unavailable: cannot resolve current user from explicit username or git user.name"
+    )
+
+
+def resolve_workspace_identity(username: str | None = None) -> dict[str, str | None]:
+    """解析当前用户对应的 workspace 身份。"""
+    explicit_username = username.strip() if username and username.strip() else None
+    source_git_username = resolve_git_username()
+
+    allow_override = (
+        os.environ.get("PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE", "").strip().lower()
+        in {"1", "true", "yes"}
+    )
+    if (
+        explicit_username is not None
+        and source_git_username
+        and normalize_workspace_username(explicit_username)
+        != normalize_workspace_username(source_git_username)
+        and not allow_override
+    ):
+        raise ValueError(
+            "workspace identity mismatch: "
+            f"explicit username '{explicit_username}' does not match current git user "
+            f"'{source_git_username}'"
+        )
+
+    workspace_seed = explicit_username if explicit_username is not None else source_git_username
+    workspace_user = normalize_workspace_username(workspace_seed)
+    return {
+        "explicit_username": explicit_username,
+        "source_git_username": source_git_username,
+        "workspace_user": workspace_user,
+    }
 
 
 def get_repo_root(skill_dir: Path) -> Path:
@@ -42,13 +76,15 @@ def get_repo_root(skill_dir: Path) -> Path:
 
 def get_workspace_root(skill_dir: Path) -> Path:
     """返回 prompt-learning-workspace 根目录。"""
+    override_root = os.environ.get("PROMPT_LEARNING_WORKSPACE_ROOT", "").strip()
+    if override_root:
+        return Path(override_root).expanduser().resolve()
     return get_repo_root(skill_dir) / "prompt-learning-workspace"
 
 
 def get_user_workspace(skill_dir: Path, username: str | None = None) -> Path:
     """返回当前用户的 workspace 目录。"""
-    raw_username = username if username is not None else resolve_git_username()
-    workspace_user = normalize_workspace_username(raw_username)
+    workspace_user = resolve_workspace_identity(username)["workspace_user"]
     return get_workspace_root(skill_dir) / workspace_user
 
 
@@ -97,6 +133,28 @@ def _write_json_if_missing(path: Path, payload: dict) -> bool:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return True
+
+
+def _read_json(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _workspace_has_state(paths: dict[str, Path]) -> bool:
+    state_paths = [
+        paths["profile_dir"],
+        paths["progress_dir"],
+        paths["practice_dir"],
+        paths["exam_dir"],
+        paths["lab_dir"],
+    ]
+    for path in state_paths:
+        if not path.exists():
+            continue
+        if path.is_file():
+            return True
+        if any(path.iterdir()):
+            return True
+    return False
 
 
 def _default_learner(source_git_username: str | None, workspace_user: str) -> dict:
@@ -156,9 +214,30 @@ def _default_template_index() -> dict:
 
 def ensure_workspace(skill_dir: Path, username: str | None = None) -> dict:
     """初始化 workspace 目录和最小文件集。"""
-    source_git_username = username if username is not None else resolve_git_username()
-    workspace_user = normalize_workspace_username(source_git_username)
+    identity = resolve_workspace_identity(username)
+    source_git_username = identity["source_git_username"]
+    workspace_user = identity["workspace_user"]
     paths = get_workspace_paths(skill_dir, username=username)
+
+    learner_file = paths["learner_file"]
+    if not learner_file.exists() and _workspace_has_state(paths):
+        raise ValueError(
+            "workspace metadata missing: "
+            f"target workspace '{workspace_user}' already has state files but no learner.json"
+        )
+    if learner_file.exists():
+        learner = _read_json(learner_file)
+        existing_workspace_user = learner.get("workspace_user")
+        if (
+            isinstance(existing_workspace_user, str)
+            and existing_workspace_user
+            and existing_workspace_user != workspace_user
+        ):
+            raise ValueError(
+                "workspace ownership mismatch: "
+                f"current user resolves to '{workspace_user}', "
+                f"but target workspace metadata belongs to '{existing_workspace_user}'"
+            )
 
     created_dirs = []
     created_files = []

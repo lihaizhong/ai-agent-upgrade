@@ -146,7 +146,7 @@ LLM 负责：
 
 1. 优先使用 `git config user.name`
 2. 空格替换为 `-`
-3. 获取失败时使用 `default-zoom`
+3. 获取失败时直接报错，不允许回退到共享 workspace
 
 workspace 仅保存真正需要长期保留的信息，例如：
 
