@@ -76,6 +76,9 @@ def get_repo_root(skill_dir: Path) -> Path:
 
 def get_workspace_root(skill_dir: Path) -> Path:
     """返回 prompt-learning-workspace 根目录。"""
+    override_root = os.environ.get("PROMPT_LEARNING_WORKSPACE_ROOT", "").strip()
+    if override_root:
+        return Path(override_root).expanduser().resolve()
     return get_repo_root(skill_dir) / "prompt-learning-workspace"
 
 

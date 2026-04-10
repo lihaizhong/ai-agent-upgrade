@@ -29,7 +29,7 @@ Tasks are ordered by dependency.
   - Files: `agent-skills/prompt-learning/scripts/workspace.py`, `agent-skills/prompt-learning/scripts/__main__.py`, `tests/prompt_learning/`
 
 - [x] Task: 禁止回退到已有唯一 workspace
-  - Acceptance: 当仓库中仅存在 `lihzsky/` 等旧目录时，新用户 `baitanggao` 不会落入该目录
+  - Acceptance: 当仓库中仅存在 `existing-user/` 等旧目录时，新用户 `new-user` 不会落入该目录
   - Verify: 构造“仓库内已有其他用户 workspace”的场景并运行 CLI 测试
   - Files: `agent-skills/prompt-learning/scripts/workspace.py`, `tests/prompt_learning/`
 
@@ -48,7 +48,7 @@ Tasks are ordered by dependency.
   - Files: `tests/prompt_learning/test_platform.py`, `tests/prompt_learning/test_state_flow.py`
 
 - [x] Task: 增加禁止误入他人 workspace 的测试
-  - Acceptance: 当已有 `lihzsky/` 目录时，`baitanggao` 仍创建并使用自己的 workspace，或在配置错误时显式失败
+  - Acceptance: 当已有 `existing-user/` 目录时，`new-user` 仍创建并使用自己的 workspace，或在配置错误时显式失败
   - Verify: `python -m unittest ...`
   - Files: `tests/prompt_learning/test_platform.py`, `tests/prompt_learning/test_exam_session.py`, `tests/prompt_learning/test_state_flow.py`
 

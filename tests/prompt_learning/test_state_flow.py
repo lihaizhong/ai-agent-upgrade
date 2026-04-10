@@ -5,6 +5,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -13,10 +14,13 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT_PATH = (
     REPO_ROOT / "agent-skills" / "prompt-learning" / "scripts" / "__main__.py"
 )
-WORKSPACE_ROOT = REPO_ROOT / "prompt-learning-workspace"
+WORKSPACE_ROOT = Path(tempfile.mkdtemp(prefix="prompt-learning-state-workspace-"))
 TEST_USERNAME = "prompt-learning-state-test"
 TEST_WORKSPACE = WORKSPACE_ROOT / TEST_USERNAME
-TEST_ENV = {"PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "1"}
+TEST_ENV = {
+    "PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "1",
+    "PROMPT_LEARNING_WORKSPACE_ROOT": str(WORKSPACE_ROOT),
+}
 
 
 def run_cli(*args: str, stdin_data: dict | list | None = None) -> dict:
@@ -49,8 +53,8 @@ class PromptLearningStateFlowTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        if TEST_WORKSPACE.exists():
-            shutil.rmtree(TEST_WORKSPACE)
+        if WORKSPACE_ROOT.exists():
+            shutil.rmtree(WORKSPACE_ROOT)
 
     def test_learning_flow_updates_current_state_and_course_progress(self) -> None:
         run_cli("learning", "--lesson-meta", "--course", "4")

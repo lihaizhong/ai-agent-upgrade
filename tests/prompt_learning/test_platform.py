@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 import importlib.util
+from unittest import mock
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -16,11 +17,19 @@ SCRIPT_PATH = (
     REPO_ROOT / "agent-skills" / "prompt-learning" / "scripts" / "__main__.py"
 )
 WORKSPACE_ROOT = REPO_ROOT / "prompt-learning-workspace"
+TEST_WORKSPACE_ROOT = Path(
+    tempfile.mkdtemp(prefix="prompt-learning-platform-workspace-")
+)
 TEST_USERNAME = "prompt-learning-test"
-TEST_WORKSPACE = WORKSPACE_ROOT / TEST_USERNAME
-OTHER_USERNAME = "lihzsky"
-OTHER_WORKSPACE = WORKSPACE_ROOT / OTHER_USERNAME
-TEST_ENV = {"PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "1"}
+TEST_WORKSPACE = TEST_WORKSPACE_ROOT / TEST_USERNAME
+OTHER_USERNAME = "prompt-learning-other-user"
+OTHER_WORKSPACE = TEST_WORKSPACE_ROOT / OTHER_USERNAME
+NEW_USERNAME = "prompt-learning-new-user"
+CONFLICTING_METADATA_USER = "prompt-learning-conflict-user"
+TEST_ENV = {
+    "PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "1",
+    "PROMPT_LEARNING_WORKSPACE_ROOT": str(TEST_WORKSPACE_ROOT),
+}
 
 spec = importlib.util.spec_from_file_location(
     "prompt_learning_workspace", REPO_ROOT / "agent-skills" / "prompt-learning" / "scripts" / "workspace.py"
@@ -98,10 +107,8 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        if TEST_WORKSPACE.exists():
-            shutil.rmtree(TEST_WORKSPACE)
-        if OTHER_WORKSPACE.exists():
-            shutil.rmtree(OTHER_WORKSPACE)
+        if TEST_WORKSPACE_ROOT.exists():
+            shutil.rmtree(TEST_WORKSPACE_ROOT)
 
     def test_workspace_bootstrap_creates_expected_files(self) -> None:
         learner_file = TEST_WORKSPACE / "profile" / "learner.json"
@@ -116,21 +123,21 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
         self.assertEqual(learner["workspace_user"], TEST_USERNAME)
 
     def test_workspace_resolve_user_prefers_explicit_username(self) -> None:
-        resolved = run_cli_for("baitanggao", "workspace", "--resolve-user")
+        resolved = run_cli_for(NEW_USERNAME, "workspace", "--resolve-user")
 
-        self.assertEqual(resolved["explicit_username"], "baitanggao")
-        self.assertEqual(resolved["workspace_user"], "baitanggao")
+        self.assertEqual(resolved["explicit_username"], NEW_USERNAME)
+        self.assertEqual(resolved["workspace_user"], NEW_USERNAME)
 
     def test_rejects_explicit_username_that_conflicts_with_git_identity(self) -> None:
         error = run_cli_error_for(
-            "baitanggao",
+            NEW_USERNAME,
             "workspace",
             "--resolve-user",
             extra_env={
                 "PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "0",
                 "GIT_CONFIG_COUNT": "1",
                 "GIT_CONFIG_KEY_0": "user.name",
-                "GIT_CONFIG_VALUE_0": "lihzsky",
+                "GIT_CONFIG_VALUE_0": CONFLICTING_METADATA_USER,
             },
         )
 
@@ -173,9 +180,10 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
     def test_new_user_bootstrap_does_not_fallback_to_existing_workspace(self) -> None:
         if OTHER_WORKSPACE.exists():
             shutil.rmtree(OTHER_WORKSPACE)
-        other_paths = workspace_module.get_workspace_paths(
-            REPO_ROOT / "agent-skills" / "prompt-learning", username=OTHER_USERNAME
-        )
+        with mock.patch.dict(os.environ, TEST_ENV, clear=False):
+            other_paths = workspace_module.get_workspace_paths(
+                REPO_ROOT / "agent-skills" / "prompt-learning", username=OTHER_USERNAME
+            )
         other_paths["learner_file"].parent.mkdir(parents=True, exist_ok=True)
         other_paths["learner_file"].write_text(
             json.dumps(
@@ -189,20 +197,22 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
             encoding="utf-8",
         )
 
-        baitanggao = run_cli_for("baitanggao", "workspace", "--bootstrap")
+        new_user = run_cli_for(NEW_USERNAME, "workspace", "--bootstrap")
 
-        self.assertEqual(baitanggao["workspace_user"], "baitanggao")
+        self.assertEqual(new_user["workspace_user"], NEW_USERNAME)
         self.assertEqual(
-            baitanggao["workspace_root"],
-            str(WORKSPACE_ROOT / "baitanggao"),
+            new_user["workspace_root"],
+            str((TEST_WORKSPACE_ROOT / NEW_USERNAME).resolve()),
         )
-        self.assertTrue((WORKSPACE_ROOT / "baitanggao" / "profile" / "learner.json").exists())
+        self.assertTrue(
+            (TEST_WORKSPACE_ROOT / NEW_USERNAME / "profile" / "learner.json").exists()
+        )
         self.assertTrue(other_paths["learner_file"].exists())
 
-        shutil.rmtree(WORKSPACE_ROOT / "baitanggao")
+        shutil.rmtree(TEST_WORKSPACE_ROOT / NEW_USERNAME)
 
     def test_bootstrap_rejects_conflicting_workspace_metadata(self) -> None:
-        conflicting_workspace = WORKSPACE_ROOT / "baitanggao"
+        conflicting_workspace = TEST_WORKSPACE_ROOT / NEW_USERNAME
         if conflicting_workspace.exists():
             shutil.rmtree(conflicting_workspace)
         learner_file = conflicting_workspace / "profile" / "learner.json"
@@ -210,8 +220,8 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
         learner_file.write_text(
             json.dumps(
                 {
-                    "workspace_user": "lihzsky",
-                    "source_git_username": "lihzsky",
+                    "workspace_user": CONFLICTING_METADATA_USER,
+                    "source_git_username": CONFLICTING_METADATA_USER,
                 },
                 ensure_ascii=False,
                 indent=2,
@@ -219,13 +229,13 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
             encoding="utf-8",
         )
 
-        error = run_cli_error_for("baitanggao", "workspace", "--bootstrap")
+        error = run_cli_error_for(NEW_USERNAME, "workspace", "--bootstrap")
 
         self.assertIn("workspace ownership mismatch", error.stderr)
         shutil.rmtree(conflicting_workspace)
 
     def test_bootstrap_rejects_non_empty_workspace_without_metadata(self) -> None:
-        conflicting_workspace = WORKSPACE_ROOT / "baitanggao"
+        conflicting_workspace = TEST_WORKSPACE_ROOT / NEW_USERNAME
         if conflicting_workspace.exists():
             shutil.rmtree(conflicting_workspace)
         state_file = conflicting_workspace / "progress" / "current-state.json"
@@ -235,26 +245,26 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
             encoding="utf-8",
         )
 
-        error = run_cli_error_for("baitanggao", "workspace", "--bootstrap")
+        error = run_cli_error_for(NEW_USERNAME, "workspace", "--bootstrap")
 
         self.assertIn("workspace metadata missing", error.stderr)
         shutil.rmtree(conflicting_workspace)
 
     def test_bootstrap_rejects_workspace_with_report_artifacts_but_no_metadata(self) -> None:
-        conflicting_workspace = WORKSPACE_ROOT / "baitanggao"
+        conflicting_workspace = TEST_WORKSPACE_ROOT / NEW_USERNAME
         if conflicting_workspace.exists():
             shutil.rmtree(conflicting_workspace)
         report_file = conflicting_workspace / "exam" / "reports" / "report.md"
         report_file.parent.mkdir(parents=True, exist_ok=True)
         report_file.write_text("# report\n", encoding="utf-8")
 
-        error = run_cli_error_for("baitanggao", "workspace", "--bootstrap")
+        error = run_cli_error_for(NEW_USERNAME, "workspace", "--bootstrap")
 
         self.assertIn("workspace metadata missing", error.stderr)
         shutil.rmtree(conflicting_workspace)
 
     def test_home_entry_also_rejects_conflicting_workspace_metadata(self) -> None:
-        conflicting_workspace = WORKSPACE_ROOT / "baitanggao"
+        conflicting_workspace = TEST_WORKSPACE_ROOT / NEW_USERNAME
         if conflicting_workspace.exists():
             shutil.rmtree(conflicting_workspace)
         learner_file = conflicting_workspace / "profile" / "learner.json"
@@ -262,8 +272,8 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
         learner_file.write_text(
             json.dumps(
                 {
-                    "workspace_user": "lihzsky",
-                    "source_git_username": "lihzsky",
+                    "workspace_user": CONFLICTING_METADATA_USER,
+                    "source_git_username": CONFLICTING_METADATA_USER,
                 },
                 ensure_ascii=False,
                 indent=2,
@@ -271,21 +281,21 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
             encoding="utf-8",
         )
 
-        error = run_cli_error_for("baitanggao", "home", "--dashboard")
+        error = run_cli_error_for(NEW_USERNAME, "home", "--dashboard")
 
         self.assertIn("workspace ownership mismatch", error.stderr)
         shutil.rmtree(conflicting_workspace)
 
     def test_resolve_user_mismatch_exits_without_traceback(self) -> None:
         error = run_cli_error_for(
-            "baitanggao",
+            NEW_USERNAME,
             "workspace",
             "--resolve-user",
             extra_env={
                 "PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "0",
                 "GIT_CONFIG_COUNT": "1",
                 "GIT_CONFIG_KEY_0": "user.name",
-                "GIT_CONFIG_VALUE_0": "lihzsky",
+                "GIT_CONFIG_VALUE_0": CONFLICTING_METADATA_USER,
             },
         )
 

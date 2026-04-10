@@ -16,7 +16,7 @@
 
 新用户首次进入时，如果对应目录不存在，系统必须创建该用户自己的 workspace。
 
-禁止扫描现有 workspace 后回退到其他用户目录；例如当前用户是 `baitanggao` 时，不能因为仓库里已有 `lihzsky/` 就直接复用 `prompt-learning-workspace/lihzsky/`。
+禁止扫描现有 workspace 后回退到其他用户目录；例如当前用户是 `new-user` 时，不能因为仓库里已有 `existing-user/` 就直接复用 `prompt-learning-workspace/existing-user/`。
 
 路径解析必须兼容 skill 软链接入口。无论脚本从 `agent-skills/prompt-learning/`、`.opencode/skills/prompt-learning/` 还是 `.codex/skills/prompt-learning/` 启动，workspace 根目录都必须解析到项目根目录下的 `prompt-learning-workspace/`，不能创建在 skill 目录、`.opencode/` 或 `.codex/` 下。
 

@@ -59,7 +59,7 @@
 
 - 当前用户解析失败且没有明确回退规则
 - 解析得到的 `workspace_user` 与命中的实际目录不一致
-- 调用方显式传入 `--username baitanggao`，却试图访问 `prompt-learning-workspace/lihzsky/`
+- 调用方显式传入 `--username new-user`，却试图访问 `prompt-learning-workspace/existing-user/`
 
 脚本输出应清楚说明：
 
@@ -90,9 +90,9 @@
 
 ## 验收标准
 
-- [ ] 新用户 `baitanggao` 首次进入时，会创建 `prompt-learning-workspace/baitanggao/`
+- [ ] 新用户 `new-user` 首次进入时，会创建 `prompt-learning-workspace/new-user/`
 - [ ] 不存在任何“唯一已有 workspace 自动回退”的逻辑
-- [ ] 传入 `--username baitanggao` 时，所有模块都只会访问 `prompt-learning-workspace/baitanggao/`
+- [ ] 传入 `--username new-user` 时，所有模块都只会访问 `prompt-learning-workspace/new-user/`
 - [ ] 若调用链试图访问其他用户目录，脚本会显式报错
 - [ ] `home / learning / practice / exam / profile / lab` 共用同一套 workspace 解析规则
 - [ ] 文档明确说明 workspace 是用户级隔离边界，首次进入必须创建当前用户目录
