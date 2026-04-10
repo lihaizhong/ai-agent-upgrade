@@ -5,6 +5,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 import importlib.util
@@ -135,6 +136,26 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
 
         self.assertIn("workspace identity mismatch", error.stderr)
 
+    def test_rejects_missing_identity_instead_of_falling_back_to_default_workspace(self) -> None:
+        with tempfile.TemporaryDirectory() as home_dir:
+            with tempfile.TemporaryDirectory() as xdg_dir:
+                with unittest.TestCase().assertRaises(subprocess.CalledProcessError) as ctx:
+                    subprocess.run(
+                        [sys.executable, str(SCRIPT_PATH), "workspace", "--bootstrap"],
+                        check=True,
+                        capture_output=True,
+                        text=True,
+                        cwd=REPO_ROOT,
+                        env={
+                            **os.environ,
+                            "PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "0",
+                            "GIT_CONFIG_NOSYSTEM": "1",
+                            "HOME": home_dir,
+                            "XDG_CONFIG_HOME": xdg_dir,
+                        },
+                    )
+        self.assertIn("workspace identity unavailable", ctx.exception.stderr)
+
     def test_home_dashboard_and_learning_catalog(self) -> None:
         dashboard = run_cli("home", "--dashboard")
         self.assertEqual(dashboard["user"]["workspace_user"], TEST_USERNAME)
@@ -219,6 +240,19 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
         self.assertIn("workspace metadata missing", error.stderr)
         shutil.rmtree(conflicting_workspace)
 
+    def test_bootstrap_rejects_workspace_with_report_artifacts_but_no_metadata(self) -> None:
+        conflicting_workspace = WORKSPACE_ROOT / "baitanggao"
+        if conflicting_workspace.exists():
+            shutil.rmtree(conflicting_workspace)
+        report_file = conflicting_workspace / "exam" / "reports" / "report.md"
+        report_file.parent.mkdir(parents=True, exist_ok=True)
+        report_file.write_text("# report\n", encoding="utf-8")
+
+        error = run_cli_error_for("baitanggao", "workspace", "--bootstrap")
+
+        self.assertIn("workspace metadata missing", error.stderr)
+        shutil.rmtree(conflicting_workspace)
+
     def test_home_entry_also_rejects_conflicting_workspace_metadata(self) -> None:
         conflicting_workspace = WORKSPACE_ROOT / "baitanggao"
         if conflicting_workspace.exists():
@@ -241,6 +275,22 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
 
         self.assertIn("workspace ownership mismatch", error.stderr)
         shutil.rmtree(conflicting_workspace)
+
+    def test_resolve_user_mismatch_exits_without_traceback(self) -> None:
+        error = run_cli_error_for(
+            "baitanggao",
+            "workspace",
+            "--resolve-user",
+            extra_env={
+                "PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "0",
+                "GIT_CONFIG_COUNT": "1",
+                "GIT_CONFIG_KEY_0": "user.name",
+                "GIT_CONFIG_VALUE_0": "lihzsky",
+            },
+        )
+
+        self.assertIn("workspace identity mismatch", error.stderr)
+        self.assertNotIn("Traceback", error.stderr)
 
     def test_learning_practice_lab_exam_and_profile_flows(self) -> None:
         lesson_meta = run_cli("learning", "--lesson-meta", "--course", "3")

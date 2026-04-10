@@ -65,6 +65,14 @@ def _ensure_workspace_or_exit(skill_dir: Path, username: str | None = None) -> d
         sys.exit(2)
 
 
+def _resolve_workspace_identity_or_exit(username: str | None = None) -> dict:
+    try:
+        return resolve_workspace_identity(username)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        sys.exit(2)
+
+
 def resolve_username(explicit_username: str = None) -> str:
     """解析报告使用的用户名。"""
     if explicit_username and explicit_username.strip():
@@ -493,7 +501,7 @@ def main():
         skill_dir = _skill_dir()
 
         if args.resolve_user:
-            identity = resolve_workspace_identity(args.username)
+            identity = _resolve_workspace_identity_or_exit(args.username)
             print(
                 json.dumps(
                     {

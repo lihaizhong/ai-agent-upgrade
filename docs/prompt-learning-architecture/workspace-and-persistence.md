@@ -26,13 +26,13 @@
 
 1. 优先读取 `git config user.name`
 2. 如果用户名中包含空格，将空格替换为 `-`
-3. 如果读取失败或为空，使用 `default-zoom`
+3. 如果读取失败或为空，直接报错并要求先设置当前用户身份
 
 示例：
 
 - `Li Haizhong` -> `Li-Haizhong`
 - `Jane` -> `Jane`
-- 空值 -> `default-zoom`
+- 空值 -> 直接失败，不允许回退到共享 workspace
 
 ## 持久化原则
 

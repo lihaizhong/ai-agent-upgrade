@@ -32,7 +32,9 @@ def normalize_workspace_username(raw_name: str | None) -> str:
     """将用户名规范化为 workspace 目录名。"""
     if raw_name and raw_name.strip():
         return raw_name.strip().replace(" ", "-")
-    return "default-zoom"
+    raise ValueError(
+        "workspace identity unavailable: cannot resolve current user from explicit username or git user.name"
+    )
 
 
 def resolve_workspace_identity(username: str | None = None) -> dict[str, str | None]:
@@ -135,18 +137,21 @@ def _read_json(path: Path) -> dict:
 
 
 def _workspace_has_state(paths: dict[str, Path]) -> bool:
-    state_files = [
-        paths["preferences_file"],
-        paths["current_state_file"],
-        paths["course_progress_file"],
-        paths["mastery_file"],
-        paths["practice_history_file"],
-        paths["mistakes_file"],
-        paths["exam_history_file"],
-        paths["exam_session_file"],
-        paths["template_index_file"],
+    state_paths = [
+        paths["profile_dir"],
+        paths["progress_dir"],
+        paths["practice_dir"],
+        paths["exam_dir"],
+        paths["lab_dir"],
     ]
-    return any(path.exists() for path in state_files)
+    for path in state_paths:
+        if not path.exists():
+            continue
+        if path.is_file():
+            return True
+        if any(path.iterdir()):
+            return True
+    return False
 
 
 def _default_learner(source_git_username: str | None, workspace_user: str) -> dict:
