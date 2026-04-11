@@ -2,7 +2,7 @@
   "current_module": "exam",
   "current_course_id": 1,
   "current_course_name": "零样本提示",
-  "last_action": "exam_question_submitted",
-  "recommended_next_action": "answer_question",
-  "updated_at": "2026-04-09T15:24:43.804323+08:00"
+  "last_action": "exam_completed",
+  "recommended_next_action": "review_weak_topics",
+  "updated_at": "2026-04-11T14:34:30.367549+08:00"
 }
