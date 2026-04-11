@@ -42,10 +42,9 @@ def resolve_workspace_identity(username: str | None = None) -> dict[str, str | N
     explicit_username = username.strip() if username and username.strip() else None
     source_git_username = resolve_git_username()
 
-    allow_override = (
-        os.environ.get("PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE", "").strip().lower()
-        in {"1", "true", "yes"}
-    )
+    allow_override = os.environ.get(
+        "PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE", ""
+    ).strip().lower() in {"1", "true", "yes"}
     if (
         explicit_username is not None
         and source_git_username
@@ -59,7 +58,13 @@ def resolve_workspace_identity(username: str | None = None) -> dict[str, str | N
             f"'{source_git_username}'"
         )
 
-    workspace_seed = explicit_username if explicit_username is not None else source_git_username
+    workspace_seed = (
+        explicit_username if explicit_username is not None else source_git_username
+    )
+    if workspace_seed is None:
+        raise ValueError(
+            "workspace identity unavailable: cannot resolve current user from explicit username or git user.name"
+        )
     workspace_user = normalize_workspace_username(workspace_seed)
     return {
         "explicit_username": explicit_username,

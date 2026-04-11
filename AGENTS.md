@@ -146,6 +146,7 @@ uv sync
 .venv/bin/python <script.py>
 ```
 
+- **Always use project venv** — run scripts with `uv run python <script.py>` (or `.venv/bin/python` if venv exists). If no venv exists, run `uv sync` to create one first.
 - Always use `uv add`, never `pip install`
 - Commit `pyproject.toml` and `uv.lock` changes together
 - Document new dependencies if they introduce a major capability

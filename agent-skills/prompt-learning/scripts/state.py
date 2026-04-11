@@ -378,11 +378,22 @@ class UserState:
         - 再否则推荐全局第一门未完成课程。
         """
         completed = self.state["completed_courses"]
-        completed_ids = {
-            int(course.split("-")[0])
-            for course in completed
-            if course and "-" in course and course.split("-")[0].isdigit()
-        }
+        completed_ids: set[int] = set()
+        invalid_entries: list[str] = []
+        for course in completed:
+            if course and "-" in course and course.split("-")[0].isdigit():
+                completed_ids.add(int(course.split("-")[0]))
+            elif course:
+                invalid_entries.append(course)
+
+        if invalid_entries:
+            import logging
+
+            logging.warning(
+                "state.py: skipped %d invalid course entries: %s",
+                len(invalid_entries),
+                invalid_entries,
+            )
 
         current_course_id = None
         current_course = self.state.get("current_course")
@@ -403,7 +414,9 @@ class UserState:
 
         if current_course_id:
             prereqs = COURSE_METADATA.get(current_course_id, {}).get("prereqs", [])
-            missing_prereqs = [course_id for course_id in prereqs if course_id not in completed_ids]
+            missing_prereqs = [
+                course_id for course_id in prereqs if course_id not in completed_ids
+            ]
             if missing_prereqs:
                 next_course = missing_prereqs[0]
                 return {
@@ -417,7 +430,9 @@ class UserState:
                 }
 
         current_category = (
-            self._get_category_for_course(current_course_id) if current_course_id else None
+            self._get_category_for_course(current_course_id)
+            if current_course_id
+            else None
         )
         if current_category:
             for course_id in self._category_course_ids(current_category):
