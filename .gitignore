@@ -218,3 +218,6 @@ __marimo__/
 # Custom
 test_workspace/
 test_output/
+
+# Prompt Learning fallback workspace (shared, no git user.name configured)
+prompt-learning-workspace/defaults/

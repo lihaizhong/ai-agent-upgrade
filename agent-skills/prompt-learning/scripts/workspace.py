@@ -28,13 +28,18 @@ def resolve_git_username() -> str | None:
     return username or None
 
 
+DEFAULT_WORKSPACE_USERNAME = "defaults"
+
+
 def normalize_workspace_username(raw_name: str | None) -> str:
-    """将用户名规范化为 workspace 目录名。"""
+    """将用户名规范化为 workspace 目录名。
+
+    当无法从 raw_name 获取有效用户名时，返回默认值 "defaults"。
+    该默认值对应的 workspace 会被加入 gitignore，不提交到仓库。
+    """
     if raw_name and raw_name.strip():
         return raw_name.strip().replace(" ", "-")
-    raise ValueError(
-        "workspace identity unavailable: cannot resolve current user from explicit username or git user.name"
-    )
+    return DEFAULT_WORKSPACE_USERNAME
 
 
 def resolve_workspace_identity(username: str | None = None) -> dict[str, str | None]:
@@ -62,14 +67,25 @@ def resolve_workspace_identity(username: str | None = None) -> dict[str, str | N
         explicit_username if explicit_username is not None else source_git_username
     )
     if workspace_seed is None:
-        raise ValueError(
-            "workspace identity unavailable: cannot resolve current user from explicit username or git user.name"
+        import sys
+
+        print(
+            "⚠️  WARNING: Unable to resolve git user.name. Using fallback workspace 'defaults'.\n"
+            "This shared workspace may cause data collision with other users.\n"
+            "To resolve, set your git username:\n"
+            "  git config --global user.name 'Your Name'\n"
+            "Or for this repository only:\n"
+            "  git config user.name 'Your Name'",
+            file=sys.stderr,
         )
-    workspace_user = normalize_workspace_username(workspace_seed)
+        workspace_user = DEFAULT_WORKSPACE_USERNAME
+    else:
+        workspace_user = normalize_workspace_username(workspace_seed)
     return {
         "explicit_username": explicit_username,
         "source_git_username": source_git_username,
         "workspace_user": workspace_user,
+        "using_fallback": workspace_seed is None,
     }
 
 
@@ -283,6 +299,7 @@ def ensure_workspace(skill_dir: Path, username: str | None = None) -> dict:
         "created": bool(created_dirs or created_files),
         "created_dirs": created_dirs,
         "created_files": created_files,
+        "using_fallback": identity.get("using_fallback", False),
         "paths": {
             key: str(value)
             for key, value in paths.items()
