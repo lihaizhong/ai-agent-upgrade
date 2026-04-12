@@ -8,12 +8,13 @@ from __future__ import annotations
 import json
 import random
 import re
+from difflib import SequenceMatcher
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
 from .state import LearningStateStore
-from .workspace import get_workspace_paths
+from .workspace import get_workspace_paths, normalize_workspace_username
 
 
 class ExamEngine:
@@ -256,6 +257,8 @@ class ExamEngine:
         question: str,
         answer: str,
         acceptable_variants: list[str] = None,
+        grading_mode: str = "term",
+        required_keywords: list[str] | None = None,
     ) -> dict:
         """生成填空题"""
         return {
@@ -265,6 +268,8 @@ class ExamEngine:
             "question": question,
             "answer": answer,
             "acceptable_variants": acceptable_variants or [],
+            "grading_mode": grading_mode,
+            "required_keywords": required_keywords or [],
             "score": 10,
         }
 
@@ -324,6 +329,18 @@ class ExamEngine:
             errors.append("question 不能为空")
         if not question.get("answer"):
             errors.append("answer 不能为空")
+        grading_mode = question.get("grading_mode", "term")
+        if grading_mode not in {"term", "range", "steps"}:
+            errors.append("grading_mode 必须为 term / range / steps")
+        required_keywords = question.get("required_keywords", [])
+        if grading_mode == "steps":
+            if not isinstance(required_keywords, list) or not required_keywords:
+                errors.append("steps 模式下 required_keywords 必须是非空列表")
+            elif any(
+                not isinstance(keyword, str) or not keyword.strip()
+                for keyword in required_keywords
+            ):
+                errors.append("required_keywords 必须只包含非空字符串")
 
         return {"valid": not errors, "errors": errors}
 
@@ -401,20 +418,125 @@ class ExamEngine:
 
     def grade_fill(self, question: dict, user_answer: str) -> tuple[float, int]:
         """评分填空题"""
-        answer = user_answer.strip().lower()
-        correct = question["answer"].lower()
-        variants = [v.lower() for v in question.get("acceptable_variants", [])]
+        grading_mode = self._resolve_fill_grading_mode(question)
+        if grading_mode == "range":
+            return self._grade_fill_range(question, user_answer)
+        if grading_mode == "steps":
+            return self._grade_fill_steps(question, user_answer)
+        return self._grade_fill_term(question, user_answer)
 
-        if answer == correct or answer in variants:
+    def _grade_fill_term(self, question: dict, user_answer: str) -> tuple[bool, int]:
+        answer = self._normalize_fill_text(user_answer)
+        correct = self._normalize_fill_text(question["answer"])
+        variants = [
+            self._normalize_fill_text(variant)
+            for variant in question.get("acceptable_variants", [])
+        ]
+        compact_answer = self._compact_fill_text(answer)
+        compact_correct = self._compact_fill_text(correct)
+        compact_variants = [self._compact_fill_text(variant) for variant in variants]
+
+        if (
+            answer == correct
+            or answer in variants
+            or compact_answer == compact_correct
+            or compact_answer in compact_variants
+        ):
             return True, question["score"]
 
-        similarity = self._calculate_similarity(answer, correct)
-        if similarity > 0.8:
-            return True, question["score"]
-        elif similarity > 0.5:
+        similarity = self._calculate_similarity(compact_answer, compact_correct)
+        if similarity > 0.5:
             return False, int(question["score"] * 0.5)
 
         return False, 0
+
+    def _grade_fill_range(self, question: dict, user_answer: str) -> tuple[bool, int]:
+        answer = self._normalize_fill_text(user_answer)
+        correct = self._normalize_fill_text(question["answer"])
+        variants = [
+            self._normalize_fill_text(variant)
+            for variant in question.get("acceptable_variants", [])
+        ]
+
+        if self._is_fill_exact_match(answer, correct, variants):
+            return True, question["score"]
+
+        if self._matches_range_answer(answer, correct) or any(
+            self._matches_range_answer(answer, variant) for variant in variants
+        ):
+            return True, question["score"]
+
+        if self._calculate_similarity(self._compact_fill_text(answer), self._compact_fill_text(correct)) > 0.5:
+            return False, int(question["score"] * 0.5)
+
+        return False, 0
+
+    def _grade_fill_steps(self, question: dict, user_answer: str) -> tuple[bool, int]:
+        answer = self._normalize_fill_text(user_answer)
+        correct = self._normalize_fill_text(question["answer"])
+        variants = [
+            self._normalize_fill_text(variant)
+            for variant in question.get("acceptable_variants", [])
+        ]
+
+        if self._is_fill_exact_match(answer, correct, variants):
+            return True, question["score"]
+
+        required_keywords = [
+            self._compact_fill_text(keyword)
+            for keyword in question.get("required_keywords", [])
+            if isinstance(keyword, str) and keyword.strip()
+        ]
+        if not required_keywords:
+            return self._grade_fill_term(question, user_answer)
+
+        compact_answer = self._compact_fill_text(answer)
+        matched_keywords = sum(
+            1 for keyword in required_keywords if keyword in compact_answer
+        )
+        if matched_keywords == len(required_keywords):
+            return True, question["score"]
+        if matched_keywords * 2 >= len(required_keywords):
+            return False, int(question["score"] * 0.5)
+
+        return False, 0
+
+    def _resolve_fill_grading_mode(self, question: dict) -> str:
+        explicit_mode = question.get("grading_mode")
+        if explicit_mode in {"term", "range", "steps"}:
+            return explicit_mode
+        if self._looks_like_range(self._normalize_fill_text(question.get("answer", ""))):
+            return "range"
+        return "term"
+
+    def _is_fill_exact_match(
+        self, answer: str, correct: str, variants: list[str]
+    ) -> bool:
+        compact_answer = self._compact_fill_text(answer)
+        compact_correct = self._compact_fill_text(correct)
+        compact_variants = [self._compact_fill_text(variant) for variant in variants]
+        return (
+            answer == correct
+            or answer in variants
+            or compact_answer == compact_correct
+            or compact_answer in compact_variants
+        )
+
+    def _normalize_fill_text(self, value: str) -> str:
+        return re.sub(r"\s+", " ", value.strip().lower())
+
+    def _compact_fill_text(self, value: str) -> str:
+        return re.sub(r"\s+", "", value)
+
+    def _looks_like_range(self, value: str) -> bool:
+        return re.fullmatch(r"\d+\s*[-~到]\s*\d+", value) is not None
+
+    def _matches_range_answer(self, answer: str, expected: str) -> bool:
+        if not self._looks_like_range(expected):
+            return False
+        expected_numbers = re.findall(r"\d+", expected)
+        answer_numbers = re.findall(r"\d+", answer)
+        return len(answer_numbers) >= 2 and answer_numbers[:2] == expected_numbers[:2]
 
     def grade_essay(
         self, question: dict, user_answer: str, rubric_scores: dict
@@ -439,24 +561,7 @@ class ExamEngine:
         if not s1 or not s2:
             return 0.0
 
-        range_match = re.fullmatch(r"(\d+)\s*[-~到]\s*(\d+)", s2)
-        if range_match:
-            user_numbers = [part for part in re.split(r"\D+", s1) if part]
-            if len(user_numbers) >= 2 and user_numbers[:2] == list(
-                range_match.groups()
-            ):
-                return 1.0
-
-        set1 = set(s1.split())
-        set2 = set(s2.split())
-
-        if not set1 or not set2:
-            return 0.0
-
-        intersection = set1 & set2
-        union = set1 | set2
-
-        return len(intersection) / len(union) if union else 0.0
+        return SequenceMatcher(None, s1, s2).ratio()
 
     def generate_report(
         self,
@@ -515,9 +620,10 @@ class ExamEngine:
 
         report += f"\n**大题得分**：{essay_scores}/45分\n"
 
+        safe_username = normalize_workspace_username(username)
         report_path = (
             self.exam_dir
-            / f"{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}-{username}-prompt-learning-exam.md"
+            / f"{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}-{safe_username}-prompt-learning-exam.md"
         )
         with open(report_path, "w", encoding="utf-8") as f:
             f.write(report)
@@ -956,7 +1062,7 @@ class ExamService:
             session["questions"],
             session["answers"],
             session["scores"],
-            self.username or "unknown",
+            self.username or self.workspace_paths["workspace_root"].name,
         )
         total_score = sum(session["scores"])
         weaknesses = self._summarize_weaknesses(session)
@@ -1015,10 +1121,15 @@ class ExamService:
             "report_path": report_path,
         }
         self._append_jsonl(self.exam_history_file, entry)
+        recommended_next_action = (
+            "review_weak_topics"
+            if weak_courses or weak_topics
+            else "open_dashboard"
+        )
         self.state_store.update_current_state(
             current_module="exam",
             last_action="exam_completed",
-            recommended_next_action="review_weak_topics",
+            recommended_next_action=recommended_next_action,
         )
         return {
             "interaction": {

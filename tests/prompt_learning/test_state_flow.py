@@ -91,6 +91,7 @@ class PromptLearningStateFlowTest(unittest.TestCase):
             json.loads(line)
             for line in mistakes_path.read_text(encoding="utf-8").splitlines()
             if line.strip()
+            if json.loads(line).get("course_id") == 4
         ]
 
         self.assertEqual(current_state["current_module"], "practice")
@@ -99,6 +100,89 @@ class PromptLearningStateFlowTest(unittest.TestCase):
         self.assertEqual(mastery["courses"]["4"]["practice_attempts"], 1)
         self.assertEqual(len(rows), 2)
         self.assertTrue(all(row["status"] == "open" for row in rows))
+
+        recommendation = run_cli("home", "--recommend")
+        self.assertEqual(recommendation["action"], "review_mistakes")
+
+    def test_mistake_review_reduces_mastery_mistake_count(self) -> None:
+        run_cli(
+            "practice",
+            "--record-result",
+            stdin_data={
+                "course_id": 5,
+                "course_name": "思维树",
+                "entry_type": "targeted",
+                "question_type": "diagnose",
+                "result": "weak",
+                "mistake_tags": ["sampling", "consistency"],
+                "feedback_summary": "第一次练习仍有两个关键错误。",
+            },
+        )
+
+        run_cli(
+            "practice",
+            "--record-result",
+            stdin_data={
+                "course_id": 5,
+                "course_name": "思维树",
+                "entry_type": "mistake",
+                "question_type": "diagnose",
+                "result": "good",
+                "resolved_mistake_tags": ["sampling", "consistency"],
+                "feedback_summary": "这次已经修正历史错误。",
+            },
+        )
+
+        mastery = read_json(TEST_WORKSPACE / "progress" / "mastery.json")
+        mistakes_path = TEST_WORKSPACE / "practice" / "mistakes.jsonl"
+        rows = [
+            json.loads(line)
+            for line in mistakes_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+            if json.loads(line).get("course_id") == 5
+        ]
+
+        self.assertEqual(mastery["courses"]["5"]["practice_attempts"], 2)
+        self.assertEqual(mastery["courses"]["5"]["mistake_count"], 0)
+        self.assertEqual(mastery["courses"]["5"]["level"], "good")
+        self.assertTrue(all(row["status"] == "resolved" for row in rows))
+
+    def test_partial_mistake_review_keeps_review_mistakes_recommendation(self) -> None:
+        run_cli(
+            "practice",
+            "--record-result",
+            stdin_data={
+                "course_id": 6,
+                "course_name": "生成知识提示",
+                "entry_type": "targeted",
+                "question_type": "diagnose",
+                "result": "weak",
+                "mistake_tags": ["context", "coverage"],
+                "feedback_summary": "存在两个未解决错误。",
+            },
+        )
+
+        run_cli(
+            "practice",
+            "--record-result",
+            stdin_data={
+                "course_id": 6,
+                "course_name": "生成知识提示",
+                "entry_type": "mistake",
+                "question_type": "diagnose",
+                "result": "good",
+                "resolved_mistake_tags": ["context"],
+                "feedback_summary": "这次只修正了其中一个历史错误。",
+            },
+        )
+
+        current_state = read_json(TEST_WORKSPACE / "progress" / "current-state.json")
+        mastery = read_json(TEST_WORKSPACE / "progress" / "mastery.json")
+        recommendation = run_cli("home", "--recommend")
+
+        self.assertEqual(mastery["courses"]["6"]["mistake_count"], 1)
+        self.assertEqual(current_state["recommended_next_action"], "review_mistakes")
+        self.assertEqual(recommendation["action"], "review_mistakes")
 
     def test_lab_and_exam_flows_update_state_and_history(self) -> None:
         run_cli(
@@ -115,6 +199,16 @@ class PromptLearningStateFlowTest(unittest.TestCase):
                     "quality_bar": "结构清晰",
                 },
                 "prompt": "请根据主题生成三层提纲",
+                "review": {
+                    "任务目标是否单一明确": "pass",
+                    "输入信息是否定义清楚": "pass",
+                    "输出格式是否可直接判定": "pass",
+                    "约束条件是否可执行": "pass",
+                    "是否明确了失败或边界处理方式": "pass",
+                    "是否避免了重复或冲突指令": "pass",
+                },
+                "revisions": [],
+                "confirmed": True,
             },
         )
 
@@ -150,6 +244,139 @@ class PromptLearningStateFlowTest(unittest.TestCase):
         self.assertEqual(current_state["recommended_next_action"], "review_weak_topics")
         self.assertEqual(rows[-1]["exam_type"], "final")
         self.assertEqual(rows[-1]["score"], 88)
+
+        recommendation = run_cli("home", "--recommend")
+        self.assertEqual(recommendation["action"], "review_weak_topics")
+
+    def test_exam_history_without_weaknesses_returns_to_dashboard(self) -> None:
+        run_cli(
+            "exam",
+            "--record-history",
+            stdin_data={
+                "exam_type": "final",
+                "score": 100,
+                "total_score": 100,
+                "weak_courses": [],
+                "weak_topics": [],
+                "report_path": "/tmp/prompt-learning-perfect-report.md",
+            },
+        )
+
+        current_state = read_json(TEST_WORKSPACE / "progress" / "current-state.json")
+        recommendation = run_cli("home", "--recommend")
+
+        self.assertEqual(current_state["current_module"], "exam")
+        self.assertEqual(current_state["last_action"], "exam_completed")
+        self.assertEqual(current_state["recommended_next_action"], "open_dashboard")
+        self.assertEqual(recommendation["action"], "continue_learning")
+        self.assertNotEqual(recommendation["action"], "open_dashboard")
+
+    def test_lab_save_template_requires_validation_and_confirmation(self) -> None:
+        result = run_cli(
+            "lab",
+            "--save-template",
+            stdin_data={
+                "name": "unsafe-template",
+                "topic": "writing",
+                "slots": {
+                    "task": "写提纲",
+                    "input": "文章主题",
+                    "output_format": "列表",
+                    "constraints": "分三层",
+                },
+                "prompt": "请生成提纲",
+                "review": {
+                    "任务目标是否单一明确": "pass",
+                    "输入信息是否定义清楚": "pass",
+                    "输出格式是否可直接判定": "pass",
+                    "约束条件是否可执行": "pass",
+                    "是否明确了失败或边界处理方式": "pass",
+                    "是否避免了重复或冲突指令": "pass",
+                },
+                "revisions": [],
+                "confirmed": False,
+            },
+        )
+
+        self.assertFalse(result["saved"])
+        self.assertTrue(result["errors"])
+
+    def test_lab_save_template_rejects_failed_review_items(self) -> None:
+        result = run_cli(
+            "lab",
+            "--save-template",
+            stdin_data={
+                "name": "failed-review-template",
+                "topic": "writing",
+                "slots": {
+                    "task": "写提纲",
+                    "input": "文章主题",
+                    "output_format": "列表",
+                    "constraints": "分三层",
+                    "quality_bar": "结构清晰",
+                },
+                "prompt": "请根据主题生成三层提纲",
+                "review": {
+                    "任务目标是否单一明确": "fail",
+                    "输入信息是否定义清楚": "pass",
+                    "输出格式是否可直接判定": "pass",
+                    "约束条件是否可执行": "pass",
+                    "是否明确了失败或边界处理方式": "pass",
+                    "是否避免了重复或冲突指令": "pass",
+                },
+                "revisions": ["补充任务边界，但尚未重新审查通过。"],
+                "confirmed": True,
+            },
+        )
+
+        self.assertFalse(result["saved"])
+        self.assertTrue(result["errors"])
+
+    def test_lab_rejects_blank_string_slots(self) -> None:
+        slot_validation = run_cli(
+            "lab",
+            "--validate-slots",
+            "--topic",
+            "writing",
+            stdin_data={
+                "task": "   ",
+                "input": "文章主题",
+                "output_format": "列表",
+                "constraints": "分三层",
+                "quality_bar": "结构清晰",
+            },
+        )
+        save_result = run_cli(
+            "lab",
+            "--save-template",
+            stdin_data={
+                "name": "blank-slot-template",
+                "topic": "writing",
+                "slots": {
+                    "task": "   ",
+                    "input": "文章主题",
+                    "output_format": "列表",
+                    "constraints": "分三层",
+                    "quality_bar": "结构清晰",
+                },
+                "prompt": "请根据主题生成三层提纲",
+                "review": {
+                    "任务目标是否单一明确": "pass",
+                    "输入信息是否定义清楚": "pass",
+                    "输出格式是否可直接判定": "pass",
+                    "约束条件是否可执行": "pass",
+                    "是否明确了失败或边界处理方式": "pass",
+                    "是否避免了重复或冲突指令": "pass",
+                },
+                "revisions": [],
+                "confirmed": True,
+            },
+        )
+
+        self.assertFalse(slot_validation["valid"])
+        self.assertIn("task", slot_validation["empty_slots"])
+        self.assertFalse(save_result["saved"])
+        self.assertTrue(save_result["errors"])
 
 
 if __name__ == "__main__":

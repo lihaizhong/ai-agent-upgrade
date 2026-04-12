@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -31,15 +32,26 @@ def resolve_git_username() -> str | None:
 DEFAULT_WORKSPACE_USERNAME = "defaults"
 
 
+def _sanitize_workspace_component(raw_name: str | None) -> str:
+    if not raw_name or not raw_name.strip():
+        return DEFAULT_WORKSPACE_USERNAME
+
+    candidate = raw_name.strip().replace(" ", "-")
+    candidate = re.sub(r"[^\w.-]", "-", candidate, flags=re.UNICODE)
+    candidate = re.sub(r"-{2,}", "-", candidate)
+    candidate = candidate.strip("._-")
+    if candidate in {"", ".", ".."}:
+        return DEFAULT_WORKSPACE_USERNAME
+    return candidate
+
+
 def normalize_workspace_username(raw_name: str | None) -> str:
     """将用户名规范化为 workspace 目录名。
 
     当无法从 raw_name 获取有效用户名时，返回默认值 "defaults"。
     该默认值对应的 workspace 会被加入 gitignore，不提交到仓库。
     """
-    if raw_name and raw_name.strip():
-        return raw_name.strip().replace(" ", "-")
-    return DEFAULT_WORKSPACE_USERNAME
+    return _sanitize_workspace_component(raw_name)
 
 
 def resolve_workspace_identity(username: str | None = None) -> dict[str, str | None]:
@@ -105,8 +117,16 @@ def get_workspace_root(skill_dir: Path) -> Path:
 
 def get_user_workspace(skill_dir: Path, username: str | None = None) -> Path:
     """返回当前用户的 workspace 目录。"""
+    workspace_root = get_workspace_root(skill_dir).resolve()
     workspace_user = resolve_workspace_identity(username)["workspace_user"]
-    return get_workspace_root(skill_dir) / workspace_user
+    candidate = (workspace_root / workspace_user).resolve()
+    try:
+        candidate.relative_to(workspace_root)
+    except ValueError as exc:
+        raise ValueError(
+            f"workspace path escapes root: user '{workspace_user}' resolved outside workspace root"
+        ) from exc
+    return candidate
 
 
 def get_workspace_paths(

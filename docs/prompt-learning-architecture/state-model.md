@@ -209,6 +209,8 @@
 - `last_action = practice_completed`
 - 根据结果决定 `recommended_next_action`
 
+推荐动作的优先级应先尊重持久化后的事实，再看本次结果标签。只要 `mastery.json` 中对应课程的 `mistake_count > 0`，就应优先写入 `review_mistakes`；只有在错题已清零时，`good` 结果才允许把推荐动作推进到 `continue_learning`。
+
 如果是当前课程课后练习，一般推荐：
 
 - `lesson_panel`
@@ -233,7 +235,8 @@
 
 - `current_module = exam`
 - `last_action = exam_completed`
-- `recommended_next_action = review_weak_topics`
+- 若存在真实薄弱项：`recommended_next_action = review_weak_topics`
+- 若不存在薄弱项：`recommended_next_action = open_dashboard`
 
 ### 保存模板后
 
@@ -257,6 +260,12 @@ Prompt Lab 完成并保存模板后更新：
 
 推荐本身不需要存大量说明，但应能由上层服务生成带理由的解释。
 
+其中 `open_dashboard` 是一个中性状态值，表示“当前流程已经结束，交还首页继续做兜底推荐”，而不是首页最终直接返回给用户的可执行动作。
+
+首页推荐应优先消费 `current-state.json` 中的 `recommended_next_action`。
+
+只有当该字段缺失、未知、等于中性值 `open_dashboard`，或与当前持久化事实不兼容时，首页才允许退回到基于课程进度、掌握度和历史摘要的兜底推断。
+
 ## 推荐优先级建议
 
 V1 先采用简单规则：
@@ -265,7 +274,7 @@ V1 先采用简单规则：
 2. 有进行中的课程 -> `continue_learning`
 3. 存在未解决错题 -> `review_mistakes`
 4. 最近完成多门课程但未考试 -> `take_exam`
-5. 默认 -> `open_dashboard`
+5. 当状态层只提供中性值 `open_dashboard` 时 -> 进入首页兜底逻辑，再输出当前策略下的可执行动作
 
 ## 状态与历史记录的关系
 

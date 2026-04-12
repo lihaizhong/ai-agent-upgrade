@@ -189,6 +189,10 @@ V1 建议统一成四类：
 - 更新 `mastery.json`
 - 更新 `current-state.json`
 
+当错题回练确认某个错误模式已被修正时，这个结果不仅要体现在 `mistakes.jsonl` 的 `resolved` 状态上，也要同步回流到 `mastery.json`，避免出现“错题已解决但掌握度仍长期停留在旧错误累计值”的矛盾。
+
+只要当前课程的 `mistake_count` 仍大于 0，显式推荐动作就应继续保持 `review_mistakes`。也就是说，即使本次回练结果标签已经是 `good`，只要还有未解决错题，就不应提前推荐用户离开回练路径。
+
 例如：
 
 - 练习结束且表现一般 -> 推荐 `review_mistakes`

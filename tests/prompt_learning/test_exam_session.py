@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib
 import json
 import os
 import shutil
@@ -7,7 +8,9 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
+import importlib.util
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -21,6 +24,18 @@ TEST_ENV = {
     "PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "1",
     "PROMPT_LEARNING_WORKSPACE_ROOT": str(WORKSPACE_ROOT),
 }
+
+spec = importlib.util.spec_from_file_location(
+    "prompt_learning_exam_workspace",
+    REPO_ROOT / "agent-skills" / "prompt-learning" / "scripts" / "workspace.py",
+)
+if spec is None or spec.loader is None:
+    raise ImportError("Cannot load prompt-learning workspace module")
+workspace_module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = workspace_module
+spec.loader.exec_module(workspace_module)
+sys.path.append(str(REPO_ROOT / "agent-skills" / "prompt-learning"))
+ExamEngine = importlib.import_module("scripts.exam").ExamEngine
 
 
 def run_cli(*args: str, stdin_data: dict | list | None = None) -> dict:
@@ -351,6 +366,66 @@ class PromptLearningExamSessionTest(unittest.TestCase):
         )
 
         self.assertIn("course_id 必须是整数", error.stderr)
+
+    def test_report_path_uses_safe_username_component(self) -> None:
+        skill_dir = REPO_ROOT / "agent-skills" / "prompt-learning"
+        safe_username = workspace_module.normalize_workspace_username("../unsafe user")
+        with mock.patch.dict(os.environ, TEST_ENV, clear=False):
+            report_engine = ExamEngine(skill_dir=skill_dir, username=TEST_USERNAME)
+            report_path = Path(
+                report_engine.generate_report([], [], [], "../unsafe user")
+            )
+
+        self.assertEqual(
+            report_path.parent.resolve(),
+            (TEST_WORKSPACE / "exam" / "reports").resolve(),
+        )
+        self.assertEqual(report_path.name.count("/"), 0)
+        self.assertIn(f"-{safe_username}-prompt-learning-exam.md", report_path.name)
+
+    def test_grade_fill_treats_whitespace_only_formatting_diff_as_nonzero(self) -> None:
+        skill_dir = REPO_ROOT / "agent-skills" / "prompt-learning"
+        with mock.patch.dict(os.environ, TEST_ENV, clear=False):
+            engine = ExamEngine(skill_dir=skill_dir, username=TEST_USERNAME)
+
+        question = {
+            "type": "fill",
+            "num": 6,
+            "difficulty": "中级",
+            "question": "请填写术语",
+            "course_id": 7,
+            "topic_tags": ["rag"],
+            "answer": "检索增强生成",
+            "acceptable_variants": [],
+            "score": 10,
+        }
+
+        is_correct, score = engine.grade_fill(question, "检索增强 生成")
+
+        self.assertGreater(score, 0)
+        self.assertIn(is_correct, {True, False})
+
+    def test_grade_fill_does_not_give_full_score_to_nearby_wrong_term(self) -> None:
+        skill_dir = REPO_ROOT / "agent-skills" / "prompt-learning"
+        with mock.patch.dict(os.environ, TEST_ENV, clear=False):
+            engine = ExamEngine(skill_dir=skill_dir, username=TEST_USERNAME)
+
+        question = {
+            "type": "fill",
+            "num": 6,
+            "difficulty": "中级",
+            "question": "请填写术语",
+            "course_id": 7,
+            "topic_tags": ["rag"],
+            "answer": "检索增强生成",
+            "acceptable_variants": [],
+            "score": 10,
+        }
+
+        is_correct, score = engine.grade_fill(question, "检索增强生存")
+
+        self.assertFalse(is_correct)
+        self.assertLess(score, question["score"])
 
     def test_finish_diagnostic_session_generates_report_and_history(self) -> None:
         started = run_cli("exam", "--start", "--type", "diagnostic")

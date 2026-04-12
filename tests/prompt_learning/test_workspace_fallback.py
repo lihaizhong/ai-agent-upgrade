@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import os
 import shutil
-import subprocess
 import sys
 import tempfile
 import unittest
@@ -43,6 +42,12 @@ class TestWorkspaceFallback(unittest.TestCase):
     def test_normalize_workspace_username_replaces_spaces(self) -> None:
         result = workspace_module.normalize_workspace_username("Test User")
         self.assertEqual(result, "Test-User")
+
+    def test_normalize_workspace_username_sanitizes_path_segments(self) -> None:
+        result = workspace_module.normalize_workspace_username("../Test/User")
+        self.assertNotIn("/", result)
+        self.assertNotEqual(result, "..")
+        self.assertNotEqual(result, ".")
 
     @mock.patch("subprocess.run")
     def test_resolve_workspace_identity_uses_fallback_when_no_git_username(

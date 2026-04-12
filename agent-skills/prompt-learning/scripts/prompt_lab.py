@@ -127,6 +127,14 @@ def build_interview_blueprint(topic: str | None = None) -> dict:
     }
 
 
+def _is_empty_slot_value(value: object) -> bool:
+    if value is None or value == [] or value == {}:
+        return True
+    if isinstance(value, str):
+        return not value.strip()
+    return False
+
+
 def validate_slots(payload: dict, required_slots: list[str]) -> dict:
     missing = []
     empty = []
@@ -136,7 +144,7 @@ def validate_slots(payload: dict, required_slots: list[str]) -> dict:
             missing.append(slot)
             continue
         value = payload.get(slot)
-        if value is None or value == "" or value == [] or value == {}:
+        if _is_empty_slot_value(value):
             empty.append(slot)
 
     return {
@@ -177,6 +185,8 @@ def validate_draft(payload: dict, checklist: list[str]) -> dict:
         errors.append("存在未通过项时，revisions 必须为列表")
     elif failed_items and not revisions:
         errors.append("存在未通过项时，必须提供 revisions")
+    if failed_items:
+        errors.append("review 存在未通过项: " + ", ".join(failed_items))
 
     return {
         "interaction": {
@@ -224,6 +234,9 @@ class PromptLabService:
         topic = payload.get("topic")
         slots = payload.get("slots")
         prompt = payload.get("prompt")
+        review = payload.get("review")
+        revisions = payload.get("revisions", [])
+        confirmed = payload.get("confirmed") is True
 
         errors = []
         if not isinstance(name, str) or not name.strip():
@@ -232,6 +245,30 @@ class PromptLabService:
             errors.append("prompt 必须是非空字符串")
         if not isinstance(slots, dict) or not slots:
             errors.append("slots 必须是非空对象")
+        else:
+            slot_validation = validate_slots(slots, build_workflow(topic)["required_slots"])
+            if not slot_validation["valid"]:
+                if slot_validation["missing_slots"]:
+                    errors.append(
+                        "slots 缺少必填项: " + ", ".join(slot_validation["missing_slots"])
+                    )
+                if slot_validation["empty_slots"]:
+                    errors.append(
+                        "slots 存在空值项: " + ", ".join(slot_validation["empty_slots"])
+                    )
+
+        draft_validation = validate_draft(
+            {
+                "prompt": prompt,
+                "review": review,
+                "revisions": revisions,
+            },
+            build_review_checklist(topic)["checklist"],
+        )
+        if not draft_validation["valid"]:
+            errors.extend(draft_validation["errors"])
+        if not confirmed:
+            errors.append("confirmed 必须为 true")
         if errors:
             return {
                 "interaction": {

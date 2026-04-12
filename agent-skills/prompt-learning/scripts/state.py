@@ -198,7 +198,7 @@ class LearningStateStore:
         *,
         course_id: int,
         result: str,
-        mistake_count: int = 0,
+        mistake_delta: int = 0,
     ) -> dict:
         mastery = self.get_mastery()
         course_key = str(course_id)
@@ -212,7 +212,10 @@ class LearningStateStore:
             },
         )
         course_entry["practice_attempts"] += 1
-        course_entry["mistake_count"] += max(mistake_count, 0)
+        course_entry["mistake_count"] = max(
+            0,
+            int(course_entry.get("mistake_count", 0)) + mistake_delta,
+        )
         course_entry["last_practiced_at"] = _timestamp()
         course_entry["level"] = derive_mastery_level(
             course_entry["practice_attempts"],
@@ -222,10 +225,10 @@ class LearningStateStore:
         save_json(self.mastery_file, mastery)
 
         recommended_next_action = "start_practice"
-        if result == "good":
-            recommended_next_action = "continue_learning"
-        elif mistake_count > 0 or result == "weak":
+        if course_entry["mistake_count"] > 0 or result == "weak":
             recommended_next_action = "review_mistakes"
+        elif result == "good":
+            recommended_next_action = "continue_learning"
 
         self.update_current_state(
             current_module="practice",

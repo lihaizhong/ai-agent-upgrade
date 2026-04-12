@@ -107,13 +107,9 @@ class HomeService:
             "prompt_hint": "根据返回的推荐信息，用自然语言向用户建议下一步。",
         }
 
-        if current_action == "start_practice":
-            return {
-                "interaction": _rec_interaction,
-                "action": "start_practice",
-                "label": "开始练习",
-                "reason": "当前课程已讲完，先做一道动态练习更合适。",
-            }
+        explicit_action = self._recommendation_from_state(current_action, _rec_interaction)
+        if explicit_action is not None:
+            return explicit_action
 
         if course_progress.get("in_progress_course"):
             return {
@@ -148,6 +144,72 @@ class HomeService:
             "action": "continue_learning",
             "label": "继续学习",
             "reason": "当前最合理的下一步是继续进入课程学习。",
+        }
+
+    def _recommendation_from_state(
+        self, action: str | None, interaction: dict
+    ) -> dict | None:
+        if action in {None, "open_dashboard"}:
+            return None
+
+        recommendation_map = {
+            "start_practice": {
+                "action": "start_practice",
+                "label": "开始练习",
+                "reason": "当前课程已讲完，先做一道动态练习更合适。",
+            },
+            "continue_learning": {
+                "action": "continue_learning",
+                "label": "继续学习",
+                "reason": "当前已有明确课程上下文，优先保持学习连续性。",
+            },
+            "review_mistakes": {
+                "action": "review_mistakes",
+                "label": "回看错题",
+                "reason": "最近练习暴露了未解决错题，优先回练更有效。",
+            },
+            "review_weak_topics": {
+                "action": "review_weak_topics",
+                "label": "回看薄弱点",
+                "reason": "最近一次考试已经识别出薄弱主题，建议先补弱再继续推进。",
+            },
+            "continue_exam": {
+                "action": "continue_exam",
+                "label": "继续考试",
+                "reason": "当前存在未完成考试，应优先回到考试会话。",
+            },
+            "finish_exam": {
+                "action": "finish_exam",
+                "label": "完成考试",
+                "reason": "考试题目已全部提交，下一步应生成正式结果。",
+            },
+            "answer_question": {
+                "action": "continue_exam",
+                "label": "继续考试",
+                "reason": "当前考试正在进行中，应继续回答下一题。",
+            },
+            "take_exam": {
+                "action": "take_exam",
+                "label": "参加考试",
+                "reason": "当前状态已满足进入考试的条件。",
+            },
+            "open_lab": {
+                "action": "open_lab",
+                "label": "进入 Prompt Lab",
+                "reason": "当前更适合进入 Prompt Lab 做实战任务。",
+            },
+            "exam_entry": {
+                "action": "take_exam",
+                "label": "参加考试",
+                "reason": "当前考试会话已放弃，可重新进入考试中心。",
+            },
+        }
+        payload = recommendation_map.get(action)
+        if payload is None:
+            return None
+        return {
+            "interaction": interaction,
+            **payload,
         }
 
     def get_dashboard(self) -> dict:

@@ -143,25 +143,34 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
 
         self.assertIn("workspace identity mismatch", error.stderr)
 
-    def test_rejects_missing_identity_instead_of_falling_back_to_default_workspace(self) -> None:
+    def test_bootstrap_uses_defaults_workspace_when_identity_missing(self) -> None:
         with tempfile.TemporaryDirectory() as home_dir:
             with tempfile.TemporaryDirectory() as xdg_dir:
-                with unittest.TestCase().assertRaises(subprocess.CalledProcessError) as ctx:
-                    subprocess.run(
-                        [sys.executable, str(SCRIPT_PATH), "workspace", "--bootstrap"],
-                        check=True,
-                        capture_output=True,
-                        text=True,
-                        cwd=REPO_ROOT,
-                        env={
-                            **os.environ,
-                            "PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "0",
-                            "GIT_CONFIG_NOSYSTEM": "1",
-                            "HOME": home_dir,
-                            "XDG_CONFIG_HOME": xdg_dir,
-                        },
-                    )
-        self.assertIn("workspace identity unavailable", ctx.exception.stderr)
+                fallback_root = Path(
+                    tempfile.mkdtemp(prefix="prompt-learning-defaults-workspace-")
+                )
+                self.addCleanup(lambda: shutil.rmtree(fallback_root, ignore_errors=True))
+                result = subprocess.run(
+                    [sys.executable, str(SCRIPT_PATH), "workspace", "--bootstrap"],
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                    cwd=REPO_ROOT,
+                    env={
+                        **os.environ,
+                        "PROMPT_LEARNING_ALLOW_USERNAME_OVERRIDE": "0",
+                        "PROMPT_LEARNING_WORKSPACE_ROOT": str(fallback_root),
+                        "GIT_CONFIG_NOSYSTEM": "1",
+                        "HOME": home_dir,
+                        "XDG_CONFIG_HOME": xdg_dir,
+                    },
+                )
+
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["workspace_user"], "defaults")
+        self.assertTrue(payload["using_fallback"])
+        self.assertIn("Using fallback workspace 'defaults'", result.stderr)
+        self.assertTrue((fallback_root / "defaults" / "profile" / "learner.json").exists())
 
     def test_home_dashboard_and_learning_catalog(self) -> None:
         dashboard = run_cli("home", "--dashboard")
@@ -176,6 +185,12 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
         recommend = run_cli("learning", "--recommend-course")
         self.assertEqual(recommend["course_id"], 1)
         self.assertEqual(recommend["course_name"], "零样本提示")
+
+    def test_home_recommendation_uses_fallback_logic_for_fresh_workspace(self) -> None:
+        recommendation = run_cli("home", "--recommend")
+
+        self.assertEqual(recommendation["action"], "continue_learning")
+        self.assertNotEqual(recommendation["action"], "open_dashboard")
 
     def test_new_user_bootstrap_does_not_fallback_to_existing_workspace(self) -> None:
         if OTHER_WORKSPACE.exists():
@@ -344,6 +359,16 @@ class PromptLearningPlatformSmokeTest(unittest.TestCase):
                 "prompt": "请把会议纪要总结成 JSON",
                 "notes": "smoke-test",
                 "tags": ["summary"],
+                "review": {
+                    "任务目标是否单一明确": "pass",
+                    "输入信息是否定义清楚": "pass",
+                    "输出格式是否可直接判定": "pass",
+                    "约束条件是否可执行": "pass",
+                    "是否明确了失败或边界处理方式": "pass",
+                    "是否避免了重复或冲突指令": "pass",
+                },
+                "revisions": [],
+                "confirmed": True,
             },
         )
         self.assertTrue(saved_template["saved"])

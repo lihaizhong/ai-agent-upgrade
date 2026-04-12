@@ -339,7 +339,7 @@ class PracticeService:
         mastery = self.state_store.record_practice_outcome(
             course_id=course_id,
             result=result,
-            mistake_count=len(mistake_tags),
+            mistake_delta=written_mistakes - resolved_mistakes,
         )
 
         return {
