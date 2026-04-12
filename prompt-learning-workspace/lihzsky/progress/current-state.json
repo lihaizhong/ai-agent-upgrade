@@ -1,8 +1,8 @@
 {
-  "current_module": "exam",
+  "current_module": "practice",
   "current_course_id": 1,
   "current_course_name": "零样本提示",
-  "last_action": "exam_completed",
-  "recommended_next_action": "review_weak_topics",
-  "updated_at": "2026-04-12T12:33:26.996270+08:00"
+  "last_action": "practice_completed",
+  "recommended_next_action": "continue_learning",
+  "updated_at": "2026-04-13T01:03:24.029670+08:00"
 }

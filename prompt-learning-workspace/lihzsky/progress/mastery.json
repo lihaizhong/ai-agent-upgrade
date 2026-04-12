@@ -5,7 +5,13 @@
       "practice_attempts": 2,
       "mistake_count": 1,
       "last_practiced_at": "2026-04-08T18:42:21.144906+08:00"
+    },
+    "2": {
+      "level": "developing",
+      "practice_attempts": 1,
+      "mistake_count": 0,
+      "last_practiced_at": "2026-04-13T01:03:24.029286+08:00"
     }
   },
-  "updated_at": "2026-04-08T18:42:21.145174+08:00"
+  "updated_at": "2026-04-13T01:03:24.029291+08:00"
 }

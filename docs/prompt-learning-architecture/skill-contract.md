@@ -54,6 +54,24 @@ agent 默认承担三种角色：
 - 推荐逻辑
 - 持久化路径
 
+### 选择器优先
+
+- 当脚本已经返回 `question` 或等价的结构化选项时，优先使用当前 AI 执行器的原生选择器承载这些选项
+- `question.options` 中的 `label`、`description`、`value` 视为交互事实来源，不要随意改写成临时菜单文案
+- 只有当前执行器明确不支持结构化选择时，才允许退化为纯文本编号菜单
+- 退化时也要保持脚本定义的选项语义，不要新增脚本之外的临时分支
+
+### 交互模式契约
+
+当脚本输出包含 `interaction` 字段时，交互模式由脚本声明，而不是由 agent 自行猜测。
+
+- `interaction.mode == "selector"`：必须使用当前 AI 执行器的原生选择器工具渲染；`question.question`、`question.header`、`question.options`、`question.multiple` 分别映射到对应工具参数，且 `options` 不得改写成纯文本编号列表
+- `interaction.mode == "open_ended"`：由 agent 自主决定如何追问、确认或讨论；如有 `prompt_hint`，可参考但不必照搬
+- `interaction.mode == "inform"`：只展示信息，不额外设计互动
+- 脚本若缺少 `interaction` 字段，应视为脚本缺陷而不是设计选择；agent 需要显式声明当前交互方式是自主判断
+
+当 `interaction.mode == "selector"` 但当前执行器不支持结构化选择时，允许退化为纯文本编号列表，但必须显式声明当前为退化路径，并保持原有 `label`、`description`、`value` 语义不变。
+
 ### 教学优先
 
 - 课程内容必须转化为讲解
@@ -171,10 +189,13 @@ agent 默认承担三种角色：
 - 用户可随时打断并切换模块
 - 反馈可以直接，但不能羞辱
 - 推荐必须有明确依据，不伪造理由
+- 首页、选课、课后面板、练习入口、考试入口等选择类交互默认遵循 `selector-first`
+- Prompt Lab 的槽位澄清默认保持开放式追问，不强行改成选择器
 
 ## 禁止事项
 
 - 绕过脚本自创结构化流程
+- 在已有结构化选择 payload 时擅自改写为临时文本菜单
 - 私自修改考试结构或分值
 - 把练习题做成固定题库
 - 整段粘贴课程原文给用户
