@@ -425,38 +425,49 @@ class ExamEngine:
             return self._grade_fill_steps(question, user_answer)
         return self._grade_fill_term(question, user_answer)
 
-    def _grade_fill_term(self, question: dict, user_answer: str) -> tuple[bool, int]:
+    def _prepare_fill_match_data(
+        self, question: dict, user_answer: str
+    ) -> tuple[str, str, list[str]]:
         answer = self._normalize_fill_text(user_answer)
         correct = self._normalize_fill_text(question["answer"])
         variants = [
             self._normalize_fill_text(variant)
             for variant in question.get("acceptable_variants", [])
         ]
-        compact_answer = self._compact_fill_text(answer)
-        compact_correct = self._compact_fill_text(correct)
-        compact_variants = [self._compact_fill_text(variant) for variant in variants]
+        return answer, correct, variants
 
-        if (
-            answer == correct
-            or answer in variants
-            or compact_answer == compact_correct
-            or compact_answer in compact_variants
-        ):
+    def _partial_fill_score(self, question: dict) -> int:
+        return int(question["score"] * 0.5)
+
+    def _has_partial_fill_similarity(self, answer: str, correct: str) -> bool:
+        return (
+            self._calculate_similarity(
+                self._compact_fill_text(answer),
+                self._compact_fill_text(correct),
+            )
+            > 0.5
+        )
+
+    def _get_required_fill_keywords(self, question: dict) -> list[str]:
+        return [
+            self._compact_fill_text(keyword)
+            for keyword in question.get("required_keywords", [])
+            if isinstance(keyword, str) and keyword.strip()
+        ]
+
+    def _grade_fill_term(self, question: dict, user_answer: str) -> tuple[bool, int]:
+        answer, correct, variants = self._prepare_fill_match_data(question, user_answer)
+
+        if self._is_fill_exact_match(answer, correct, variants):
             return True, question["score"]
 
-        similarity = self._calculate_similarity(compact_answer, compact_correct)
-        if similarity > 0.5:
-            return False, int(question["score"] * 0.5)
+        if self._has_partial_fill_similarity(answer, correct):
+            return False, self._partial_fill_score(question)
 
         return False, 0
 
     def _grade_fill_range(self, question: dict, user_answer: str) -> tuple[bool, int]:
-        answer = self._normalize_fill_text(user_answer)
-        correct = self._normalize_fill_text(question["answer"])
-        variants = [
-            self._normalize_fill_text(variant)
-            for variant in question.get("acceptable_variants", [])
-        ]
+        answer, correct, variants = self._prepare_fill_match_data(question, user_answer)
 
         if self._is_fill_exact_match(answer, correct, variants):
             return True, question["score"]
@@ -466,27 +477,18 @@ class ExamEngine:
         ):
             return True, question["score"]
 
-        if self._calculate_similarity(self._compact_fill_text(answer), self._compact_fill_text(correct)) > 0.5:
-            return False, int(question["score"] * 0.5)
+        if self._has_partial_fill_similarity(answer, correct):
+            return False, self._partial_fill_score(question)
 
         return False, 0
 
     def _grade_fill_steps(self, question: dict, user_answer: str) -> tuple[bool, int]:
-        answer = self._normalize_fill_text(user_answer)
-        correct = self._normalize_fill_text(question["answer"])
-        variants = [
-            self._normalize_fill_text(variant)
-            for variant in question.get("acceptable_variants", [])
-        ]
+        answer, correct, variants = self._prepare_fill_match_data(question, user_answer)
 
         if self._is_fill_exact_match(answer, correct, variants):
             return True, question["score"]
 
-        required_keywords = [
-            self._compact_fill_text(keyword)
-            for keyword in question.get("required_keywords", [])
-            if isinstance(keyword, str) and keyword.strip()
-        ]
+        required_keywords = self._get_required_fill_keywords(question)
         if not required_keywords:
             return self._grade_fill_term(question, user_answer)
 
@@ -497,7 +499,7 @@ class ExamEngine:
         if matched_keywords == len(required_keywords):
             return True, question["score"]
         if matched_keywords * 2 >= len(required_keywords):
-            return False, int(question["score"] * 0.5)
+            return False, self._partial_fill_score(question)
 
         return False, 0
 

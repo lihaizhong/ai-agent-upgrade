@@ -73,6 +73,14 @@ def derive_mastery_level(practice_attempts: int, mistake_count: int) -> str:
     return "developing"
 
 
+def derive_practice_recommendation(result: str, mistake_count: int) -> str:
+    if mistake_count > 0 or result == "weak":
+        return "review_mistakes"
+    if result == "good":
+        return "continue_learning"
+    return "start_practice"
+
+
 class LearningStateStore:
     """平台态与长期进度态存储。"""
 
@@ -224,16 +232,13 @@ class LearningStateStore:
         mastery["updated_at"] = _timestamp()
         save_json(self.mastery_file, mastery)
 
-        recommended_next_action = "start_practice"
-        if course_entry["mistake_count"] > 0 or result == "weak":
-            recommended_next_action = "review_mistakes"
-        elif result == "good":
-            recommended_next_action = "continue_learning"
-
         self.update_current_state(
             current_module="practice",
             last_action="practice_completed",
-            recommended_next_action=recommended_next_action,
+            recommended_next_action=derive_practice_recommendation(
+                result,
+                course_entry["mistake_count"],
+            ),
         )
         return mastery
 

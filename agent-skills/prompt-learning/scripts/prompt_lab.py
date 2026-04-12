@@ -135,6 +135,17 @@ def _is_empty_slot_value(value: object) -> bool:
     return False
 
 
+def _format_slot_validation_errors(slot_validation: dict) -> list[str]:
+    errors = []
+    if slot_validation["missing_slots"]:
+        errors.append(
+            "slots 缺少必填项: " + ", ".join(slot_validation["missing_slots"])
+        )
+    if slot_validation["empty_slots"]:
+        errors.append("slots 存在空值项: " + ", ".join(slot_validation["empty_slots"]))
+    return errors
+
+
 def validate_slots(payload: dict, required_slots: list[str]) -> dict:
     missing = []
     empty = []
@@ -237,6 +248,9 @@ class PromptLabService:
         review = payload.get("review")
         revisions = payload.get("revisions", [])
         confirmed = payload.get("confirmed") is True
+        required_slots = build_workflow(topic)["required_slots"]
+        checklist = build_review_checklist(topic)["checklist"]
+        clean_name = name.strip() if isinstance(name, str) else None
 
         errors = []
         if not isinstance(name, str) or not name.strip():
@@ -246,16 +260,9 @@ class PromptLabService:
         if not isinstance(slots, dict) or not slots:
             errors.append("slots 必须是非空对象")
         else:
-            slot_validation = validate_slots(slots, build_workflow(topic)["required_slots"])
+            slot_validation = validate_slots(slots, required_slots)
             if not slot_validation["valid"]:
-                if slot_validation["missing_slots"]:
-                    errors.append(
-                        "slots 缺少必填项: " + ", ".join(slot_validation["missing_slots"])
-                    )
-                if slot_validation["empty_slots"]:
-                    errors.append(
-                        "slots 存在空值项: " + ", ".join(slot_validation["empty_slots"])
-                    )
+                errors.extend(_format_slot_validation_errors(slot_validation))
 
         draft_validation = validate_draft(
             {
@@ -263,7 +270,7 @@ class PromptLabService:
                 "review": review,
                 "revisions": revisions,
             },
-            build_review_checklist(topic)["checklist"],
+            checklist,
         )
         if not draft_validation["valid"]:
             errors.extend(draft_validation["errors"])
@@ -285,7 +292,7 @@ class PromptLabService:
         now = _timestamp()
         template_payload = {
             "id": template_id,
-            "name": name.strip(),
+            "name": clean_name,
             "topic": topic,
             "slots": slots,
             "prompt": prompt,
@@ -301,7 +308,7 @@ class PromptLabService:
         template_index.setdefault("templates", []).append(
             {
                 "id": template_id,
-                "name": name.strip(),
+                "name": clean_name,
                 "topic": topic,
                 "created_at": now,
                 "updated_at": now,
