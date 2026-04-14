@@ -91,6 +91,12 @@
 
 自定义 skill 统一维护在根目录 `agent-skills/`，并通过软链接暴露到 `.opencode/skills` 与 `.codex/skills`。
 
+目前包含：
+
+- `prompt-learning`：提示词学习平台
+- `rag-learning`：RAG 学习平台
+- `labor-rights-defense`：劳动维权助手（互联网白领，MVP：违法辞退、加班费/欠薪；生成行动清单与仲裁申请书草稿；仅引用官方原文）
+
 ## Learning Products 开发说明
 
 `prompt-learning` 和 `rag-learning` 都已经切到平台型结构。测试目录也按产品拆分：

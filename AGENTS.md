@@ -102,6 +102,7 @@ ai-agent-upgrade/
 ├── practice/                   # Hands-on projects and experiments
 ├── prompt-learning-workspace/  # Persistent workspace data for the prompt-learning skill
 ├── rag-learning-workspace/     # Persistent workspace data for the rag-learning skill
+├── labor-rights-defense-workspace/  # Persistent workspace data for the labor-rights-defense skill
 ├── specs/                      # Spec changes, plans, and tasks
 ├── tests/                      # Product-level test suites
 ├── main.py                     # Project entry script

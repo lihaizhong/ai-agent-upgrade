@@ -1,0 +1,12 @@
+{
+  "version": 0,
+  "notes": "procedure_sources seeds for “省必填、市可选”。Crawling rule: only traverse hyperlinks starting from these seeds, only allow *.gov.cn, no search expansion.",
+  "seeds": [
+    {
+      "province": "浙江省",
+      "province_seeds": [],
+      "city_seeds": []
+    }
+  ]
+}
+

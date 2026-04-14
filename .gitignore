@@ -221,3 +221,6 @@ test_output/
 
 # Prompt Learning fallback workspace (shared, no git user.name configured)
 prompt-learning-workspace/defaults/
+
+# Labor rights defense workspace (may contain sensitive personal info)
+labor-rights-defense-workspace/
