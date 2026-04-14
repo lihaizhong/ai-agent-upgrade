@@ -1,8 +1,8 @@
 {
-  "current_module": "practice",
+  "current_module": "lab",
   "current_course_id": 1,
   "current_course_name": "零样本提示",
-  "last_action": "practice_completed",
-  "recommended_next_action": "continue_learning",
-  "updated_at": "2026-04-13T01:03:24.029670+08:00"
+  "last_action": "template_saved",
+  "recommended_next_action": "open_dashboard",
+  "updated_at": "2026-04-14T18:53:52.137972+08:00"
 }

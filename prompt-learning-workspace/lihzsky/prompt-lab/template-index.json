@@ -1,4 +1,18 @@
 {
-  "templates": [],
-  "updated_at": "2026-04-08T17:34:27.166776+08:00"
+  "templates": [
+    {
+      "id": "tpl-20260414-001",
+      "name": "PM 全流程提示词（含 /discover /strategy /write-prd 等）",
+      "topic": "产品经理提示词模板",
+      "created_at": "2026-04-14T18:53:52.136649+08:00",
+      "updated_at": "2026-04-14T18:53:52.136649+08:00",
+      "path": "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/prompt-learning-workspace/lihzsky/prompt-lab/templates/tpl-20260414-001.json",
+      "tags": [
+        "pm",
+        "prompt",
+        "template"
+      ]
+    }
+  ],
+  "updated_at": "2026-04-14T18:53:52.137196+08:00"
 }
