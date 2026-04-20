@@ -162,8 +162,15 @@ metadata:
 用户名规则：
 
 1. 优先读取 `git config user.name`
-2. 将空格替换为 `-`
-3. 若无法获取，则使用 `default-zoom`
+2. 若调用方显式传入 `--username`，优先使用显式值
+3. 将空格替换为 `-`，并把不安全字符净化为稳定目录名
+4. 若无法获取有效用户名，则使用 `default-zoom`
+
+workspace 是用户级隔离边界：
+
+- 新用户首次进入时创建自己的 workspace
+- 不允许扫描现有目录后“猜一个可用 workspace”
+- 若 `learner.json.workspace_user` 与当前解析出的用户不一致，脚本必须显式报错
 
 ### 允许持久化
 
@@ -189,6 +196,22 @@ metadata:
 - 用户可以随时打断并切换模块
 - 当已有脚本定义结构化选择时，优先使用结构化交互
 - 回答可以直接，但不能虚构实验结果或推荐依据
+
+### Selector-First 协议
+
+当脚本输出包含 `interaction` 字段时，必须遵循以下规则：
+
+1. 如果 `interaction.mode == "selector"`：
+   - 优先使用当前执行器的原生结构化选择能力
+   - 顶层 `question` 是结构化选择的唯一数据源
+   - 不要把已有 `question.options` 改写成纯文本编号菜单
+2. 如果 `interaction.mode == "open_ended"`：
+   - 用自然语言推进，不强行改成选择器
+   - 如返回了 `prompt_hint`，将其视为交互引导，而不是必须逐字照搬的文案
+3. 如果 `interaction.mode == "inform"`：
+   - 只组织信息，不设计额外互动
+
+只有在当前执行器明确不支持结构化选择时，才允许把 `selector` 退化为文本列表。
 
 ## 禁止事项
 

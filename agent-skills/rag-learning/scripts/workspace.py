@@ -6,9 +6,13 @@ RAG Learning workspace 管理。
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from datetime import datetime
 from pathlib import Path
+
+
+DEFAULT_WORKSPACE_USERNAME = "default-zoom"
 
 
 def resolve_git_username() -> str | None:
@@ -29,14 +33,42 @@ def resolve_git_username() -> str | None:
 
 def normalize_workspace_username(raw_name: str | None) -> str:
     """将用户名规范化为 workspace 目录名。"""
-    if raw_name and raw_name.strip():
-        return raw_name.strip().replace(" ", "-")
-    return "default-zoom"
+    if not raw_name or not raw_name.strip():
+        return DEFAULT_WORKSPACE_USERNAME
+
+    candidate = raw_name.strip().replace(" ", "-")
+    candidate = re.sub(r"[^\w.-]", "-", candidate, flags=re.UNICODE)
+    candidate = re.sub(r"-{2,}", "-", candidate)
+    candidate = candidate.strip("._-")
+    if candidate in {"", ".", ".."}:
+        return DEFAULT_WORKSPACE_USERNAME
+    return candidate
+
+
+def resolve_workspace_identity(username: str | None = None) -> dict[str, str | bool | None]:
+    """解析当前用户对应的 workspace 身份。"""
+    explicit_username = username.strip() if username and username.strip() else None
+    source_git_username = resolve_git_username()
+    workspace_seed = (
+        explicit_username if explicit_username is not None else source_git_username
+    )
+    workspace_user = normalize_workspace_username(workspace_seed)
+    return {
+        "explicit_username": explicit_username,
+        "source_git_username": source_git_username,
+        "workspace_user": workspace_user,
+        "using_fallback": workspace_seed is None,
+    }
 
 
 def get_repo_root(skill_dir: Path) -> Path:
     """返回仓库根目录。"""
-    return skill_dir.resolve().parent.parent
+    candidates = [skill_dir.resolve(), Path(__file__).resolve()]
+    for candidate in candidates:
+        for parent in [candidate, *candidate.parents]:
+            if (parent / "AGENTS.md").exists() and (parent / "agent-skills").exists():
+                return parent
+    raise ValueError(f"Cannot resolve repo root from skill directory: {skill_dir}")
 
 
 def get_workspace_root(skill_dir: Path) -> Path:
@@ -46,9 +78,18 @@ def get_workspace_root(skill_dir: Path) -> Path:
 
 def get_user_workspace(skill_dir: Path, username: str | None = None) -> Path:
     """返回当前用户的 workspace 目录。"""
-    raw_username = username if username is not None else resolve_git_username()
-    workspace_user = normalize_workspace_username(raw_username)
-    return get_workspace_root(skill_dir) / workspace_user
+    workspace_root = get_workspace_root(skill_dir).resolve()
+    workspace_user = resolve_workspace_identity(username)["workspace_user"]
+    if not isinstance(workspace_user, str):
+        raise ValueError("workspace identity did not resolve to a valid user")
+    candidate = (workspace_root / workspace_user).resolve()
+    try:
+        candidate.relative_to(workspace_root)
+    except ValueError as exc:
+        raise ValueError(
+            f"workspace path escapes root: user '{workspace_user}' resolved outside workspace root"
+        ) from exc
+    return candidate
 
 
 def get_workspace_paths(skill_dir: Path, username: str | None = None) -> dict[str, Path]:
@@ -85,6 +126,7 @@ def _timestamp() -> str:
 def _write_json_if_missing(path: Path, payload: dict) -> bool:
     if path.exists():
         return False
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return True
 
@@ -92,8 +134,30 @@ def _write_json_if_missing(path: Path, payload: dict) -> bool:
 def _touch_if_missing(path: Path) -> bool:
     if path.exists():
         return False
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.touch()
     return True
+
+
+def _read_json(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _workspace_has_state(paths: dict[str, Path]) -> bool:
+    state_paths = [
+        paths["profile_dir"],
+        paths["progress_dir"],
+        paths["lab_dir"],
+        paths["review_dir"],
+    ]
+    for path in state_paths:
+        if not path.exists():
+            continue
+        if path.is_file():
+            return True
+        if any(path.iterdir()):
+            return True
+    return False
 
 
 def _default_learner(source_git_username: str | None, workspace_user: str) -> dict:
@@ -108,10 +172,8 @@ def _default_learner(source_git_username: str | None, workspace_user: str) -> di
 
 def _default_preferences() -> dict:
     return {
-        "language": "zh-CN",
-        "preferred_runtime": "python",
-        "preferred_stack": "langchain",
-        "deployment_preference": "hybrid",
+        "stable_preferences": {},
+        "evidence_summary": {"lab": 0, "review": 0},
         "updated_at": _timestamp(),
     }
 
@@ -163,9 +225,32 @@ def _default_competency() -> dict:
 
 def ensure_workspace(skill_dir: Path, username: str | None = None) -> dict:
     """初始化 workspace 目录和最小文件集。"""
-    source_git_username = username if username is not None else resolve_git_username()
-    workspace_user = normalize_workspace_username(source_git_username)
+    identity = resolve_workspace_identity(username)
+    source_git_username = identity["source_git_username"]
+    workspace_user = identity["workspace_user"]
+    if not isinstance(workspace_user, str):
+        raise ValueError("workspace identity did not resolve to a valid user")
     paths = get_workspace_paths(skill_dir, username=username)
+
+    learner_file = paths["learner_file"]
+    if not learner_file.exists() and _workspace_has_state(paths):
+        raise ValueError(
+            "workspace metadata missing: "
+            f"target workspace '{workspace_user}' already has state files but no learner.json"
+        )
+    if learner_file.exists():
+        learner = _read_json(learner_file)
+        existing_workspace_user = learner.get("workspace_user")
+        if (
+            isinstance(existing_workspace_user, str)
+            and existing_workspace_user
+            and existing_workspace_user != workspace_user
+        ):
+            raise ValueError(
+                "workspace ownership mismatch: "
+                f"current user resolves to '{workspace_user}', "
+                f"but target workspace metadata belongs to '{existing_workspace_user}'"
+            )
 
     created_dirs = []
     created_files = []
@@ -202,8 +287,10 @@ def ensure_workspace(skill_dir: Path, username: str | None = None) -> dict:
             created_files.append(str(paths[key]))
 
     return {
+        "explicit_username": identity["explicit_username"],
         "source_git_username": source_git_username,
         "workspace_user": workspace_user,
+        "using_fallback": identity["using_fallback"],
         "workspace_root": str(paths["workspace_root"]),
         "created": bool(created_dirs or created_files),
         "created_dirs": created_dirs,

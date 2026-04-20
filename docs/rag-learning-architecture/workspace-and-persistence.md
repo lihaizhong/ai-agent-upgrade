@@ -21,8 +21,29 @@
 用户目录名生成规则如下：
 
 1. 优先读取 `git config user.name`
-2. 如果用户名中包含空格，将空格替换为 `-`
-3. 如果读取失败或为空，使用 `default-zoom`
+2. 若调用方显式传入 `--username`，优先使用显式值
+3. 将空格替换为 `-`，并把不安全字符净化为稳定目录名
+4. 如果净化后为空，或读取失败且无显式用户名，使用 `default-zoom`
+
+用户名净化后的目录必须始终位于 `rag-learning-workspace/` 根目录下，不允许通过 `.`、`..`、路径分隔符或其他特殊字符逃逸到外部目录。
+
+## 用户隔离与 fail-fast
+
+workspace 是用户级隔离边界，不允许模糊命中已有目录。
+
+规则如下：
+
+1. 新用户首次进入时，只能创建当前解析出的 `rag-learning-workspace/<username>/`
+2. 不允许因为仓库里“刚好有一个已有 workspace”就复用该目录
+3. 若目标目录已有状态文件，但缺少 `profile/learner.json`，脚本必须显式报错
+4. 若 `learner.json.workspace_user` 与当前解析出的用户不一致，脚本必须显式报错
+
+也就是说，workspace 层只能做两件事：
+
+- 为当前用户创建自己的目录
+- 拒绝继续并暴露错误
+
+不能做第三件事：猜测或复用别人的目录
 
 ## 持久化原则
 
@@ -90,15 +111,39 @@ rag-learning-workspace/
 
 #### `preferences.json`
 
+由 `profile` 从实验 `recommended_choice` 与评审 `recommended_stack` 聚合生成的稳定偏好摘要，是单一真相源：
+
 ```json
 {
-  "language": "zh-CN",
-  "preferred_runtime": "python",
-  "preferred_stack": "langchain",
-  "deployment_preference": "hybrid",
-  "updated_at": "2026-04-09T10:00:00+08:00"
+  "stable_preferences": {
+    "embedding": {
+      "value": "bge-m3",
+      "source": "review",
+      "evidence_count": 2,
+      "last_evidence_at": "2026-04-09T11:00:00+08:00"
+    },
+    "vector_db": {
+      "value": "qdrant",
+      "source": "review",
+      "evidence_count": 1,
+      "last_evidence_at": "2026-04-09T11:00:00+08:00"
+    },
+    "rerank": {
+      "value": "without-rerank",
+      "source": "lab",
+      "evidence_count": 1,
+      "last_evidence_at": "2026-04-09T10:20:00+08:00"
+    }
+  },
+  "evidence_summary": {
+    "lab": 1,
+    "review": 2
+  },
+  "updated_at": "2026-04-09T11:00:00+08:00"
 }
 ```
+
+写入时机：实验或评审记录完成后，`profile.update_preferences()` 自动重新聚合并回写。冲突时按最近证据优先收敛。
 
 ### `progress/`
 

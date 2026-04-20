@@ -42,6 +42,8 @@ class RagLearningContentQualityTest(unittest.TestCase):
         skill_text = read_text(SKILL_DIR / "SKILL.md")
         for token in ["学习中心", "实战中心", "RAG Lab", "架构评审", "学习档案"]:
             self.assertIn(token, skill_text)
+        self.assertIn("Selector-First", skill_text)
+        self.assertIn("interaction.mode", skill_text)
         self.assertNotIn("零步检查", skill_text)
 
     def test_catalog_matches_course_files(self) -> None:

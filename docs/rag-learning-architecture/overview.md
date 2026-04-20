@@ -95,9 +95,9 @@
 负责聚合长期状态：
 
 - 当前模块与当前项目
-- 已完成课程与实战
+- 已完成课程与实战（含准确的 active / completed 计数）
 - 实验摘要
-- 选型偏好
+- 选型偏好（从实验 `recommended_choice` 与评审 `recommended_stack` 自动 rollup）
 - 架构评审历史
 
 ## 设计原则

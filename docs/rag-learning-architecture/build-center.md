@@ -88,6 +88,13 @@ V1 只要求完整做通一个项目：
 
 实验完成后，再回到当前步骤继续推进。
 
+这种衔接不应只靠自然语言提示，`build` 的 step panel 应显式输出 handoff 信息，例如：
+
+- `recommended_module`
+- `recommended_topic`
+- `recommended_scenario`
+- `reason`
+
 ## 与架构评审的衔接
 
 以下情况应建议切到架构评审：
@@ -106,6 +113,8 @@ V1 只要求完整做通一个项目：
 - `build --step-panel --project <id> --step <name>`
 - `build --record-step`
 - `build --summary`
+
+`build --resume` 应优先恢复当前进行中的 project，并返回最小继续上下文；如果没有进行中的 project，则显式回退到实战入口。
 
 ## 状态更新建议
 
@@ -126,6 +135,7 @@ V1 只要求完整做通一个项目：
 - 当前步骤面板
 - 进度写入
 - 项目摘要聚合
+- build -> lab / review 的 handoff 字段
 
 ### LLM 负责
 

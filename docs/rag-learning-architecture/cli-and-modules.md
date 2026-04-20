@@ -51,6 +51,16 @@
 
 脚本负责结构，LLM 负责内容。
 
+### 配置源单一
+
+平台运行时结构优先来自统一配置源，而不是分散在 Markdown、脚本硬编码和自然语言说明中。
+
+建议职责如下：
+
+- `reference/catalog.md`：学习目录、课程主线、模块映射
+- `reference/platform-config.json`：`build / lab / review` 的结构化运行配置
+- `courses/`：教学正文，不承担运行期结构配置职责
+
 ## `workspace` 模块
 
 ### 职责
@@ -79,6 +89,18 @@
 - `home --dashboard`
 - `home --resume`
 - `home --recommend`
+
+### `home --resume` 输出语义
+
+`home --resume` 应返回 continuation contract，而不是仅透传原始状态字段。
+
+最小上应明确：
+
+- `resume_action`
+- `target_module`
+- `target_payload`
+- `reason`
+- `is_fallback`
 
 ### 首页主导航卡片
 
@@ -140,6 +162,12 @@ V1 固定四张：
 
 V1 只要求完整做通第一个入口，其余可先作为设计预留。
 
+### `build --resume`
+
+当存在进行中的 project 时，应返回当前 project 与最小恢复上下文。
+
+当不存在进行中的 project 时，应显式回退到 build entry points，而不是伪造当前步骤。
+
 ## `lab` 模块
 
 ### 职责
@@ -162,6 +190,12 @@ V1 只要求完整做通第一个入口，其余可先作为设计预留。
 - Embedding 对比
 - Rerank 是否值得引入
 - Chunk size / top-k 对比
+
+### `lab --resume`
+
+当存在当前实验主题时，应返回 topic 与最小 handoff context。
+
+当不存在当前实验主题时，应显式回退到 lab entry points。
 
 ## `review` 模块
 
@@ -215,6 +249,8 @@ V1 只要求完整做通第一个入口，其余可先作为设计预留。
 - 取舍理由
 - 当前任务
 - 下一步入口
+
+当需要跨模块回流时，脚本应显式输出 handoff 字段，而不是只依赖隐式当前状态。
 
 ### 评审
 

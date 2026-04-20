@@ -115,6 +115,13 @@ RAG Lab 不是独立玩法，应该服务于实战推进。
 - 实战中的精度不足 -> 进入 `rerank` 或 `chunking` 实验
 - 实验结束 -> 返回当前 build step
 
+因此实验蓝图和实验结果都应保留最小 handoff context，例如：
+
+- 来源模块
+- 当前 project id
+- 当前 build step
+- 回流动作
+
 ## 与架构评审的关系
 
 RAG Lab 的结论可以作为评审依据，但不能直接替代完整架构评审。
@@ -135,6 +142,8 @@ RAG Lab 对应 `lab` 模块，建议支持：
 - `lab --record-result`
 - `lab --history`
 
+`lab --resume` 应优先恢复当前实验主题与最小 handoff context；如果没有当前实验上下文，则显式回退到实验入口。
+
 ## 数据职责划分
 
 ### 脚本负责
@@ -144,6 +153,7 @@ RAG Lab 对应 `lab` 模块，建议支持：
 - 固定评估字段
 - 结果记录
 - 历史聚合
+- 向评审暴露可消费的 evidence summary
 
 ### LLM 负责
 

@@ -12,6 +12,8 @@ SCRIPTS_DIR = SKILL_DIR / "scripts"
 sys.path.insert(0, str(SCRIPTS_DIR))
 
 from catalog import load_course_catalog, load_recommended_paths, load_scenarios  # noqa: E402
+from config import load_build_projects  # noqa: E402
+from config import load_build_step_panels  # noqa: E402
 from config import load_lab_topics  # noqa: E402
 from config import load_platform_config  # noqa: E402
 from config import load_review_fields  # noqa: E402
@@ -78,9 +80,23 @@ class RagLearningConfigUnitTest(unittest.TestCase):
     def test_platform_config_contains_required_sections(self) -> None:
         config = load_platform_config(SKILL_DIR)
 
+        self.assertIn("build_projects", config)
+        self.assertIn("build_step_panels", config)
         self.assertIn("lab_topics", config)
         self.assertIn("review_scenarios", config)
         self.assertIn("review_fields", config)
+
+    def test_build_projects_and_steps_are_stable(self) -> None:
+        projects = load_build_projects(SKILL_DIR)
+        steps = load_build_step_panels(SKILL_DIR)
+
+        self.assertIn("local-minimum-rag", projects)
+        self.assertIn("customer-support-rag", projects)
+        self.assertIn("enterprise-knowledge-search", projects)
+        self.assertIn("embedding", steps)
+        self.assertIn("evaluation", steps)
+        self.assertEqual(steps["embedding"]["next_step"], "vector_db")
+        self.assertEqual(steps["rerank"]["handoff"]["recommended_topic"], "rerank")
 
     def test_lab_topics_have_required_keys(self) -> None:
         topics = load_lab_topics(SKILL_DIR)
@@ -91,6 +107,20 @@ class RagLearningConfigUnitTest(unittest.TestCase):
             self.assertIn("metrics", topic, msg=topic_name)
             self.assertIn("competency_area", topic, msg=topic_name)
             self.assertGreaterEqual(len(topic["default_variants"]), 2, msg=topic_name)
+
+    def test_build_step_handoffs_reference_valid_targets(self) -> None:
+        steps = load_build_step_panels(SKILL_DIR)
+        topics = load_lab_topics(SKILL_DIR)
+        scenarios = load_review_scenarios(SKILL_DIR)
+
+        for step_name, panel in steps.items():
+            handoff = panel.get("handoff", {})
+            topic = handoff.get("recommended_topic")
+            scenario = handoff.get("recommended_scenario")
+            if topic is not None:
+                self.assertIn(topic, topics, msg=step_name)
+            if scenario is not None:
+                self.assertIn(scenario, scenarios, msg=step_name)
 
     def test_review_scenarios_and_fields_are_stable(self) -> None:
         scenarios = load_review_scenarios(SKILL_DIR)

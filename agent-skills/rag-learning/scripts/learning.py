@@ -31,6 +31,7 @@ class LearningService:
     def catalog(self) -> dict:
         return {
             "module": "learning",
+            "interaction": {"mode": "inform"},
             "tracks": sorted({item["track"] for item in self.course_catalog}),
             "courses": self.course_catalog,
         }
@@ -39,6 +40,7 @@ class LearningService:
         course_ids = self.recommended_paths.get(level, [])
         return {
             "module": "learning",
+            "interaction": {"mode": "inform"},
             "level": level,
             "courses": [
                 get_course_metadata(self.skill_dir, course_id) for course_id in course_ids
@@ -60,6 +62,10 @@ class LearningService:
             reason = "推荐第一门未完成课程，优先保持决策顺序。"
         return {
             "module": "learning",
+            "interaction": {
+                "mode": "open_ended",
+                "prompt_hint": "根据推荐课程和原因，用自然语言组织下一步建议。",
+            },
             "recommended_course": course,
             "reason": reason,
         }
@@ -71,6 +77,7 @@ class LearningService:
         self.state.start_course(course_id)
         return {
             "module": "learning",
+            "interaction": {"mode": "inform"},
             "course": course,
             "path": str(self.skill_dir / "courses" / course["slug"]),
             "teaching_structure": [
@@ -91,6 +98,7 @@ class LearningService:
         progress = self.state.complete_course(course_id)
         return {
             "module": "learning",
+            "interaction": {"mode": "inform"},
             "course": course,
             "status": "completed",
             "progress": progress,

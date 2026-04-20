@@ -47,9 +47,21 @@
 ### 进度摘要
 
 - 已完成课程数
+- 活跃项目数（仅统计 `in_progress`）
 - 已完成项目数
 - 已完成实验数
 - 已完成评审数
+
+### 稳定偏好摘要
+
+`profile` 从实验 `recommended_choice` 与评审 `recommended_stack` 中聚合长期选型偏好：
+
+- embedding 偏好
+- vector_db 偏好
+- retrieval / rerank 偏好
+- chunking 偏好（来自实验）
+
+偏好冲突时按**最近证据优先**收敛，并保留 `evidence_count` 与 `last_evidence_at` 供追溯。
 
 ### 能力摘要
 
@@ -71,6 +83,8 @@
 
 推荐动作应来自状态模型，而不是自由生成。
 
+学习档案中展示的 recommendation 属于状态层记录，用于解释系统当前记住了什么；它不等同于首页最终给用户的可执行推荐动作。
+
 ## CLI 建议
 
 学习档案对应 `profile` 模块，建议支持：
@@ -85,6 +99,7 @@
 ### 脚本负责
 
 - 聚合各模块摘要
+- 从实验与评审历史 rollup 稳定偏好
 - 输出固定字段
 - 生成推荐动作键
 
@@ -98,8 +113,9 @@
 学习档案 V1 先做：
 
 - 当前状态摘要
-- 课程与项目进度摘要
+- 课程与项目进度摘要（含准确的 active / completed 计数）
 - 最近实验与评审记录
+- 稳定偏好 rollup（`stable_preferences`）
 - 推荐下一步
 
 暂不做：
