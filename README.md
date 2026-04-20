@@ -4,7 +4,7 @@
 
 ## 📚 学习资源
 
-- [提示工程指南](https://www.promptingguide.ai/zh) - 系统学习提示词工程
+- [Awesome Prompts](https://github.com/ai-boost/awesome-prompts) - 精心整理的提示词资源集合，涵盖各场景实用模板与最佳实践
 - [程序员的英语](https://a-programmers-guide-to-english.harryyu.me/) - 程序员英语学习指南
 
 ## 🗺️ 学习路径
