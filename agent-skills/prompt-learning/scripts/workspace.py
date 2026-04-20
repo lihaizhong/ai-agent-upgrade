@@ -103,12 +103,12 @@ def resolve_workspace_identity(username: str | None = None) -> dict[str, str | N
 
 def get_repo_root(skill_dir: Path) -> Path:
     """返回仓库根目录。"""
-    parts = list(skill_dir.parts)
-    for i, part in enumerate(parts):
-        if part in (".opencode", ".codex") and i + 1 < len(parts) and parts[i + 1] == "skills":
-            return Path(*parts[:i])
-    resolved = skill_dir.resolve()
-    return resolved.parent.parent
+    candidates = [skill_dir.resolve(), Path(__file__).resolve()]
+    for candidate in candidates:
+        for parent in [candidate, *candidate.parents]:
+            if (parent / "AGENTS.md").exists() and (parent / "agent-skills").exists():
+                return parent
+    raise ValueError(f"Cannot resolve repo root from skill directory: {skill_dir}")
 
 
 def get_workspace_root(skill_dir: Path) -> Path:
