@@ -160,6 +160,16 @@ uv sync
 
 ---
 
+## Common Bad Habits
+
+### Output directories in wrong locations
+
+Never place tool-generated output directories inside `agent-skills/`. The `agent-skills/` directory is only for custom skill definitions (each with a `SKILL.md`). Output directories like `graphify-out/` belong at the project root.
+
+**Example mistake:** `agent-skills/graphify-out/` — move to `./graphify-out/` instead.
+
+---
+
 ## Resources
 
 - [Prompt Engineering Guide](https://www.promptingguide.ai/zh)

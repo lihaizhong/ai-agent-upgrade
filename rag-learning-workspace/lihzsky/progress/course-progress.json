@@ -1,13 +1,20 @@
 {
-  "completed_courses": [],
-  "in_progress_course": 4,
-  "last_completed_course": null,
+  "completed_courses": [
+    4
+  ],
+  "in_progress_course": 6,
+  "last_completed_course": 4,
   "course_status": {
     "4": {
-      "status": "in_progress",
+      "status": "completed",
       "started_at": "2026-04-09T09:23:37.330039+08:00",
+      "completed_at": "2026-04-23T09:53:02.323654+08:00"
+    },
+    "6": {
+      "status": "in_progress",
+      "started_at": "2026-04-21T16:51:42.556750+08:00",
       "completed_at": null
     }
   },
-  "updated_at": "2026-04-09T09:23:37.330793+08:00"
+  "updated_at": "2026-04-23T09:53:02.326587+08:00"
 }
