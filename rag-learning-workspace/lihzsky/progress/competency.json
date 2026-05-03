@@ -2,7 +2,7 @@
   "areas": {
     "rag_foundations": {
       "level": "strong",
-      "evidence_count": 5
+      "evidence_count": 6
     },
     "embedding_selection": {
       "level": "developing",
@@ -29,5 +29,5 @@
       "evidence_count": 2
     }
   },
-  "updated_at": "2026-04-23T09:53:02.327048+08:00"
+  "updated_at": "2026-04-23T10:12:01.910880+08:00"
 }
