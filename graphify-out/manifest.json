@@ -1,114 +1,1154 @@
 {
-  "agent-skills/github-stars/scripts/fetch_stars.py": 1775472208.679156,
-  "agent-skills/github-stars/scripts/categorize_stars.py": 1775475551.3790402,
-  "agent-skills/poetry/scripts/poetry_loader.py": 1773992675.560434,
-  "agent-skills/labor-rights-defense/scripts/config.py": 1776127455.498364,
-  "agent-skills/labor-rights-defense/scripts/json_io.py": 1776127392.8549514,
-  "agent-skills/labor-rights-defense/scripts/draft_service.py": 1776128075.7140653,
-  "agent-skills/labor-rights-defense/scripts/procedure_crawler.py": 1776127963.2687337,
-  "agent-skills/labor-rights-defense/scripts/__init__.py": 1776127389.9073906,
-  "agent-skills/labor-rights-defense/scripts/law_service.py": 1776127579.0952072,
-  "agent-skills/labor-rights-defense/scripts/http_utils.py": 1776127511.371146,
-  "agent-skills/labor-rights-defense/scripts/procedure_service.py": 1776127984.8989506,
-  "agent-skills/labor-rights-defense/scripts/html_links.py": 1776127923.2169533,
-  "agent-skills/labor-rights-defense/scripts/workspace.py": 1776127409.8628297,
-  "agent-skills/labor-rights-defense/scripts/__main__.py": 1776128084.0188298,
-  "agent-skills/labor-rights-defense/scripts/law_parser.py": 1776127528.3869987,
-  "agent-skills/labor-rights-defense/scripts/law_store.py": 1776127555.8980873,
-  "agent-skills/rag-learning/scripts/catalog.py": 1775698851.1027615,
-  "agent-skills/rag-learning/scripts/build.py": 1776654160.4648988,
-  "agent-skills/rag-learning/scripts/config.py": 1776652141.9910622,
-  "agent-skills/rag-learning/scripts/home.py": 1776654160.4331048,
-  "agent-skills/rag-learning/scripts/profile.py": 1776656110.917057,
-  "agent-skills/rag-learning/scripts/__init__.py": 1775697740.0427508,
-  "agent-skills/rag-learning/scripts/review.py": 1776656142.1876738,
-  "agent-skills/rag-learning/scripts/learning.py": 1776651535.2567432,
-  "agent-skills/rag-learning/scripts/workspace.py": 1776656150.8433776,
-  "agent-skills/rag-learning/scripts/__main__.py": 1776657159.1821506,
-  "agent-skills/rag-learning/scripts/lab.py": 1776656128.0437605,
-  "agent-skills/rag-learning/scripts/state.py": 1775698036.8103683,
-  "agent-skills/prompt-learning/code/15_reflexion.py": 1775624443.8596265,
-  "agent-skills/prompt-learning/code/07_rag.py": 1775624443.8587515,
-  "agent-skills/prompt-learning/code/17_graph_prompt.py": 1775624443.8600032,
-  "agent-skills/prompt-learning/code/14_dsp.py": 1775624443.8595266,
-  "agent-skills/prompt-learning/code/04_self_consistency.py": 1775624443.857928,
-  "agent-skills/prompt-learning/code/10_pal.py": 1775624443.8589716,
-  "agent-skills/prompt-learning/code/13_active_prompt.py": 1775624443.8594203,
-  "agent-skills/prompt-learning/code/06_generated_knowledge.py": 1775624443.8585596,
-  "agent-skills/prompt-learning/code/01_zero_shot.py": 1775624443.857196,
-  "agent-skills/prompt-learning/code/09_react.py": 1775624443.8589072,
-  "agent-skills/prompt-learning/code/12_ape.py": 1775624443.8593104,
-  "agent-skills/prompt-learning/code/03_cot.py": 1775624443.857844,
-  "agent-skills/prompt-learning/code/02_few_shot.py": 1775624443.8575904,
-  "agent-skills/prompt-learning/code/__init__.py": 1775624443.85612,
-  "agent-skills/prompt-learning/code/11_art.py": 1775624443.859045,
-  "agent-skills/prompt-learning/code/utils.py": 1775625060.0961676,
-  "agent-skills/prompt-learning/code/08_prompt_chaining.py": 1775624443.8588355,
-  "agent-skills/prompt-learning/code/16_multimodal_cot.py": 1775624443.8598108,
-  "agent-skills/prompt-learning/code/05_tot.py": 1775624443.8583665,
-  "agent-skills/prompt-learning/scripts/exam.py": 1776011176.296605,
-  "agent-skills/prompt-learning/scripts/home.py": 1776010514.938205,
-  "agent-skills/prompt-learning/scripts/prompt_lab.py": 1776011176.2970188,
-  "agent-skills/prompt-learning/scripts/profile.py": 1775684738.378168,
-  "agent-skills/prompt-learning/scripts/__init__.py": 1775644043.9716048,
-  "agent-skills/prompt-learning/scripts/practice.py": 1776008145.6987615,
-  "agent-skills/prompt-learning/scripts/course_catalog.py": 1775624361.314299,
-  "agent-skills/prompt-learning/scripts/learning.py": 1775684459.1330438,
-  "agent-skills/prompt-learning/scripts/workspace.py": 1776657598.550569,
-  "agent-skills/prompt-learning/scripts/__main__.py": 1775796619.9842572,
-  "agent-skills/prompt-learning/scripts/state.py": 1776011176.297334,
-  "agent-skills/github-stars/VERSION.md": 1775472255.895865,
-  "agent-skills/github-stars/SKILL.md": 1775472146.6611595,
-  "agent-skills/github-stars/references/categories.md": 1775472232.7699895,
-  "agent-skills/poetry/DATA_SETUP.md": 1773992675.558593,
-  "agent-skills/poetry/VERSION.md": 1773992675.559509,
-  "agent-skills/poetry/SKILL.md": 1775457368.6939385,
-  "agent-skills/labor-rights-defense/SKILL.md": 1776127388.0742807,
-  "agent-skills/rag-learning/VERSION.md": 1775698659.7106786,
-  "agent-skills/rag-learning/SKILL.md": 1776651535.3879151,
-  "agent-skills/rag-learning/courses/03-\u5411\u91cf\u6570\u636e\u5e93.md": 1774116129.1137424,
-  "agent-skills/rag-learning/courses/01-RAG\u57fa\u7840\u6982\u5ff5.md": 1774114982.182304,
-  "agent-skills/rag-learning/courses/05-Rerank\u6a21\u578b\u9009\u62e9.md": 1775698659.7095752,
-  "agent-skills/rag-learning/courses/06-\u68c0\u7d22\u7b56\u7565\u4f18\u5316.md": 1775698659.7097716,
-  "agent-skills/rag-learning/courses/07-\u6587\u6863\u95ee\u7b54RAG.md": 1775698659.710034,
-  "agent-skills/rag-learning/courses/04-Embedding\u6a21\u578b\u9009\u62e9.md": 1775698659.7093627,
-  "agent-skills/rag-learning/courses/11-RAG\u6027\u80fd\u4f18\u5316.md": 1774116285.1383142,
-  "agent-skills/rag-learning/courses/10-\u4f01\u4e1a\u7ea7RAG\u67b6\u6784.md": 1775698659.7103105,
-  "agent-skills/rag-learning/courses/README.md": 1775698659.7090023,
-  "agent-skills/rag-learning/courses/08-\u5ba2\u670d\u673a\u5668\u4ebaRAG.md": 1774116193.0101058,
-  "agent-skills/rag-learning/courses/09-\u77e5\u8bc6\u5e93\u641c\u7d22RAG.md": 1774116225.8937733,
-  "agent-skills/rag-learning/courses/02-\u5411\u91cf\u5316\u8be6\u89e3.md": 1774116111.49885,
-  "agent-skills/rag-learning/courses/12-RAG\u8bc4\u4f30\u4e0e\u8c03\u4f18.md": 1775698659.7104952,
-  "agent-skills/rag-learning/reference/ambiguous-intent.md": 1775698194.497649,
-  "agent-skills/rag-learning/reference/practice-mode.md": 1775698194.497844,
-  "agent-skills/rag-learning/reference/learning-mode.md": 1775698194.4977474,
-  "agent-skills/rag-learning/reference/router.md": 1775698194.4975362,
-  "agent-skills/rag-learning/reference/faq.md": 1774114926.4663823,
-  "agent-skills/rag-learning/reference/scenarios.md": 1775555853.4297366,
-  "agent-skills/rag-learning/reference/catalog.md": 1775698659.7089183,
-  "agent-skills/prompt-learning/VERSION.md": 1775714704.6674902,
-  "agent-skills/prompt-learning/SKILL.md": 1776010105.7488964,
-  "agent-skills/prompt-learning/courses/14-\u65b9\u5411\u6027\u523a\u6fc0\u63d0\u793a.md": 1775624871.9756358,
-  "agent-skills/prompt-learning/courses/02-\u5c11\u6837\u672c\u63d0\u793a.md": 1773992675.5660765,
-  "agent-skills/prompt-learning/courses/11-\u81ea\u52a8\u63a8\u7406\u548c\u5de5\u5177\u4f7f\u7528.md": 1775624871.9754565,
-  "agent-skills/prompt-learning/courses/07-\u68c0\u7d22\u589e\u5f3a\u751f\u6210.md": 1775624871.9663365,
-  "agent-skills/prompt-learning/courses/01-\u96f6\u6837\u672c\u63d0\u793a.md": 1773992675.5669875,
-  "agent-skills/prompt-learning/courses/06-\u751f\u6210\u77e5\u8bc6\u63d0\u793a.md": 1775624871.966202,
-  "agent-skills/prompt-learning/courses/09-ReAct\u6846\u67b6.md": 1775624871.9753294,
-  "agent-skills/prompt-learning/courses/08-\u94fe\u5f0f\u63d0\u793a.md": 1775624871.9664016,
-  "agent-skills/prompt-learning/courses/17-\u56fe\u63d0\u793a.md": 1775624871.975806,
-  "agent-skills/prompt-learning/courses/16-\u591a\u6a21\u6001\u601d\u7ef4\u94fe.md": 1775624871.9757476,
-  "agent-skills/prompt-learning/courses/15-\u81ea\u6211\u53cd\u601d.md": 1775624871.9756937,
-  "agent-skills/prompt-learning/courses/04-\u81ea\u6211\u4e00\u81f4\u6027.md": 1773992675.568876,
-  "agent-skills/prompt-learning/courses/10-\u7a0b\u5e8f\u8f85\u52a9\u8bed\u8a00\u6a21\u578b.md": 1775624871.9753923,
-  "agent-skills/prompt-learning/courses/12-\u81ea\u52a8\u63d0\u793a\u5de5\u7a0b\u5e08.md": 1775624871.9755208,
-  "agent-skills/prompt-learning/courses/03-\u601d\u7ef4\u94fe\u63d0\u793a.md": 1773992675.569929,
-  "agent-skills/prompt-learning/courses/05-\u601d\u7ef4\u6811.md": 1773992675.5702052,
-  "agent-skills/prompt-learning/courses/13-\u4e3b\u52a8\u63d0\u793a.md": 1775624871.9755762,
-  "agent-skills/prompt-learning/reference/common-problems.md": 1775624024.6371832,
-  "agent-skills/prompt-learning/reference/prompt-generation-mode.md": 1775659305.2274475,
-  "agent-skills/prompt-learning/reference/prompt-patterns.md": 1775624024.6376033,
-  "agent-skills/prompt-learning/reference/learning-mode.md": 1775659305.2272995,
-  "agent-skills/prompt-learning/reference/faq.md": 1775644684.2736318,
-  "agent-skills/prompt-learning/reference/exam-mode.md": 1775702882.1462455
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/main.py": {
+    "mtime": 1773847559.0421112,
+    "hash": "e52bd83e49a57273a26bb372cb2dc01d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/poetry/scripts/poetry_loader.py": {
+    "mtime": 1773992675.560434,
+    "hash": "84879f3aef4c45d6e0d3713be13f2e19"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/config.py": {
+    "mtime": 1776127455.498364,
+    "hash": "cf2203e97f4b6569b8df26241135a68c"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/json_io.py": {
+    "mtime": 1776127392.8549514,
+    "hash": "545dee10a06033d176aef6d1193806ac"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/draft_service.py": {
+    "mtime": 1776128075.7140653,
+    "hash": "2ca095b1d8fda394b643e11da77359d7"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/procedure_crawler.py": {
+    "mtime": 1776127963.2687337,
+    "hash": "0eb133a85da6b31e0f5de12ff2d2bd65"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/__init__.py": {
+    "mtime": 1776127389.9073906,
+    "hash": "ad1d5ef7f0165c7681f0883de6dd7b64"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/law_service.py": {
+    "mtime": 1776127579.0952072,
+    "hash": "8e343433d0dbeaa58811322fca19b89e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/http_utils.py": {
+    "mtime": 1776127511.371146,
+    "hash": "ada1dd6219c68f5cc9b02b119e9bd981"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/procedure_service.py": {
+    "mtime": 1776127984.8989506,
+    "hash": "7fb269413c891e64dd1bc0214e12a129"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/html_links.py": {
+    "mtime": 1776127923.2169533,
+    "hash": "a0d23e526f8bc411ac5bc9bf67ee56e6"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/workspace.py": {
+    "mtime": 1776127409.8628297,
+    "hash": "19f79ed7a70cba419ad252ec2de90f37"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/__main__.py": {
+    "mtime": 1776128084.0188298,
+    "hash": "0e0d99a77ec871a968f293a1d33fd6c9"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/law_parser.py": {
+    "mtime": 1776127528.3869987,
+    "hash": "f5ca3233c00652ea6b57cfcbabc65793"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/scripts/law_store.py": {
+    "mtime": 1776127555.8980873,
+    "hash": "da6b34cc82766a633b67bbd053b0a9a9"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/catalog.py": {
+    "mtime": 1775698851.1027615,
+    "hash": "6206055026fca2b3c36d88260079f486"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/build.py": {
+    "mtime": 1776654160.4648988,
+    "hash": "1cdabe5c6eddad205ccf9583101865aa"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/config.py": {
+    "mtime": 1776652141.9910622,
+    "hash": "f555886c9b44cf6ffd33571e5bf83099"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/home.py": {
+    "mtime": 1776654160.4331048,
+    "hash": "b5403a2d027433e676baee1338500090"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/profile.py": {
+    "mtime": 1776656110.917057,
+    "hash": "7b66365d79ffd834f97e6a3bf3239818"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/__init__.py": {
+    "mtime": 1775697740.0427508,
+    "hash": "19e2b4cc13b261569ca772533a240e0b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/review.py": {
+    "mtime": 1776656142.1876738,
+    "hash": "38324931a80bf8731f90eff4e9dfa713"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/learning.py": {
+    "mtime": 1776651535.2567432,
+    "hash": "5b184433e59b247b2a9e88493244be10"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/workspace.py": {
+    "mtime": 1776656150.8433776,
+    "hash": "81bbd455dbd5a6a2787b6e50353e20bc"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/__main__.py": {
+    "mtime": 1776657159.1821506,
+    "hash": "6e176ea5ee2e735ac7439028cdc588dc"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/lab.py": {
+    "mtime": 1776656128.0437605,
+    "hash": "cfc7d07fbcc31d94bc36af04b5387aeb"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/scripts/state.py": {
+    "mtime": 1775698036.8103683,
+    "hash": "780a2956718eb8f46673727ddc71589f"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/15_reflexion.py": {
+    "mtime": 1775624443.8596265,
+    "hash": "0bcdd3e7e8210f1fa38c776858398470"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/07_rag.py": {
+    "mtime": 1775624443.8587515,
+    "hash": "42f53f7568c3ab4bc413585962b15b97"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/17_graph_prompt.py": {
+    "mtime": 1775624443.8600032,
+    "hash": "90a84b769712677f0dd3bffb5b358b26"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/14_dsp.py": {
+    "mtime": 1775624443.8595266,
+    "hash": "f9120930665ca5b266d8f3ab78a1ac38"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/04_self_consistency.py": {
+    "mtime": 1775624443.857928,
+    "hash": "66ae85f4e5b48e6feb6a4565ce43df72"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/10_pal.py": {
+    "mtime": 1775624443.8589716,
+    "hash": "1119d6d53fc5735ae94b261f0bdb8d52"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/13_active_prompt.py": {
+    "mtime": 1775624443.8594203,
+    "hash": "a25daa5f5eca425558c561ba9ed303cd"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/06_generated_knowledge.py": {
+    "mtime": 1775624443.8585596,
+    "hash": "e397b1b3d665c41d5d8e0711106597df"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/01_zero_shot.py": {
+    "mtime": 1775624443.857196,
+    "hash": "eb78046cd46bede95dab2e4f136ee6d3"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/09_react.py": {
+    "mtime": 1775624443.8589072,
+    "hash": "d30736546992435d024250b503cd4084"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/12_ape.py": {
+    "mtime": 1775624443.8593104,
+    "hash": "fd66e36d505af773642809c9a472863e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/03_cot.py": {
+    "mtime": 1775624443.857844,
+    "hash": "4ca01e913bdfcb131a8ffb9050cc834b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/02_few_shot.py": {
+    "mtime": 1775624443.8575904,
+    "hash": "325c4656af0a9a09e355b63b31d9188a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/__init__.py": {
+    "mtime": 1775624443.85612,
+    "hash": "1e277a8e50af46a319e2ad1aef0350ed"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/11_art.py": {
+    "mtime": 1775624443.859045,
+    "hash": "08a60503eb4238b63d0abbb242dbf1b2"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/utils.py": {
+    "mtime": 1775625060.0961676,
+    "hash": "85964cd7e535dffdd6995307b87c9ead"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/08_prompt_chaining.py": {
+    "mtime": 1775624443.8588355,
+    "hash": "c09faa8dfba989066050a45f80866c82"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/16_multimodal_cot.py": {
+    "mtime": 1775624443.8598108,
+    "hash": "0d1619ecd7f853fbfe701221922a0e68"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/code/05_tot.py": {
+    "mtime": 1775624443.8583665,
+    "hash": "86d7a4dcd2306a6ddc874c30e36143b2"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/scripts/exam.py": {
+    "mtime": 1776011176.296605,
+    "hash": "2c6f44238b7ffb742eefa44d789ace29"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/scripts/home.py": {
+    "mtime": 1776010514.938205,
+    "hash": "f30b3434ded374cfd3d53db84cff17ec"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/scripts/prompt_lab.py": {
+    "mtime": 1776011176.2970188,
+    "hash": "c5296a25bd330302d1df3ac5e32a7263"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/scripts/profile.py": {
+    "mtime": 1775684738.378168,
+    "hash": "cadf22c7340870cb115dbcfe067728e4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/scripts/__init__.py": {
+    "mtime": 1775644043.9716048,
+    "hash": "e389f63aabf9611e24cfff3f22080737"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/scripts/practice.py": {
+    "mtime": 1776008145.6987615,
+    "hash": "592bd6729e0c7ff4a5334a8ff80b6ba4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/scripts/course_catalog.py": {
+    "mtime": 1775624361.314299,
+    "hash": "812738fdeb64528398432974049d587b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/scripts/learning.py": {
+    "mtime": 1775684459.1330438,
+    "hash": "6f02cb099d34851e55098a9b7461cd9b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/scripts/workspace.py": {
+    "mtime": 1776683003.210969,
+    "hash": "94b09de3dcbe220fd75e440f061de581"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/scripts/__main__.py": {
+    "mtime": 1775796619.9842572,
+    "hash": "c4e4cb545008a456eb2b329265ed55f7"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/scripts/state.py": {
+    "mtime": 1776011176.297334,
+    "hash": "79682b27d17fcb88e4bd85a19c2fd6c2"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/__init__.py": {
+    "mtime": 1775701278.6211755,
+    "hash": "68b329da9893e34099c7d8ad5cb9c940"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/rag_learning/test_state_flow.py": {
+    "mtime": 1776656261.7769237,
+    "hash": "aa08256ea7bc2b4d7b4a3ae1854eb45b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/rag_learning/__init__.py": {
+    "mtime": 1775701278.6212769,
+    "hash": "68b329da9893e34099c7d8ad5cb9c940"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/rag_learning/test_config_units.py": {
+    "mtime": 1776652213.4084597,
+    "hash": "86fc97b7b4e3dac1e33a60b4d5a8f5f2"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/rag_learning/test_content_quality.py": {
+    "mtime": 1776651535.4512446,
+    "hash": "9e11c3f14a3a9415681177b86e14044d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/rag_learning/test_edge_cases.py": {
+    "mtime": 1776657138.5230658,
+    "hash": "519ea9a191175714cb619fef37f56d5b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/rag_learning/test_platform.py": {
+    "mtime": 1776657191.108945,
+    "hash": "3f7a7a87a629f36939cb4349c23c5284"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/labor_rights_defense/test_law_parser.py": {
+    "mtime": 1776127625.6688824,
+    "hash": "49c7ab92925437f411318abd1423110a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/labor_rights_defense/__init__.py": {
+    "mtime": 1776127606.153051,
+    "hash": "68b329da9893e34099c7d8ad5cb9c940"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/labor_rights_defense/test_draft_service.py": {
+    "mtime": 1776128097.3069675,
+    "hash": "aae4bddc05b38dec368d5493f1e46aa3"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/labor_rights_defense/test_procedure_crawler.py": {
+    "mtime": 1776128029.9650283,
+    "hash": "f9d820612056e8a6e8bbdd68273ab86f"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/prompt_learning/test_learning_center.py": {
+    "mtime": 1776658121.3587954,
+    "hash": "03204c0fecc83ac23cc35fded2284737"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/prompt_learning/test_workspace_fallback.py": {
+    "mtime": 1776008145.7013159,
+    "hash": "15579dd2188377c8e1a12ae40b9594fc"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/prompt_learning/test_practice_center.py": {
+    "mtime": 1776658079.2529395,
+    "hash": "8b90d2bcee99842049835fe0edde0aa9"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/prompt_learning/test_state_flow.py": {
+    "mtime": 1776010502.9610527,
+    "hash": "46a83ef1e0cca2a8109536e3919cf6e6"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/prompt_learning/__init__.py": {
+    "mtime": 1775701278.6213624,
+    "hash": "68b329da9893e34099c7d8ad5cb9c940"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/prompt_learning/test_prompt_lab.py": {
+    "mtime": 1776658095.0904107,
+    "hash": "5d9d4b851edb48f2e107f593a96d4e2e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/prompt_learning/test_exam_session.py": {
+    "mtime": 1776009954.9830704,
+    "hash": "64f757e8455d13e3e92af3862c2791f9"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/prompt_learning/test_content_quality.py": {
+    "mtime": 1775716647.5607724,
+    "hash": "3248039fc2ecd314de78bc56553b0a4f"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/tests/prompt_learning/test_platform.py": {
+    "mtime": 1776010498.269203,
+    "hash": "5a304476cd21fde05241028cfc7b7083"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/rag-learning-workspace/lihzsky/lab/embedding-comparison.py": {
+    "mtime": 1776854542.3078473,
+    "hash": "fca7c7ad2bd1a6039828300df91a2107"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-internet-search/main.py": {
+    "mtime": 1778180392.4362478,
+    "hash": "0f99baa8d26bde34b8f202d56f88d7d8"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/main.py": {
+    "mtime": 1773912934.4060495,
+    "hash": "14275870fc9c093e43ec42693375fac8"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s08-loop.py": {
+    "mtime": 1774113794.1514313,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s01-loop.py": {
+    "mtime": 1774281138.6888804,
+    "hash": "21be5a38c463a68f90123432349c8f29"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s11-loop.py": {
+    "mtime": 1774113837.2686841,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s10-loop.py": {
+    "mtime": 1774113826.8701057,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s09-loop.py": {
+    "mtime": 1774113803.727173,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s02-loop.py": {
+    "mtime": 1774337466.5060225,
+    "hash": "0793364393cd69bc06f179bc1403e46f"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s12-loop.py": {
+    "mtime": 1774113851.5231266,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/__init__.py": {
+    "mtime": 1773908050.5441272,
+    "hash": "7693cc4871628a03c0dd6f7b1e2196a3"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s03-loop.py": {
+    "mtime": 1773933590.3172624,
+    "hash": "371358471516fe85990cddb766eb3ea3"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s06-loop.py": {
+    "mtime": 1774187188.2427454,
+    "hash": "11cd1844da3f93d9ff3c2a93aa268fd4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s07-loop.py": {
+    "mtime": 1774113779.353077,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s05-loop.py": {
+    "mtime": 1774027473.141948,
+    "hash": "04dc2c62e91fff5594b159e15cdea1e3"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/code/s04-loop.py": {
+    "mtime": 1773936261.446138,
+    "hash": "6dcc50b25e80c50feedfd9cd7008a8dc"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/test_workspace/hello.py": {
+    "mtime": 1773927728.797295,
+    "hash": "d4ba70d83f8d5837eee5d131029ae174"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/test_workspace/advanced_greetings.py": {
+    "mtime": 1774022755.5023043,
+    "hash": "15b0228b73b80efe601051e3fd8c478d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/test_workspace/greet.py": {
+    "mtime": 1773927871.1207824,
+    "hash": "79cc4c825dd4fc7e98efe4e08006c533"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/test_workspace/tests/test_utils.py": {
+    "mtime": 1773927993.6983826,
+    "hash": "5d1b8aa8c4d874f64155c73d513edb61"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/test_workspace/utils/__init__.py": {
+    "mtime": 1773927805.087858,
+    "hash": "ef43d957d57aab6cc590d8864f5abf89"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/test_workspace/utils/utils.py": {
+    "mtime": 1773927771.4096518,
+    "hash": "a9703c89a9e54ab7147ad68262b0ccf4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/dns-test/main.py": {
+    "mtime": 1777263401.5426888,
+    "hash": "012f57c8ce11cee51a9707e995fc49a9"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-rag-agent/main.py": {
+    "mtime": 1778143288.8391268,
+    "hash": "c212a62b1a6e7beac9ad023898a1e5bc"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-data-analysis-agent/main.py": {
+    "mtime": 1774270991.8700373,
+    "hash": "6414c8ed63b185d2113eccecb8cebf57"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/README.md": {
+    "mtime": 1776660410.8422604,
+    "hash": "cc9be967047e53ecc318b12c72af6768"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/AGENTS.md": {
+    "mtime": 1776909881.144929,
+    "hash": "5f2eea111ff51113aa77c8a418a429ff"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/labor-rights-defense-skill/tasks.md": {
+    "mtime": 1776127478.3493447,
+    "hash": "7f402f46817a06d7a80111e963ba3d54"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/labor-rights-defense-skill/spec.md": {
+    "mtime": 1776127473.2833025,
+    "hash": "9da3954c79f887a58c18ba3bbca1b4d9"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/02-workspace-hardening-and-identity-alignment/implementation-plan.md": {
+    "mtime": 1776652611.672547,
+    "hash": "a517b02c34ffc9990b34dd19af7bff25"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/02-workspace-hardening-and-identity-alignment/task-breakdown.md": {
+    "mtime": 1776652611.7053552,
+    "hash": "6d214da058e38c6bbe628aa55b6dd220"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/02-workspace-hardening-and-identity-alignment/spec.md": {
+    "mtime": 1776652611.9182196,
+    "hash": "887302cb905d4501119750f5762b61ff"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/06-resume-and-continuation-contract-alignment/implementation-plan.md": {
+    "mtime": 1776654204.4267945,
+    "hash": "d7177f4c11b5a42d7daab7678e9f1355"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/06-resume-and-continuation-contract-alignment/task-breakdown.md": {
+    "mtime": 1776654204.4627366,
+    "hash": "4d6ec155659d6a55d785fb5485864ae9"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/06-resume-and-continuation-contract-alignment/spec.md": {
+    "mtime": 1776654204.4954154,
+    "hash": "cb9812dc6c034632c5d38b684faa7830"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/08-profile-preference-rollup-and-progress-semantics/implementation-plan.md": {
+    "mtime": 1776656390.3047411,
+    "hash": "5fa51c5516d32a42be81287118c1d9e8"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/08-profile-preference-rollup-and-progress-semantics/task-breakdown.md": {
+    "mtime": 1776656380.3344753,
+    "hash": "9ad2761e39ebd26f83058936bba5c93e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/08-profile-preference-rollup-and-progress-semantics/spec.md": {
+    "mtime": 1776656414.8017073,
+    "hash": "05581b2096df083f3514556cb984d477"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/09-cli-error-handling-and-edge-case-hardening/implementation-plan.md": {
+    "mtime": 1776657258.1018817,
+    "hash": "c839c3efe047d3ea736830651d12cc33"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/09-cli-error-handling-and-edge-case-hardening/task-breakdown.md": {
+    "mtime": 1776657269.098084,
+    "hash": "3fa1b892165f9aec1a1abc86c1cef891"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/09-cli-error-handling-and-edge-case-hardening/spec.md": {
+    "mtime": 1776657243.8750136,
+    "hash": "9ebe77c1a3408a02d7fbf1b32eda7ad1"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/04-home-recommendation-semantics/implementation-plan.md": {
+    "mtime": 1776652611.7974687,
+    "hash": "4142770eca57edba9187faecc671a645"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/04-home-recommendation-semantics/task-breakdown.md": {
+    "mtime": 1776652611.82854,
+    "hash": "ab335386ef56da366374e02209d11271"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/04-home-recommendation-semantics/spec.md": {
+    "mtime": 1776652611.9795444,
+    "hash": "2cd2e4d30bef117011c4b9bca522b387"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/03-interaction-contract-alignment/implementation-plan.md": {
+    "mtime": 1776652611.736686,
+    "hash": "ce9aff1a65a2e4429aa8bb435451ed79"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/03-interaction-contract-alignment/task-breakdown.md": {
+    "mtime": 1776652611.766266,
+    "hash": "6f011bb71be5894f7ffd588ebd833309"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/03-interaction-contract-alignment/spec.md": {
+    "mtime": 1776652611.948771,
+    "hash": "3d904b13e9aef1313edbdd8826ffccb7"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/01-learning-platform-rearchitecture/implementation-plan.md": {
+    "mtime": 1775699650.2390833,
+    "hash": "d3690bcb7004d1f808429a45231d2054"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/01-learning-platform-rearchitecture/task-breakdown.md": {
+    "mtime": 1775699655.8957942,
+    "hash": "0c29e4779ecc8a74e00634c5ed181d02"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/01-learning-platform-rearchitecture/spec.md": {
+    "mtime": 1775697471.1900005,
+    "hash": "723d9800501eb2b3ed1c7555330875e0"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/07-build-progression-and-completion-semantics/implementation-plan.md": {
+    "mtime": 1776653996.6401048,
+    "hash": "42b9b79a1126418ab1ae249a389b455a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/07-build-progression-and-completion-semantics/task-breakdown.md": {
+    "mtime": 1776653996.6563666,
+    "hash": "323903af192d568bc620dbe858d178e6"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/07-build-progression-and-completion-semantics/spec.md": {
+    "mtime": 1776653996.623111,
+    "hash": "7a07f2dd26b28798e553b611905e9726"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/05-config-source-unification-and-module-handoff/implementation-plan.md": {
+    "mtime": 1776652611.8586278,
+    "hash": "63a6e306cf872e722617b3cdd821bae7"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/05-config-source-unification-and-module-handoff/task-breakdown.md": {
+    "mtime": 1776652611.887934,
+    "hash": "b54d879887d6ac26b9cdf513e4e55cc4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/rag-learning/05-config-source-unification-and-module-handoff/spec.md": {
+    "mtime": 1776652612.011074,
+    "hash": "43b6f2a5631e02b1a308ef8197c1d700"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/06-exam-weakness-rollup-and-final-coverage/implementation-plan.md": {
+    "mtime": 1775703515.5189524,
+    "hash": "8a7e79e6fb997163c64c7a6df4641baa"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/06-exam-weakness-rollup-and-final-coverage/task-breakdown.md": {
+    "mtime": 1775703515.5190358,
+    "hash": "7a4d0be97a0efdeb99ed820191b94267"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/06-exam-weakness-rollup-and-final-coverage/spec.md": {
+    "mtime": 1775703515.518864,
+    "hash": "2253a5267dea4983e20221c74081af8d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/02-remove-legacy-compatibility/qa-checklist.md": {
+    "mtime": 1775644759.7392073,
+    "hash": "dce0229a7c70bfd5891a9f2b3ad2e320"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/02-remove-legacy-compatibility/implementation-plan.md": {
+    "mtime": 1775644170.7086885,
+    "hash": "38f763d6d0f4625cade0fa5a5b01cffc"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/02-remove-legacy-compatibility/task-breakdown.md": {
+    "mtime": 1775644170.7085242,
+    "hash": "f74786f82f90f55230447db9ec6a5060"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/02-remove-legacy-compatibility/spec.md": {
+    "mtime": 1775643789.52914,
+    "hash": "cad28099805afcfa80599fe8ff284726"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/10-workspace-hardening-and-state-alignment/implementation-plan.md": {
+    "mtime": 1776007947.4145892,
+    "hash": "24608c2c0618c85746f46a7faf09356a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/10-workspace-hardening-and-state-alignment/task-breakdown.md": {
+    "mtime": 1776007947.41497,
+    "hash": "a77e7447a4e97595e6585523a88d108f"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/10-workspace-hardening-and-state-alignment/spec.md": {
+    "mtime": 1776007947.3997304,
+    "hash": "88eab26bbe8133c28d381ab0802553e8"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/07-exam-dynamic-question-generation/implementation-plan.md": {
+    "mtime": 1775714213.054236,
+    "hash": "e0629edca6e14a2487d8a81858780e5b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/07-exam-dynamic-question-generation/task-breakdown.md": {
+    "mtime": 1775714213.058063,
+    "hash": "7216c96974680ff1443dc020e65ff998"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/07-exam-dynamic-question-generation/spec.md": {
+    "mtime": 1775714213.0541348,
+    "hash": "90545b04670211149a8fce67254ca80f"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/11-review-driven-scoring-state-and-validation-fixes/implementation-plan.md": {
+    "mtime": 1776008780.9794438,
+    "hash": "c605b4fa9f11df077dfeed908c845323"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/11-review-driven-scoring-state-and-validation-fixes/task-breakdown.md": {
+    "mtime": 1776008780.9796724,
+    "hash": "ed9c6a457cb527e518111d6fb47a710b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/11-review-driven-scoring-state-and-validation-fixes/spec.md": {
+    "mtime": 1776008780.979127,
+    "hash": "316f01396b3ebe9cb216aed2561b149c"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/09-workspace-fallback/implementation-plan.md": {
+    "mtime": 1775882530.8302941,
+    "hash": "9a5f8eafe46fe39de7d31d7345d3d946"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/09-workspace-fallback/task-breakdown.md": {
+    "mtime": 1775882515.775684,
+    "hash": "197a1da7a38be7cc9007ac2a464bc381"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/09-workspace-fallback/spec.md": {
+    "mtime": 1775882237.7104504,
+    "hash": "ca4b863b9db5bc13d9ae23ed68be31d1"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/13-home-recommendation-fallback-semantics/implementation-plan.md": {
+    "mtime": 1776010780.087141,
+    "hash": "27fd635a554de471d24fb7ae22d6228e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/13-home-recommendation-fallback-semantics/task-breakdown.md": {
+    "mtime": 1776010780.0873716,
+    "hash": "28bce1811c2b42e937eb48ea191c4e69"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/13-home-recommendation-fallback-semantics/spec.md": {
+    "mtime": 1776010780.0868502,
+    "hash": "527d2c3c6de5a82de150fc50c76d1258"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/04-interaction-mode-declaration/implementation-plan.md": {
+    "mtime": 1775685258.9238746,
+    "hash": "38848243cb98abe42940337893ba8591"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/04-interaction-mode-declaration/task-breakdown.md": {
+    "mtime": 1775685476.0624912,
+    "hash": "03251b3075c23aa94289a44acaf6ca90"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/04-interaction-mode-declaration/spec.md": {
+    "mtime": 1775661824.1835904,
+    "hash": "af7281762ac2857190ee2b8363fd59ff"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/12-bounded-fill-grading-and-review-gap-fixes/implementation-plan.md": {
+    "mtime": 1776009919.2050505,
+    "hash": "b7c62f1158a504c537c8c4ecc2f06f72"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/12-bounded-fill-grading-and-review-gap-fixes/task-breakdown.md": {
+    "mtime": 1776009919.2052646,
+    "hash": "2c0e818b61f97e691b0442d825d13a37"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/12-bounded-fill-grading-and-review-gap-fixes/spec.md": {
+    "mtime": 1776009919.2046504,
+    "hash": "23b66e9d3dad483b53a69c392bf38df5"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/01-learning-platform-rearchitecture/implementation-plan.md": {
+    "mtime": 1775643580.0212867,
+    "hash": "a0edd9c6fb8eb52f34661bfcc24b4613"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/01-learning-platform-rearchitecture/task-breakdown.md": {
+    "mtime": 1775643324.664894,
+    "hash": "2e82ffecbe0c065b90220551c4572369"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/01-learning-platform-rearchitecture/spec.md": {
+    "mtime": 1775640642.6627896,
+    "hash": "4e03a5c8892899ef51edf54a14ed2e74"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/03-selector-first-interaction/implementation-plan.md": {
+    "mtime": 1775659511.3977842,
+    "hash": "81ae2016d93ebe0f6064db589a538bce"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/03-selector-first-interaction/task-breakdown.md": {
+    "mtime": 1775659511.397925,
+    "hash": "64804f410cd05b6ce80869a93c209627"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/03-selector-first-interaction/spec.md": {
+    "mtime": 1775659168.3277607,
+    "hash": "83b08f9a84138ed0f71780b883086277"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/05-exam-session-qna-mode/implementation-plan.md": {
+    "mtime": 1775702448.7855957,
+    "hash": "2bb13574a66b21d3ccbfc11f17f7ba57"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/05-exam-session-qna-mode/task-breakdown.md": {
+    "mtime": 1775702448.7856708,
+    "hash": "964db44f010eaee9c5429ead1c898ea4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/05-exam-session-qna-mode/spec.md": {
+    "mtime": 1775702448.7855008,
+    "hash": "4a1365d4a8051d0a6d3ae4de6427302a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/08-workspace-user-bootstrap-and-isolation/implementation-plan.md": {
+    "mtime": 1775793764.241622,
+    "hash": "91c6bf81527ef64b1c9098ac95fffc51"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/08-workspace-user-bootstrap-and-isolation/task-breakdown.md": {
+    "mtime": 1775797902.4395778,
+    "hash": "3549c8bd52d72dc966280d8b463f1fd2"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/specs/prompt-learning/08-workspace-user-bootstrap-and-isolation/spec.md": {
+    "mtime": 1775797902.4394212,
+    "hash": "e80416fabd9438c09f2f9452ae2355ee"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/poetry/DATA_SETUP.md": {
+    "mtime": 1773992675.558593,
+    "hash": "d95f7d254e5929389f13237afb4247e2"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/poetry/VERSION.md": {
+    "mtime": 1773992675.559509,
+    "hash": "07d2ae8e9a7ee19634ab68ad1f4a08bf"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/poetry/SKILL.md": {
+    "mtime": 1775457368.6939385,
+    "hash": "030b26b94003c2a6403134e4361c8c7f"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/labor-rights-defense/SKILL.md": {
+    "mtime": 1776127388.0742807,
+    "hash": "9af083a62f66645ff5c81ce98df89a4d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/VERSION.md": {
+    "mtime": 1775698659.7106786,
+    "hash": "11d2037b96ae770e98859f286d0a0b4a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/SKILL.md": {
+    "mtime": 1776651535.3879151,
+    "hash": "a8e9297c8d6e09f29d01bc3d3043928e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/03-\u5411\u91cf\u6570\u636e\u5e93.md": {
+    "mtime": 1774116129.1137424,
+    "hash": "d54209160338e83d7f8026c9941bb1f0"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/01-RAG\u57fa\u7840\u6982\u5ff5.md": {
+    "mtime": 1774114982.182304,
+    "hash": "44ec0f21de27cb3fa9bc97aa9d8c7973"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/05-Rerank\u6a21\u578b\u9009\u62e9.md": {
+    "mtime": 1775698659.7095752,
+    "hash": "b9077bf85cbe1567b18abbc5de1dc3a0"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/06-\u68c0\u7d22\u7b56\u7565\u4f18\u5316.md": {
+    "mtime": 1775698659.7097716,
+    "hash": "13bdea10f3bf33d88dd2e15152fe5cfc"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/07-\u6587\u6863\u95ee\u7b54RAG.md": {
+    "mtime": 1775698659.710034,
+    "hash": "24c99deffe901034f662fe0e3e2f21df"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/04-Embedding\u6a21\u578b\u9009\u62e9.md": {
+    "mtime": 1775698659.7093627,
+    "hash": "069dbb8e6bcc49db63c7a2f8458e1adb"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/11-RAG\u6027\u80fd\u4f18\u5316.md": {
+    "mtime": 1774116285.1383142,
+    "hash": "b3ab29f2e0e0d0f640b7c58370b06df4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/10-\u4f01\u4e1a\u7ea7RAG\u67b6\u6784.md": {
+    "mtime": 1775698659.7103105,
+    "hash": "9d9c817c68ed0826bdf55e46af74f2d9"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/README.md": {
+    "mtime": 1775698659.7090023,
+    "hash": "df138fce29d379bddbb48dce1edf0dfe"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/08-\u5ba2\u670d\u673a\u5668\u4ebaRAG.md": {
+    "mtime": 1774116193.0101058,
+    "hash": "15d1373f1550c6d384ecd854d6d5db90"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/09-\u77e5\u8bc6\u5e93\u641c\u7d22RAG.md": {
+    "mtime": 1774116225.8937733,
+    "hash": "0058d23f5b2072f8d2a216423b538fb0"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/02-\u5411\u91cf\u5316\u8be6\u89e3.md": {
+    "mtime": 1774116111.49885,
+    "hash": "91439a09b964d9cc504e1b1fa5431d78"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/courses/12-RAG\u8bc4\u4f30\u4e0e\u8c03\u4f18.md": {
+    "mtime": 1775698659.7104952,
+    "hash": "fbc9c9d889280fe5960ddb05caab1e4a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/reference/ambiguous-intent.md": {
+    "mtime": 1775698194.497649,
+    "hash": "159652cbc8d09d3098eedeeced689031"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/reference/practice-mode.md": {
+    "mtime": 1775698194.497844,
+    "hash": "d6c9938854a1c2f6dcc0a4094d8837f7"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/reference/learning-mode.md": {
+    "mtime": 1775698194.4977474,
+    "hash": "5592dd84ec749d59909f21e36340ee10"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/reference/router.md": {
+    "mtime": 1775698194.4975362,
+    "hash": "b1cfa81d4d0ac307d511f948ee01bbbd"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/reference/faq.md": {
+    "mtime": 1774114926.4663823,
+    "hash": "8dc8a190385a22a5accfbc0f800f25e1"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/reference/scenarios.md": {
+    "mtime": 1775555853.4297366,
+    "hash": "c8cfad19ca18f436641643dbc8a5c0f8"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/rag-learning/reference/catalog.md": {
+    "mtime": 1775698659.7089183,
+    "hash": "a1ac4f07078cbc5016dba4531a92735c"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/VERSION.md": {
+    "mtime": 1775714704.6674902,
+    "hash": "a3c588945a8c14929199ede74027ee8b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/SKILL.md": {
+    "mtime": 1776010105.7488964,
+    "hash": "b658731d0f906fb77f77a991bcda627e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/agents/openai.yaml": {
+    "mtime": 1775659305.2275093,
+    "hash": "65c7487e61b7d3ec40e91b3c176dba7f"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/14-\u65b9\u5411\u6027\u523a\u6fc0\u63d0\u793a.md": {
+    "mtime": 1775624871.9756358,
+    "hash": "f3bfba881cb257a2972c2b18adf372bc"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/02-\u5c11\u6837\u672c\u63d0\u793a.md": {
+    "mtime": 1773992675.5660765,
+    "hash": "3cc256dece6e60f76bfd4df58802e7f4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/11-\u81ea\u52a8\u63a8\u7406\u548c\u5de5\u5177\u4f7f\u7528.md": {
+    "mtime": 1775624871.9754565,
+    "hash": "538dd60df310306a4f2b9d3e7a3df02a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/07-\u68c0\u7d22\u589e\u5f3a\u751f\u6210.md": {
+    "mtime": 1775624871.9663365,
+    "hash": "305c9deba1d7473260577443233f2c6f"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/01-\u96f6\u6837\u672c\u63d0\u793a.md": {
+    "mtime": 1773992675.5669875,
+    "hash": "4299b1933cfd702f4214f15c3570471d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/06-\u751f\u6210\u77e5\u8bc6\u63d0\u793a.md": {
+    "mtime": 1775624871.966202,
+    "hash": "4c1edad45f16eed67bb887b696a0ed2a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/09-ReAct\u6846\u67b6.md": {
+    "mtime": 1775624871.9753294,
+    "hash": "3adfae648aa770e975809ddbbe28ed4b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/08-\u94fe\u5f0f\u63d0\u793a.md": {
+    "mtime": 1775624871.9664016,
+    "hash": "518947704cf59572952fd9717eae0e53"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/17-\u56fe\u63d0\u793a.md": {
+    "mtime": 1775624871.975806,
+    "hash": "8b68049d6f3a7738d855043db159fdde"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/16-\u591a\u6a21\u6001\u601d\u7ef4\u94fe.md": {
+    "mtime": 1775624871.9757476,
+    "hash": "5f8c7e637c6a2ec2fad0ba1c14d1289c"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/15-\u81ea\u6211\u53cd\u601d.md": {
+    "mtime": 1775624871.9756937,
+    "hash": "32657cb6dec2370db1fd56889a58ca59"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/04-\u81ea\u6211\u4e00\u81f4\u6027.md": {
+    "mtime": 1773992675.568876,
+    "hash": "b9610ae039f29fdb610a8ac5ab78cda4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/10-\u7a0b\u5e8f\u8f85\u52a9\u8bed\u8a00\u6a21\u578b.md": {
+    "mtime": 1775624871.9753923,
+    "hash": "026fd335560619d17653ff22c81e9791"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/12-\u81ea\u52a8\u63d0\u793a\u5de5\u7a0b\u5e08.md": {
+    "mtime": 1775624871.9755208,
+    "hash": "c43b2140919a0f6f5e3bdd9379c1c3c4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/03-\u601d\u7ef4\u94fe\u63d0\u793a.md": {
+    "mtime": 1773992675.569929,
+    "hash": "2755bc67f207eb97c6e31849d7595d55"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/05-\u601d\u7ef4\u6811.md": {
+    "mtime": 1773992675.5702052,
+    "hash": "ec27b2d154188eec54c6722757d96faf"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/courses/13-\u4e3b\u52a8\u63d0\u793a.md": {
+    "mtime": 1775624871.9755762,
+    "hash": "8a6f4bed6e4d4bc4ac0ad81155c89606"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/reference/common-problems.md": {
+    "mtime": 1775624024.6371832,
+    "hash": "d76aace428e2f8c4ea91dfa3a264faea"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/reference/prompt-generation-mode.md": {
+    "mtime": 1775659305.2274475,
+    "hash": "126b3ae91b83df06975eb925df4d6ee0"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/reference/prompt-patterns.md": {
+    "mtime": 1775624024.6376033,
+    "hash": "010f3a522783da72b4af0b7a887073c4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/reference/learning-mode.md": {
+    "mtime": 1775659305.2272995,
+    "hash": "6a613ecc2b9236ef2a5ac7d492991ad2"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/reference/faq.md": {
+    "mtime": 1775644684.2736318,
+    "hash": "45502d83a2eed734cea9cf4f28167240"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/agent-skills/prompt-learning/reference/exam-mode.md": {
+    "mtime": 1775702882.1462455,
+    "hash": "8db474fe9a83eb376b1b7aa634b3a67b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-learning-benchmark-report.md": {
+    "mtime": 1776657691.0001404,
+    "hash": "d5a717f4dc0539bb614ccd38bca75b05"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-engineering-history.md": {
+    "mtime": 1775453340.6933305,
+    "hash": "aa85f13edca122dfdbe558cb63f5772c"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/opencode-go-guide.md": {
+    "mtime": 1774438733.1397,
+    "hash": "87c82b485401e56d8a5e30138e3e55da"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/ironforge-naming.md": {
+    "mtime": 1776238747.3944016,
+    "hash": "7d3a2566ab5948c2570769fad9efea84"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-learning-architecture/learning-center.md": {
+    "mtime": 1775638238.6061497,
+    "hash": "540e54e2171bde51ba74f0e7bee73122"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-learning-architecture/skill-contract.md": {
+    "mtime": 1776012806.9414296,
+    "hash": "89cfcdf52a9300d85bfeba71867fbf39"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-learning-architecture/migration-plan.md": {
+    "mtime": 1775644495.2630692,
+    "hash": "6c3b7017e866ceb22997b1535bbe74fe"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-learning-architecture/overview.md": {
+    "mtime": 1775796662.5333793,
+    "hash": "35d28c6482c62730533261ef095726ab"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-learning-architecture/prompt-lab.md": {
+    "mtime": 1776010105.748393,
+    "hash": "f06366aa50a26fc9516c86ac8004df1a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-learning-architecture/practice-center.md": {
+    "mtime": 1776010105.7481136,
+    "hash": "116311792330bcabc0ba35785051c601"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-learning-architecture/state-model.md": {
+    "mtime": 1776010882.744079,
+    "hash": "a859e0634e034aefe9bee68cb5357d88"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-learning-architecture/cli-and-modules.md": {
+    "mtime": 1775714633.1123433,
+    "hash": "04dc4174f21ba30c7bb662f4865558c4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-learning-architecture/workspace-and-persistence.md": {
+    "mtime": 1776008145.6999745,
+    "hash": "fcad9c9d18dc2126729998ec2ddc6554"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/prompt-learning-architecture/exam-center.md": {
+    "mtime": 1776010105.7477617,
+    "hash": "d96955a695e42682bdb1c9bc266279af"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/ideas/rag-learning-platform.md": {
+    "mtime": 1775696815.8357325,
+    "hash": "901cf711dc85eac5e30e1868fadfb2fd"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/ideas/stable-selector-interaction-protocol.md": {
+    "mtime": 1775661547.4630806,
+    "hash": "72ca508532fa2f8d552ac7a09da3f22d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/ideas/labor-rights-defense-skill.md": {
+    "mtime": 1776127481.5401158,
+    "hash": "500e32f18326e2b694da3dac28937fbd"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/learning-center.md": {
+    "mtime": 1775700077.8042948,
+    "hash": "74ef9309116bda55378ee9d3960879bc"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/skill-contract.md": {
+    "mtime": 1775697127.5961442,
+    "hash": "6ee1bc83f35bf94f3d607d696839ad8a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/migration-plan.md": {
+    "mtime": 1775697127.5966854,
+    "hash": "f5bd979391876f92aed205e815e84e12"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/overview.md": {
+    "mtime": 1776656334.4896474,
+    "hash": "a9789aff6fa55ceb866e9a5848b221d3"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/build-center.md": {
+    "mtime": 1776654160.6834693,
+    "hash": "19f61fa8a91ce07330ca316a46a78f1a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/rag-lab.md": {
+    "mtime": 1776654160.713724,
+    "hash": "2a2a901fb1fc792d89cda266542679ec"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/state-model.md": {
+    "mtime": 1776654160.7761505,
+    "hash": "9ff449ffb6701a6a1760c8206730151a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/architecture-review.md": {
+    "mtime": 1776654160.7451265,
+    "hash": "bcad6e64d4d0c61154078f047f2bdd9b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/cli-and-modules.md": {
+    "mtime": 1776654160.6523924,
+    "hash": "23705a17ab7e2d4a277585281e7c5783"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/workspace-and-persistence.md": {
+    "mtime": 1776656327.4486356,
+    "hash": "4a1fb06888b4b6634dce1f56a68d1367"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/testing-and-verification.md": {
+    "mtime": 1775701325.8441784,
+    "hash": "a4e2baeda0de9666fcecae7bb4ab07ee"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/docs/rag-learning-architecture/profile.md": {
+    "mtime": 1776656311.2638958,
+    "hash": "284feea36b9d7f6c8eb375c7fee9d88b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/14-directional-stimulus-prompting.md": {
+    "mtime": 1775589249.5054433,
+    "hash": "540f5cf3e470e3a67aab4b43a21c5d7d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/05-tree-of-thought.md": {
+    "mtime": 1773337584.450251,
+    "hash": "a82de5db53f09d17aa824fd94a37052d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/17-graph-prompt.md": {
+    "mtime": 1775589249.5056002,
+    "hash": "1b22e948a6dec68e1265443af961c37d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/16-multimodal-cot.md": {
+    "mtime": 1775589102.6495566,
+    "hash": "0762f2a9a0816fc4e046d8efeb25c2ab"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/07-retrieval-augmented-generation.md": {
+    "mtime": 1773337584.450871,
+    "hash": "97f40f8e66e7559d3a4927bbe69fcd9b"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/00-prompt-techniques-overview.md": {
+    "mtime": 1775589102.6498585,
+    "hash": "fe7fe35a83c332bd4a5d1f06921ca43e"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/06-knowledge-prompting.md": {
+    "mtime": 1775589249.505156,
+    "hash": "b2c81a83302072594f26942ccc8a4f43"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/15-reflexion.md": {
+    "mtime": 1773337584.4532206,
+    "hash": "1a8031a4259c35f7c5d700d26c445e62"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/10-program-aided-language-models.md": {
+    "mtime": 1773337584.4516788,
+    "hash": "0fbaad83b12418a39b382d5b478299fe"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/13-active-prompt.md": {
+    "mtime": 1773337584.452377,
+    "hash": "c762567ac6d4431bad3160683690adb4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/08-prompt-chaining.md": {
+    "mtime": 1775589330.3628452,
+    "hash": "37982b18d05a3d7b10770584976c0f03"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/02-few-shot-prompting.md": {
+    "mtime": 1773393546.1204052,
+    "hash": "cbf44e961c2396d8df6e0c92731f6d66"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/12-automatic-prompt-engineer.md": {
+    "mtime": 1773337584.452219,
+    "hash": "caf7b33a75a0569732683865ffeee7b1"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/04-self-consistency.md": {
+    "mtime": 1773337584.4497614,
+    "hash": "92a103f63ed88897e3e9acbac118c5f0"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/11-automatic-reasoning-and-tool-use.md": {
+    "mtime": 1775588608.316575,
+    "hash": "6c5065e6d0904653815ea567c1b04c60"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/09-react-reason-act.md": {
+    "mtime": 1773337584.4514196,
+    "hash": "182e92ee3ea9d15f9ad5cee0caeb014d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/01-zero-shot-prompting.md": {
+    "mtime": 1773393546.1196897,
+    "hash": "86b957eb626dfced447521625fcf2c7a"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/notebook/03-chain-of-thought-prompting.md": {
+    "mtime": 1773393546.1210308,
+    "hash": "22a40b2bd113594e77b953ef20cd26c4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/labor-rights-defense-workspace/lihzsky/cache/law/labor_contract_law/2d57bb9b53bc988676edc3fb18ae4b01dcaac405eef612b722eaf65802ee59e8/raw.html": {
+    "mtime": 1776135617.260141,
+    "hash": "c4e8c023e9fd32744ec37883d7bf338d"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/README.md": {
+    "mtime": 1774176726.202588,
+    "hash": "34d67c6ef382066fa1cd893110009ac0"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/test_output/file2.txt": {
+    "mtime": 1773917071.4508128,
+    "hash": "db06069ef1c9f40986ffa06db4fe8fd7"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/test_output/file3.txt": {
+    "mtime": 1773917078.4104934,
+    "hash": "95227e10e2c33771e1c1379b17330c86"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-your-claude-code/test_output/file1.txt": {
+    "mtime": 1773917064.3126996,
+    "hash": "daa05c683a4913b268653f7a7e36a5b4"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/dns-test/README.md": {
+    "mtime": 1777259589.792738,
+    "hash": "f8076d7abf7fe776561d8b7cd1f2b507"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-rag-agent/knowledge_base/prompt_engineering.md": {
+    "mtime": 1778136900.3978906,
+    "hash": "3cc67e2ae8a0f23cffc67b166bf2cf06"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-rag-agent/knowledge_base/machine_learning_basics.md": {
+    "mtime": 1778136634.7064128,
+    "hash": "2b3442036b4a9bdfce2c551eb14e6ea8"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-rag-agent/knowledge_base/natural_language_processing.md": {
+    "mtime": 1778136717.6966486,
+    "hash": "ae26b8594499da711f70bae98dd7feaa"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-rag-agent/knowledge_base/rag_architecture.md": {
+    "mtime": 1778136787.6843154,
+    "hash": "ff5dd261ca444c77e4531e0db7139906"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-rag-agent/knowledge_base/embedding_technology.md": {
+    "mtime": 1778136836.552487,
+    "hash": "c4b8d80b2f5fce43a0a7df8274019d10"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-rag-agent/knowledge_base/vector_database_overview.md": {
+    "mtime": 1778136673.2486632,
+    "hash": "8dd7f2fa31bdb3b30bd541b6aa4dda09"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/practice/build-data-analysis-agent/README.md": {
+    "mtime": 1774202079.8890698,
+    "hash": "35d48d2487d7e3d4a8531010aef657ee"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/prompt-learning-workspace/lihzsky/notes/exam-q11-framework.md": {
+    "mtime": 1775968829.119169,
+    "hash": "5d8548d4a2f2cc9910fab2d65dece0bc"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/prompt-learning-workspace/lihzsky/exam/reports/2026-04-11-14-34-30-lihzsky-prompt-learning-exam.md": {
+    "mtime": 1775889270.3670375,
+    "hash": "74c53eb80076ae3b8d1c8091c7a63e91"
+  },
+  "/Users/lihaizhong/Documents/Project/ai-agent-upgrade/prompt-learning-workspace/lihzsky/exam/reports/2026-04-12-12-33-26-lihzsky-prompt-learning-exam.md": {
+    "mtime": 1775968406.9954352,
+    "hash": "69df1e91e33ee4db01f6e7ab0dd7aa88"
+  }
 }

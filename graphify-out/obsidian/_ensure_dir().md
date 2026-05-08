@@ -1,0 +1,18 @@
+---
+source_file: "agent-skills/labor-rights-defense/scripts/procedure_service.py"
+type: "code"
+community: "Labor Rights Defense Core"
+location: "L31"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Labor_Rights_Defense_Core
+---
+
+# _ensure_dir()
+
+## Connections
+- [[crawl_procedure()]] - `calls` [EXTRACTED]
+- [[procedure_service.py]] - `contains` [EXTRACTED]
+
+#graphify/code #graphify/EXTRACTED #community/Labor_Rights_Defense_Core

@@ -1,0 +1,18 @@
+---
+source_file: "agent-skills/rag-learning/scripts/state.py"
+type: "code"
+community: "Prompt Learning Course System"
+location: "L77"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Prompt_Learning_Course_System
+---
+
+# default_competency()
+
+## Connections
+- [[.get_competency()]] - `calls` [EXTRACTED]
+- [[state.py]] - `contains` [EXTRACTED]
+
+#graphify/code #graphify/EXTRACTED #community/Prompt_Learning_Course_System
